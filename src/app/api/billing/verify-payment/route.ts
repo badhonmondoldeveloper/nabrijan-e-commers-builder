@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const transactionId = searchParams.get('transaction_id') || searchParams.get('transactionId');
+    const transactionId = searchParams.get('invoice_id') || searchParams.get('val_id') || searchParams.get('transaction_id') || searchParams.get('transactionId');
 
     if (!transactionId) {
       return NextResponse.redirect(new URL('/dashboard/billing?error=missing_transaction', req.url));

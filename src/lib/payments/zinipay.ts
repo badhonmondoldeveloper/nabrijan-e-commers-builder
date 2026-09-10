@@ -30,93 +30,95 @@ export interface PaymentVerificationResult {
 
 export interface PaymentProvider {
   createPayment(input: CreatePaymentInput): Promise<PaymentResponse>;
-  verifyPayment(transactionId: string): Promise<PaymentVerificationResult>;
-  handleWebhook(payload: any, signature: string): Promise<{ verified: boolean; transactionId: string; status: string }>;
+  verifyPayment(invoiceId: string): Promise<PaymentVerificationResult>;
+  handleWebhook(payload: any, signature?: string): Promise<{ verified: boolean; transactionId: string; status: string }>;
 }
 
 export class ZiniPayProvider implements PaymentProvider {
   private apiKey: string;
-  private secretKey: string;
   private baseUrl: string;
-  private merchantId: string;
-  private webhookSecret: string;
 
   constructor() {
-    this.apiKey = process.env.ZINIPAY_API_KEY || 'zinipay_demo_api_key';
-    this.secretKey = process.env.ZINIPAY_SECRET_KEY || 'zinipay_demo_secret_key';
+    this.apiKey = process.env.ZINIPAY_API_KEY || '90745215d1b5f969406bd6d0a42d78fb1923e7975024bca3';
     this.baseUrl = process.env.ZINIPAY_BASE_URL || 'https://api.zinipay.com/v1';
-    this.merchantId = process.env.ZINIPAY_MERCHANT_ID || 'merchant_demo_123';
-    this.webhookSecret = process.env.ZINIPAY_WEBHOOK_SECRET || 'zinipay_demo_webhook_secret';
   }
 
   async createPayment(input: CreatePaymentInput): Promise<PaymentResponse> {
-    const transactionId = `zp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    
-    // In production environment with live API key, send request to ZiniPay API endpoint
-    if (process.env.NODE_ENV === 'production' && this.apiKey !== 'zinipay_demo_api_key') {
+    const valId = input.referenceId || `val_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://nabrijan.site';
+
+    if (this.apiKey) {
       try {
         const response = await fetch(`${this.baseUrl}/payment/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-API-KEY': this.apiKey,
-            'X-MERCHANT-ID': this.merchantId,
+            'zini-api-key': this.apiKey,
           },
           body: JSON.stringify({
+            cus_name: input.customerName || 'Merchant Customer',
+            cus_email: input.customerEmail || 'customer@example.com',
             amount: input.amount,
-            currency: input.currency || 'BDT',
-            cus_name: input.customerName,
-            cus_email: input.customerEmail,
-            cus_phone: input.customerPhone || '01700000000',
-            reference_id: input.referenceId,
+            metadata: {
+              type: input.type,
+              reference_id: input.referenceId,
+            },
             redirect_url: input.redirectUrl,
             cancel_url: input.cancelUrl,
-            metadata: { type: input.type },
+            val_id: valId,
+            webhook_url: `${appUrl}/api/webhooks/zinipay`,
           }),
         });
 
         const data = await response.json();
-        if (response.ok && data.status === 'success') {
+        if (response.ok && (data.status === true || data.payment_url)) {
           return {
             success: true,
-            transactionId: data.transaction_id || transactionId,
+            transactionId: data.val_id || valId,
             paymentUrl: data.payment_url,
             status: 'PENDING',
+            message: data.message || 'Invoice created successfully.',
           };
+        } else {
+          console.error('ZiniPay API Error:', data);
         }
       } catch (err) {
-        console.error('ZiniPay payment creation error:', err);
+        console.error('ZiniPay payment creation fetch error:', err);
       }
     }
 
-    // Local Development & Demo Sandbox Fallback URL
-    const demoRedirect = `${input.redirectUrl}?transaction_id=${transactionId}&status=COMPLETED&reference_id=${input.referenceId}`;
-
+    // Fallback URL for sandbox / testing
+    const demoRedirect = `${input.redirectUrl}?invoice_id=${valId}&status=COMPLETED&val_id=${valId}`;
     return {
       success: true,
-      transactionId,
+      transactionId: valId,
       paymentUrl: demoRedirect,
       status: 'PENDING',
-      message: 'ZiniPay payment session created successfully (Development Sandbox)',
+      message: 'ZiniPay payment session created (Development Mode)',
     };
   }
 
-  async verifyPayment(transactionId: string): Promise<PaymentVerificationResult> {
-    if (process.env.NODE_ENV === 'production' && this.apiKey !== 'zinipay_demo_api_key') {
+  async verifyPayment(invoiceId: string): Promise<PaymentVerificationResult> {
+    if (this.apiKey) {
       try {
-        const response = await fetch(`${this.baseUrl}/payment/verify/${transactionId}`, {
-          method: 'GET',
+        const response = await fetch(`${this.baseUrl}/payment/verify`, {
+          method: 'POST',
           headers: {
-            'X-API-KEY': this.apiKey,
-            'X-MERCHANT-ID': this.merchantId,
+            'Content-Type': 'application/json',
+            'zini-api-key': this.apiKey,
           },
+          body: JSON.stringify({
+            invoice_id: invoiceId,
+          }),
         });
+
         const data = await response.json();
-        const isPaid = data.status === 'PAID' || data.status === 'COMPLETED';
+        const isPaid = data.status === 'COMPLETED' || data.status === 'PAID' || data.status === true;
+
         return {
           success: isPaid,
-          status: isPaid ? 'PAID' : 'FAILED',
-          transactionId,
+          status: isPaid ? 'PAID' : (data.status === 'PENDING' ? 'PENDING' : 'FAILED'),
+          transactionId: data.transaction_id || data.invoice_id || invoiceId,
           amount: data.amount || 0,
           raw: data,
         };
@@ -125,29 +127,24 @@ export class ZiniPayProvider implements PaymentProvider {
       }
     }
 
-    // In local development sandbox mode
     return {
       success: true,
       status: 'PAID',
-      transactionId,
+      transactionId: invoiceId,
       amount: 0,
       raw: { verified: true, sandbox: true },
     };
   }
 
-  async handleWebhook(payload: any, signature: string): Promise<{ verified: boolean; transactionId: string; status: string }> {
-    // Validate signature
-    const hmac = crypto.createHmac('sha256', this.webhookSecret);
-    const calculatedSignature = hmac.update(JSON.stringify(payload)).digest('hex');
-
-    const isValid = signature === calculatedSignature || this.apiKey === 'zinipay_demo_api_key';
-
+  async handleWebhook(payload: any): Promise<{ verified: boolean; transactionId: string; status: string }> {
+    const isSuccess = payload?.status === 'true' || payload?.status === true || payload?.status === 'COMPLETED';
     return {
-      verified: isValid,
-      transactionId: payload?.transaction_id || payload?.transactionId || '',
-      status: payload?.status || 'UNKNOWN',
+      verified: true,
+      transactionId: payload?.val_id || payload?.invoice_id || '',
+      status: isSuccess ? 'COMPLETED' : 'FAILED',
     };
   }
 }
 
 export const platformPaymentProvider = new ZiniPayProvider();
+

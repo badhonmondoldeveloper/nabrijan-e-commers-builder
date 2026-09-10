@@ -12,12 +12,32 @@ export async function POST(req: Request) {
 
     const { planSlug } = await req.json();
 
-    const plan = await db.plan.findUnique({
+    let plan = await db.plan.findUnique({
       where: { slug: planSlug },
     });
 
     if (!plan) {
-      return NextResponse.json({ message: 'Selected plan does not exist' }, { status: 404 });
+      // Auto seed standard subscription plans
+      const defaultPlans: Record<string, { name: string; price: number; storeLimit: number; productLimit: number; staffLimit: number }> = {
+        starter: { name: 'Starter Plan', price: 990, storeLimit: 1, productLimit: 100, staffLimit: 2 },
+        business: { name: 'Business Plan', price: 2490, storeLimit: 3, productLimit: 1000, staffLimit: 5 },
+        pro: { name: 'Pro Enterprise', price: 4990, storeLimit: 10, productLimit: 10000, staffLimit: 20 },
+      };
+
+      const selected = defaultPlans[planSlug] || defaultPlans['starter'];
+      plan = await db.plan.upsert({
+        where: { slug: planSlug },
+        update: { price: selected.price, name: selected.name },
+        create: {
+          name: selected.name,
+          slug: planSlug,
+          price: selected.price,
+          storeLimit: selected.storeLimit,
+          productLimit: selected.productLimit,
+          staffLimit: selected.staffLimit,
+          features: JSON.stringify(['ZiniPay Billing', 'All Features']),
+        },
+      });
     }
 
     const referenceId = `sub_${user.id}_${plan.id}`;

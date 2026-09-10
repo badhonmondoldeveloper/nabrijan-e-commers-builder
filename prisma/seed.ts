@@ -22,7 +22,20 @@ async function main() {
     },
   });
 
-  // 3. Create Demo Merchant User
+  // 3. Create Owner Super Admin (badhonmondoldeveloper)
+  const ownerHash = await bcrypt.hash('badhon#2006', 10);
+  await prisma.user.upsert({
+    where: { email: 'badhonmondoldeveloper@gmail.com' },
+    update: { passwordHash: ownerHash, role: 'SUPER_ADMIN', name: 'Badhon Mondol' },
+    create: {
+      name: 'Badhon Mondol',
+      email: 'badhonmondoldeveloper@gmail.com',
+      passwordHash: ownerHash,
+      role: 'SUPER_ADMIN',
+    },
+  });
+
+  // 4. Create Demo Merchant User
   const merchantUser = await prisma.user.upsert({
     where: { email: 'merchant@example.com' },
     update: {},

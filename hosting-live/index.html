@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nabrijan | Live Store</title>
+    <meta name="description" content="Nabrijan online store and SaaS platform landing page." />
+    <style>
+      :root {
+        --bg: #081221;
+        --panel: #111d31;
+        --primary: #59a7ff;
+        --accent: #8b5cf6;
+        --text: #edf6ff;
+        --muted: #b7c7db;
+        --success: #42d392;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, var(--bg), #0f1d2f 40%, #111827); color: var(--text); min-height: 100vh; }
+      body { display: flex; align-items: center; justify-content: center; padding: 32px; }
+      .card {
+        width: min(900px, 100%);
+        background: rgba(17, 29, 49, 0.92);
+        border: 1px solid rgba(89, 167, 255, 0.25);
+        border-radius: 24px;
+        box-shadow: 0 30px 80px rgba(3, 7, 18, 0.5);
+        overflow: hidden;
+      }
+      .inner { padding: 48px 36px; }
+      .badge {
+        display: inline-block;
+        padding: 8px 14px;
+        background: rgba(89, 167, 255, 0.12);
+        border: 1px solid rgba(89, 167, 255, 0.35);
+        color: var(--primary);
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      h1 { font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1.08; margin: 18px 0 18px; }
+      .accent { color: var(--primary); }
+      p { color: var(--muted); font-size: 1.08rem; line-height: 1.7; margin: 0 0 28px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+        border-radius: 12px; padding: 14px 22px; font-weight: 700; transition: 0.2s ease;
+      }
+      .btn.primary {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white; box-shadow: 0 10px 28px rgba(89, 167, 255, 0.35);
+      }
+      .btn.secondary {
+        border: 1px solid rgba(255,255,255,0.15); color: var(--text); background: rgba(255,255,255,0.02);
+      }
+      .stats {
+        margin-top: 30px;
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;
+      }
+      .stat {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px; padding: 18px 16px;
+      }
+      .stat strong { display: block; font-size: 1.4rem; color: var(--text); margin-bottom: 6px; }
+      .stat span { color: var(--muted); font-size: 0.9rem; }
+      @media (max-width: 640px) {
+        .inner { padding: 28px 22px; }
+        .actions { flex-direction: column; }
+        .btn { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="inner">
+        <div class="badge">Nabrijan Live</div>
+        <h1>Build your <span class="accent">online store</span> with Nabrijan.</h1>
+        <p>
+          Your domain is connected to the hosting server, and the site is now live with a working landing page.
+          This is the active hosting root for your project while the full app deployment is finalized.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="https://nabrijan.online">Open Website</a>
+          <a class="btn secondary" href="https://hydra.hostseba.com:2083/">Hosting Panel</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <strong>Live</strong>
+            <span>Domain status</span>
+          </div>
+          <div class="stat">
+            <strong>SSL</strong>
+            <span>Secure connection</span>
+          </div>
+          <div class="stat">
+            <strong>Hosting</strong>
+            <span>HostSeba active</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

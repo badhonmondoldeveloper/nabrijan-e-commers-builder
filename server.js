@@ -1,22 +1,29 @@
-const { spawn } = require('child_process');
+const { createServer } = require('http');
+const { parse } = require('url');
+const next = require('next');
 
-const port = Number(process.env.PORT || 3000);
+const dev = false;
+const hostname = 'localhost';
+const port = process.env.PORT || 3000;
 
-const child = spawn('npx', ['next', 'start', '-p', String(port)], {
-  stdio: 'inherit',
-  env: process.env,
-  shell: false,
-});
+const app = next({ dev, hostname, port: typeof port === 'number' ? port : undefined });
+const handle = app.getRequestHandler();
 
-child.on('exit', (code, signal) => {
-  if (signal) {
-    process.kill(process.pid, signal);
-    return;
-  }
-  process.exit(code || 0);
-});
-
-child.on('error', (error) => {
-  console.error('Failed to start Next.js server:', error);
+app.prepare().then(() => {
+  createServer(async (req, res) => {
+    try {
+      const parsedUrl = parse(req.url, true);
+      await handle(req, res, parsedUrl);
+    } catch (err) {
+      console.error('Error handling request:', err);
+      res.statusCode = 500;
+      res.end('Internal Server Error');
+    }
+  }).listen(port, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on ${port}`);
+  });
+}).catch((err) => {
+  console.error('Failed to prepare Next.js app:', err);
   process.exit(1);
 });

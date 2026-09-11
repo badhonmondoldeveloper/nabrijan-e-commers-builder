@@ -17,6 +17,14 @@ const JWT_SECRET = new TextEncoder().encode(getJwtSecret());
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Auto-redirect /store/[slug]/products/[productSlug] to /store/[slug]/product/[productSlug]
+  const matchProducts = pathname.match(/^\/store\/([^/]+)\/products\/([^/]+)$/);
+  if (matchProducts) {
+    const [, storeSlug, productSlug] = matchProducts;
+    return NextResponse.redirect(new URL(`/store/${storeSlug}/product/${productSlug}`, req.url), 301);
+  }
+
   const token = req.cookies.get('nabrijan_session')?.value;
 
   // Protected paths
@@ -65,5 +73,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/dashboard/:path*', '/admin', '/admin/:path*', '/api/stores/:path*', '/api/billing/create-payment'],
+  matcher: ['/dashboard', '/dashboard/:path*', '/admin', '/admin/:path*', '/api/stores/:path*', '/api/billing/create-payment', '/store/:slug/products/:path*'],
 };

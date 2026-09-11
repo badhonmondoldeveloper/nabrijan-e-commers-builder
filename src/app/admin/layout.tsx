@@ -70,6 +70,13 @@ export default async function SuperAdminLayout({
                 <Clock className="w-3.5 h-3.5 text-purple-400" />
                 <span>Trials 360</span>
               </Link>
+              <Link
+                href="/admin/settings"
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                <span>Site Customization</span>
+              </Link>
             </nav>
           </div>
 

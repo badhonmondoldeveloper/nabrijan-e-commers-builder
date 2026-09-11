@@ -1146,4 +1146,18 @@ model FeatureFlag {
   isEnabled   Boolean  @default(true)
 }
 
+model PlatformSettings {
+  id               String   @id @default("default")
+  siteName         String   @default("Nabrijan E-Commerce")
+  siteTagline      String?  @default("Create your professional online store in minutes")
+  logoUrl          String?  @default("/logo.png")
+  bannerText       String?  @default("🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!")
+  trialDays        Int      @default(3)
+  contactEmail     String?  @default("badhonmondoldeveloper@gmail.com")
+  contactPhone     String?  @default("01700000000")
+  whatsappNumber   String?  @default("01700000000")
+  updatedAt        DateTime @updatedAt
+}
+
+
 

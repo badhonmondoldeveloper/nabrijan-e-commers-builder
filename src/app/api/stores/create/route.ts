@@ -148,7 +148,7 @@ export async function POST(req: Request) {
           storeId: store.id,
           planId: starterPlan.id,
           status: 'TRIALING',
-          currentPeriodEnd: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14-day trial
+          currentPeriodEnd: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3-day free trial
         },
       });
     }

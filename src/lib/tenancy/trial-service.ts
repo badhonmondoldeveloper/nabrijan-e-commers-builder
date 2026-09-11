@@ -14,9 +14,9 @@ export interface TrialStatus {
 
 export class TrialService {
   /**
-   * Initializes 7-Day Trial for a newly created store idempotently
+   * Initializes 3-Day Trial for a newly created store idempotently
    */
-  static async activateTrial(userId: string, storeId: string, customDurationDays: number = 7): Promise<any> {
+  static async activateTrial(userId: string, storeId: string, customDurationDays: number = 3): Promise<any> {
     const existing = await db.trial.findUnique({ where: { storeId } });
     if (existing) return existing;
 

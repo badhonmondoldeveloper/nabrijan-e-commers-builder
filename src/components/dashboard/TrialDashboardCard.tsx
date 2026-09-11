@@ -57,13 +57,13 @@ export function TrialDashboardCard({ storeId }: { storeId: string }) {
                 : `${trial.daysLeft} Days Left`}
             </span>
             <span className="text-xs font-semibold opacity-75">
-              7-Day Advanced Trial
+              3-Day Free Trial
             </span>
           </div>
 
           <h3 className="text-xl font-extrabold tracking-tight">
             {trial.isExpired
-              ? 'Your 7-Day Trial has Expired'
+              ? 'Your 3-Day Free Trial has Expired'
               : trial.daysLeft <= 1
               ? 'Final Day of Your Free Trial!'
               : 'Launch & Grow Your E-Commerce Store'}

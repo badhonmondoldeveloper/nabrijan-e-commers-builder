@@ -60,6 +60,15 @@ export class UsageService {
     });
 
     const activeSub = store.subscriptions[0];
+    if (activeSub && activeSub.status === 'TRIALING' && activeSub.currentPeriodEnd < new Date()) {
+      return {
+        allowed: false,
+        currentCount: currentProductCount,
+        limit: 0,
+        reason: 'আপনার ৩ দিনের ফ্রি ট্রায়ালের মেয়াদ শেষ হয়েছে। নতুন প্রোডাক্ট যোগ করতে এবং দোকান চালু রাখতে দয়া করে সাবস্ক্রিপশন প্ল্যান অপগ্রেড করুন।',
+      };
+    }
+
     const limit = activeSub?.plan?.productLimit ?? 100;
 
     if (currentProductCount >= limit) {

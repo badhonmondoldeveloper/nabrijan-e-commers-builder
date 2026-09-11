@@ -21,6 +21,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/store/:slug/products/:productSlug',
+        destination: '/store/:slug/product/:productSlug',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

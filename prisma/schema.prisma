@@ -110,13 +110,18 @@ model StoreSettings {
   phone          String?
   email          String?
   address        String?
+  whatsappNumber String?
+  facebookUrl    String?
+  instagramUrl   String?
+  announcementText String? @db.Text
+  accentColor    String?  @default("#2563eb")
   enableCOD      Boolean  @default(true)
   enableTax      Boolean  @default(false)
   taxRate        Float    @default(0.0)
   seoTitle       String?
-  seoDescription String?
+  seoDescription String?  @db.Text
   metaKeywords   String?
-  customCss      String?
+  customCss      String?  @db.Text
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }
@@ -212,8 +217,8 @@ model Product {
   storeId           String
   title             String
   slug              String
-  shortDescription  String?
-  fullDescription   String?
+  shortDescription  String?  @db.Text
+  fullDescription   String?  @db.Text
   regularPrice      Float
   salePrice         Float?
   costPrice         Float    @default(0.0)
@@ -228,7 +233,7 @@ model Product {
   isFeatured        Boolean  @default(false)
   productType       String   @default("PHYSICAL") // PHYSICAL, DIGITAL
   seoTitle          String?
-  seoDescription    String?
+  seoDescription    String?  @db.Text
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 

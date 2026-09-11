@@ -2,9 +2,16 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db/prisma';
 import { verifyPassword, createSessionToken, setSessionCookie } from '@/lib/auth/session';
 import { loginSchema } from '@/lib/validation/schemas';
+import { checkRateLimit, getClientIp, rateLimitResponse } from '@/lib/auth/rate-limit';
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rl = checkRateLimit(`login:${ip}`, { limit: 10, windowMs: 60000 });
+    if (!rl.success) {
+      return rateLimitResponse(rl.resetMs);
+    }
+
     const body = await req.json();
     const validated = loginSchema.parse(body);
 
@@ -44,7 +51,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified,
+      },
     });
   } catch (error: any) {
     return NextResponse.json({ message: error.message || 'Login failed' }, { status: 400 });

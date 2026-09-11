@@ -286,6 +286,54 @@ async function main() {
     },
   });
 
+  // 10. Seed Platform Settings
+  await prisma.platformSettings.upsert({
+    where: { id: 'global-settings' },
+    update: {},
+    create: {
+      id: 'global-settings',
+      defaultCommissionRate: 0.02,
+      minWithdrawalLimit: 500,
+      autoApproveProducts: false,
+    },
+  });
+
+  // 11. Seed Boost Packages
+  const boostPackages = [
+    {
+      name: 'Starter Highlights (3 Days)',
+      slug: 'starter-3-days',
+      price: 199,
+      durationDays: 3,
+      description: 'Pin product to Top Category & Search Results for 3 days.',
+      isFeatured: false,
+    },
+    {
+      name: 'Pro Merchant Spotlight (7 Days)',
+      slug: 'pro-7-days',
+      price: 499,
+      durationDays: 7,
+      description: 'Homepage Flash Banner + Priority Marketplace Placement for 7 days.',
+      isFeatured: true,
+    },
+    {
+      name: 'Growth Beast Blast (14 Days)',
+      slug: 'growth-14-days',
+      price: 899,
+      durationDays: 14,
+      description: 'Central Marketplace Hero Carousel + Social & Email Highlights.',
+      isFeatured: false,
+    },
+  ];
+
+  for (const pkg of boostPackages) {
+    await prisma.boostPackage.upsert({
+      where: { slug: pkg.slug },
+      update: pkg,
+      create: pkg,
+    });
+  }
+
   console.log('✅ Development Seed Completed Successfully!');
 }
 

@@ -2,9 +2,18 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'super-secret-jwt-key-nabrijan-saas-2026-production-ready'
-);
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET || process.env.AUTH_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL SECURITY ERROR: JWT_SECRET environment variable is missing in production');
+    }
+    return 'dev-only-secret-key-nabrijan-saas-2026-development-mode';
+  }
+  return secret;
+};
+
+const JWT_SECRET = new TextEncoder().encode(getJwtSecret());
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

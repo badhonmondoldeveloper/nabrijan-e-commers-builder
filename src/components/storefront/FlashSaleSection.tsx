@@ -75,7 +75,7 @@ export default function FlashSaleSection({ storeSlug, products }: FlashSaleSecti
           return (
             <Link
               key={prod.id}
-              href={`/store/${storeSlug}/products/${prod.slug}`}
+              href={`/store/${storeSlug}/product/${prod.slug}`}
               className="group bg-white text-slate-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between"
             >
               <div className="relative aspect-square bg-slate-100 overflow-hidden">

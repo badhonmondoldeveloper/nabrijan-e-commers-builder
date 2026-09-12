@@ -54,14 +54,18 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
 }
 
 export async function setSessionCookie(token: string) {
-  const cookieStore = cookies();
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60,
-    path: '/',
-  });
+  try {
+    const cookieStore = cookies();
+    cookieStore.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60,
+      path: '/',
+    });
+  } catch (error) {
+    // Handled safely if called in standard route handler
+  }
 }
 
 export async function removeSessionCookie() {

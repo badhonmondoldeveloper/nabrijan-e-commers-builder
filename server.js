@@ -1,6 +1,6 @@
 const { createServer } = require('http');
 const { parse } = require('url');
-const next = require('next');
+const next = require('./node_modules/next');
 
 const dev = false;
 const hostname = '0.0.0.0';

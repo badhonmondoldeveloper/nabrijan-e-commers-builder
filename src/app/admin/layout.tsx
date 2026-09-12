@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth/session';
 import { verifySuperAdmin } from '@/lib/auth/rbac';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, Store, Users, Sparkles, LayoutDashboard, ExternalLink, LogOut, Clock } from 'lucide-react';
+import { ShieldCheck, Store, Users, Sparkles, LayoutDashboard, ExternalLink, LogOut, Clock, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default async function SuperAdminLayout({
@@ -71,10 +71,17 @@ export default async function SuperAdminLayout({
                 <span>Trials 360</span>
               </Link>
               <Link
+                href="/admin/chat"
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition text-rose-400 font-bold"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-rose-400" />
+                <span>Live Support Chat</span>
+              </Link>
+              <Link
                 href="/admin/settings"
                 className="flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Site Customization</span>
               </Link>
             </nav>

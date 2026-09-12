@@ -1424,3 +1424,41 @@ model MarketplaceReport {
   status         String   @default("PENDING")
   createdAt      DateTime @default(now())
 }
+
+// --------------------------------------------------------
+// REALTIME LIVE SUPPORT CHAT SYSTEM
+// --------------------------------------------------------
+
+model LiveChatSession {
+  id           String            @id @default(cuid())
+  sessionId    String            @unique
+  visitorName  String
+  visitorEmail String?
+  visitorPhone String?
+  userId       String?
+  status       String            @default("ACTIVE") // ACTIVE, CLOSED, RESOLVED
+  unreadAdmin  Boolean           @default(true)
+  unreadUser   Boolean           @default(false)
+  lastMessage  String?           @db.Text
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  messages     LiveChatMessage[]
+
+  @@index([sessionId])
+  @@index([status])
+}
+
+model LiveChatMessage {
+  id         String          @id @default(cuid())
+  sessionId  String
+  senderType String          // "VISITOR" or "ADMIN" or "SYSTEM"
+  senderName String
+  message    String          @db.Text
+  createdAt  DateTime        @default(now())
+
+  session    LiveChatSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+

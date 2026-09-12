@@ -31,6 +31,7 @@ import {
   Award
 } from 'lucide-react';
 import { db } from '@/lib/db/prisma';
+import LiveChatWidget from '@/components/chat/LiveChatWidget';
 
 export const dynamic = 'force-dynamic';
 
@@ -611,6 +612,9 @@ export default async function SaaSMarketingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Realtime Floating Live Support Chat Widget */}
+      <LiveChatWidget />
     </div>
   );
 }

@@ -205,6 +205,14 @@ export default async function StoreDashboardLayout({
             <Sparkles className="w-4 h-4 text-yellow-400" />
             <span>Platform Billing & Plans</span>
           </Link>
+
+          <Link
+            href={`/dashboard/affiliate`}
+            className="flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition text-orange-400 font-bold"
+          >
+            <Sparkles className="w-4 h-4 text-orange-400" />
+            <span>Affiliate Program (15%)</span>
+          </Link>
         </nav>
 
         {/* User Info / Logout */}

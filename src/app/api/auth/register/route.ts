@@ -6,6 +6,9 @@ import { registerSchema } from '@/lib/validation/schemas';
 import { checkRateLimit, getClientIp, rateLimitResponse } from '@/lib/auth/rate-limit';
 import { sendVerificationEmail } from '@/lib/mail/mailer';
 
+import { recordReferral } from '@/lib/affiliate/engine';
+import { cookies } from 'next/headers';
+
 export async function POST(req: Request) {
   try {
     const ip = getClientIp(req);
@@ -38,6 +41,17 @@ export async function POST(req: Request) {
         isEmailVerified: false,
       },
     });
+
+    // Check for Affiliate Referral Cookie
+    try {
+      const cookieStore = cookies();
+      const refCode = body.refCode || cookieStore.get('nabrijan_affiliate_tracker')?.value;
+      if (refCode) {
+        await recordReferral(user.id, refCode.trim().toUpperCase(), user.email);
+      }
+    } catch (refErr) {
+      console.error('Failed to link referral during registration:', refErr);
+    }
 
     // Create secure hashed email verification token
     const rawToken = crypto.randomBytes(32).toString('hex');

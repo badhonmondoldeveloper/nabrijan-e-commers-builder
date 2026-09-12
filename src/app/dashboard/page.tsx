@@ -70,6 +70,28 @@ export default async function MerchantDashboardRootPage() {
         </CardHeader>
       </Card>
 
+      {/* 15% Recurring Affiliate Program Quick Banner */}
+      <Card className="bg-gradient-to-r from-amber-950/40 via-slate-900 to-orange-950/40 border-amber-500/30 text-slate-100">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/40 mb-2">
+              <Sparkles className="w-3 h-3 mr-1" /> 15% Lifetime Passive Income
+            </Badge>
+            <CardTitle className="text-xl font-bold text-white">
+              নাব্রিজান অফিশিয়াল অ্যাফিলিয়েট পার্টনারশিপ
+            </CardTitle>
+            <CardDescription className="text-slate-300">
+              মার্চেন্ট রেফার করে আজীবন পান ১৫% রিকারিং কমিশন। বিকাশ ও নগদে সরাসরি উইথড্রয়াল!
+            </CardDescription>
+          </div>
+          <Link href="/dashboard/affiliate">
+            <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-bold border-0 shadow-lg">
+              অ্যাফিলিয়েট ড্যাশবোর্ড <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+        </CardHeader>
+      </Card>
+
       {/* Stores List */}
       <div className="space-y-4">
         <h2 className="text-xl font-bold text-white flex items-center">

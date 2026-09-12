@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db/prisma';
 import { platformPaymentProvider } from '@/lib/payments/zinipay';
+import { processAffiliateCommission } from '@/lib/affiliate/engine';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,6 +64,14 @@ export async function GET(req: Request) {
             paidAt: new Date(),
           },
         });
+
+        // Trigger 15% Recurring Affiliate Commission Calculation
+        try {
+          const numAmount = Number(txnRecord.amount);
+          await processAffiliateCommission(metadata.userId, numAmount, txnRecord.id);
+        } catch (affErr) {
+          console.error('Failed to process affiliate commission:', affErr);
+        }
 
         // Audit log
         await db.auditLog.create({

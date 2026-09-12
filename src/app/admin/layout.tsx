@@ -71,6 +71,13 @@ export default async function SuperAdminLayout({
                 <span>Trials 360</span>
               </Link>
               <Link
+                href="/admin/affiliates"
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition text-orange-400 font-bold"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                <span>Affiliates (15%)</span>
+              </Link>
+              <Link
                 href="/admin/chat"
                 className="flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition text-rose-400 font-bold"
               >

@@ -1285,15 +1285,17 @@ model PlatformSettings {
   logoUrl               String?  @default("/logo.png")
   bannerText            String?  @default("🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!")
   trialDays             Int      @default(3)
-  starterPrice          Decimal  @default(990.00) @db.Decimal(12, 2)
-  businessPrice         Decimal  @default(2490.00) @db.Decimal(12, 2)
-  proPrice              Decimal  @default(4990.00) @db.Decimal(12, 2)
+  freePrice             Decimal  @default(0.00) @db.Decimal(12, 2)
+  starterPrice          Decimal  @default(599.00) @db.Decimal(12, 2)
+  proPrice              Decimal  @default(1099.00) @db.Decimal(12, 2)
+  growthPrice           Decimal  @default(2499.00) @db.Decimal(12, 2)
+  businessPrice         Decimal  @default(2499.00) @db.Decimal(12, 2)
   defaultCommissionRate Decimal  @default(0.02) @db.Decimal(5, 4) // 2% marketplace commission
   minWithdrawalLimit    Decimal  @default(500.00) @db.Decimal(12, 2)
   autoApproveProducts   Boolean  @default(false)
   contactEmail          String?  @default("badhonmondoldeveloper@gmail.com")
-  contactPhone          String?  @default("01700000000")
-  whatsappNumber        String?  @default("01700000000")
+  contactPhone          String?  @default("+8801625642420")
+  whatsappNumber        String?  @default("+8801625642420")
   updatedAt             DateTime @updatedAt
 }
 

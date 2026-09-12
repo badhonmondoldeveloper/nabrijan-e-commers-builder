@@ -21,9 +21,11 @@ export default function AdminSettingsPage() {
     logoUrl: '',
     bannerText: '🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!',
     trialDays: 3,
-    starterPrice: 990,
-    businessPrice: 2490,
-    proPrice: 4990,
+    freePrice: 0,
+    starterPrice: 599,
+    proPrice: 1099,
+    growthPrice: 2499,
+    businessPrice: 2499,
     contactEmail: 'badhonmondoldeveloper@gmail.com',
     contactPhone: '+8801625642420',
     whatsappNumber: '+8801625642420',
@@ -45,9 +47,11 @@ export default function AdminSettingsPage() {
           logoUrl: data.settings.logoUrl || '',
           bannerText: data.settings.bannerText || '',
           trialDays: data.settings.trialDays || 3,
-          starterPrice: data.settings.starterPrice !== undefined ? Number(data.settings.starterPrice) : 990,
-          businessPrice: data.settings.businessPrice !== undefined ? Number(data.settings.businessPrice) : 2490,
-          proPrice: data.settings.proPrice !== undefined ? Number(data.settings.proPrice) : 4990,
+          freePrice: data.settings.freePrice !== undefined ? Number(data.settings.freePrice) : 0,
+          starterPrice: data.settings.starterPrice !== undefined ? Number(data.settings.starterPrice) : 599,
+          proPrice: data.settings.proPrice !== undefined ? Number(data.settings.proPrice) : 1099,
+          growthPrice: data.settings.growthPrice !== undefined ? Number(data.settings.growthPrice) : 2499,
+          businessPrice: data.settings.businessPrice !== undefined ? Number(data.settings.businessPrice) : 2499,
           contactEmail: data.settings.contactEmail || 'badhonmondoldeveloper@gmail.com',
           contactPhone: data.settings.contactPhone || '+8801625642420',
           whatsappNumber: data.settings.whatsappNumber || '+8801625642420',
@@ -292,14 +296,33 @@ export default function AdminSettingsPage() {
         <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Shield className="w-5 h-5 text-emerald-400" /> Subscription Plan Prices (সাবস্ক্রিপশন প্রাইসিং পরিবর্তন)
+              <Shield className="w-5 h-5 text-emerald-400" /> ZatiqEasy Subscription Plan Prices (সাবস্ক্রিপশন প্রাইসিং পরিবর্তন)
             </CardTitle>
             <CardDescription className="text-slate-400">
-              Super Admin can change monthly pricing for Starter, Business, and Pro plans dynamically across the entire website.
+              Super Admin can change monthly pricing for Free, Starter, Pro, and Growth plans dynamically across the entire website.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-slate-800">
+                <label className="text-xs font-bold text-slate-200 block">
+                  Free Plan Price (ফ্রি ট্রায়াল)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2.5 text-xs text-slate-400 font-bold">৳</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={form.freePrice}
+                    onChange={(e) => setForm({ ...form, freePrice: Number(e.target.value) })}
+                    placeholder="0"
+                    className="bg-slate-900 border-slate-700 text-white pl-7 font-extrabold text-sm"
+                    required
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400">Default: ৳0 / month</p>
+              </div>
+
               <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-slate-800">
                 <label className="text-xs font-bold text-slate-200 block">
                   Starter Plan Price (স্টার্টার প্ল্যান)
@@ -311,50 +334,50 @@ export default function AdminSettingsPage() {
                     min={0}
                     value={form.starterPrice}
                     onChange={(e) => setForm({ ...form, starterPrice: Number(e.target.value) })}
-                    placeholder="990"
+                    placeholder="599"
                     className="bg-slate-900 border-slate-700 text-white pl-7 font-extrabold text-sm"
                     required
                   />
                 </div>
-                <p className="text-[11px] text-slate-400">Default: ৳990 / month</p>
+                <p className="text-[11px] text-slate-400">Default: ৳599 / month</p>
               </div>
 
               <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-indigo-500/40">
                 <label className="text-xs font-bold text-indigo-300 block">
-                  Business Plan Price (বিজনেস প্ল্যান - Popular)
+                  Pro Plan Price (প্রো প্ল্যান - Popular)
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-xs text-indigo-400 font-bold">৳</span>
                   <Input
                     type="number"
                     min={0}
-                    value={form.businessPrice}
-                    onChange={(e) => setForm({ ...form, businessPrice: Number(e.target.value) })}
-                    placeholder="2490"
+                    value={form.proPrice}
+                    onChange={(e) => setForm({ ...form, proPrice: Number(e.target.value) })}
+                    placeholder="1099"
                     className="bg-slate-900 border-indigo-500/40 text-white pl-7 font-extrabold text-sm"
                     required
                   />
                 </div>
-                <p className="text-[11px] text-slate-400">Default: ৳2,490 / month</p>
+                <p className="text-[11px] text-slate-400">Default: ৳1,099 / month</p>
               </div>
 
-              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <label className="text-xs font-bold text-slate-200 block">
-                  Pro Enterprise Price (প্রো প্ল্যান)
+              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-purple-500/40">
+                <label className="text-xs font-bold text-purple-300 block">
+                  Growth Plan Price (গ্রোথ প্ল্যান)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs text-slate-400 font-bold">৳</span>
+                  <span className="absolute left-3 top-2.5 text-xs text-purple-400 font-bold">৳</span>
                   <Input
                     type="number"
                     min={0}
-                    value={form.proPrice}
-                    onChange={(e) => setForm({ ...form, proPrice: Number(e.target.value) })}
-                    placeholder="4990"
-                    className="bg-slate-900 border-slate-700 text-white pl-7 font-extrabold text-sm"
+                    value={form.growthPrice}
+                    onChange={(e) => setForm({ ...form, growthPrice: Number(e.target.value) })}
+                    placeholder="2499"
+                    className="bg-slate-900 border-purple-500/40 text-white pl-7 font-extrabold text-sm"
                     required
                   />
                 </div>
-                <p className="text-[11px] text-slate-400">Default: ৳4,990 / month</p>
+                <p className="text-[11px] text-slate-400">Default: ৳2,499 / month</p>
               </div>
             </div>
           </CardContent>

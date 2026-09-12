@@ -47,9 +47,10 @@ export default async function SaaSMarketingPage() {
   const logoUrl = settings?.logoUrl || '';
   const bannerText = settings?.bannerText || '🔥 ৩ দিনের সম্পূর্ণ ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!';
   const trialDays = settings?.trialDays || 3;
-  const starterPrice = settings?.starterPrice !== undefined ? Number(settings.starterPrice) : 990;
-  const businessPrice = settings?.businessPrice !== undefined ? Number(settings.businessPrice) : 2490;
-  const proPrice = settings?.proPrice !== undefined ? Number(settings.proPrice) : 4990;
+  const freePrice = settings?.freePrice !== undefined ? Number(settings.freePrice) : 0;
+  const starterPrice = settings?.starterPrice !== undefined ? Number(settings.starterPrice) : 599;
+  const proPrice = settings?.proPrice !== undefined ? Number(settings.proPrice) : 1099;
+  const growthPrice = settings?.growthPrice !== undefined ? Number(settings.growthPrice) : 2499;
   const whatsappNumber = settings?.whatsappNumber || '+8801625642420';
   const contactPhone = settings?.contactPhone || '+8801625642420';
   const contactEmail = settings?.contactEmail || 'badhonmondoldeveloper@gmail.com';
@@ -408,83 +409,105 @@ export default async function SaaSMarketingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-            {/* Starter Plan */}
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-slate-800">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+            {/* Free Plan */}
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 flex flex-col justify-between border border-slate-800">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white">স্টার্টার (Starter)</h3>
-                <p className="text-xs text-slate-400 mt-1">নতুন উদ্যোক্তা ও ছোট শপের জন্য</p>
-                <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-white">
+                <h3 className="text-xl font-black text-white">ফ্রি (Free Plan)</h3>
+                <p className="text-xs text-slate-400 mt-1">শপ ট্রায়াল ও টেস্টের জন্য</p>
+                <div className="mt-4 text-3xl font-black text-white">
+                  ৳{freePrice} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                </div>
+                <div className="my-5 border-b border-slate-800" />
+                <ul className="space-y-2 text-xs text-slate-300">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ২০টি প্রোডাক্ট আপলোড</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> প্রিসেট থিম লেআউট</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ক্যাশ অন ডেলিভারি ইঞ্জিন</li>
+                </ul>
+              </div>
+              <div className="pt-6">
+                <Link href="/register?plan=free">
+                  <Button className="w-full h-11 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
+                    ফ্রি প্ল্যান শুরু করুন
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Starter Plan */}
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 flex flex-col justify-between border border-slate-800">
+              <div>
+                <h3 className="text-xl font-black text-white">স্টার্টার (Starter)</h3>
+                <p className="text-xs text-slate-400 mt-1">নতুন উদ্যোক্তাদের জন্য</p>
+                <div className="mt-4 text-3xl font-black text-blue-400">
                   ৳{starterPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১টি সক্রিয় ই-কমার্স শপ</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১০০টি প্রোডাক্ট আপলোড</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ২টি স্টাফ মেম্বার অ্যাকাউন্ট</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ক্যাশ অন ডেলিভারি ইঞ্জিন</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার</li>
+                <ul className="space-y-2 text-xs text-slate-300">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ৫০০টি প্রোডাক্ট আপলোড</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> 0% ফিজিক্যাল অর্ডার ফি</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ২ জন স্টাফ মেম্বার</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> সেলস রিপোর্ট এক্সপোর্ট</li>
                 </ul>
               </div>
               <div className="pt-6">
                 <Link href="/register?plan=starter">
-                  <Button className="w-full h-11 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
+                  <Button className="w-full h-11 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition">
                     স্টার্টার প্ল্যান শুরু করুন
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* Business Plan - Highlighted */}
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-2 border-indigo-500/80 relative shadow-2xl shadow-indigo-600/30 bg-slate-900/90">
-              <div className="absolute -top-3.5 right-4 sm:right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] font-black px-3 sm:px-4 py-1 rounded-full uppercase tracking-wider shadow-lg">
+            {/* Pro Plan - Highlighted */}
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 flex flex-col justify-between border-2 border-indigo-500/80 relative shadow-2xl shadow-indigo-600/30 bg-slate-900/90">
+              <div className="absolute -top-3.5 right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
                 সবচেয়ে জনপ্রিয়
               </div>
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white">বিজনেস (Business)</h3>
+                <h3 className="text-xl font-black text-white">প্রো (Pro Plan)</h3>
                 <p className="text-xs text-slate-300 mt-1">গ্রোইং ই-কমার্স ব্র্যান্ডের জন্য</p>
-                <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-blue-400">
-                  ৳{businessPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                <div className="mt-4 text-3xl font-black text-indigo-400">
+                  ৳{proPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
-                <ul className="space-y-2.5 text-xs text-slate-200">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ৩টি সক্রিয় ই-কমার্স শপ</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> আনলিমিটেড প্রোডাক্ট আপলোড</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১০টি স্টাফ মেম্বার অ্যাকাউন্ট</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> পাঠাও ও স্টিডফাস্ট কুরিয়ার বুকিং</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> সাইজ ও কালার ভ্যারিয়েন্ট অপশন</li>
+                <ul className="space-y-2 text-xs text-slate-200">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-indigo-400 mr-2 shrink-0" /> ২,০০০টি প্রোডাক্ট আপলোড</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-indigo-400 mr-2 shrink-0" /> কাস্টম ডোমেইন ম্যাপিং</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-indigo-400 mr-2 shrink-0" /> ভিজ্যুয়াল থিম বিল্ডার</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-indigo-400 mr-2 shrink-0" /> অটোমেটেড কার্ট রিকভারি</li>
                 </ul>
               </div>
               <div className="pt-6">
-                <Link href="/register?plan=business">
+                <Link href="/register?plan=pro">
                   <Button className="w-full h-11 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black text-xs rounded-xl shadow-lg shadow-indigo-500/40 transition">
-                    বিজনেস প্ল্যান শুরু করুন
+                    প্রো প্ল্যান শুরু করুন
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* Pro Plan */}
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-slate-800">
+            {/* Growth Plan */}
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 flex flex-col justify-between border border-slate-800">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white">প্রো (Pro Enterprise)</h3>
+                <h3 className="text-xl font-black text-white">গ্রোথ (Growth)</h3>
                 <p className="text-xs text-slate-400 mt-1">বড় মার্চেন্ট ও এজেন্সির জন্য</p>
-                <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-white">
-                  ৳{proPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                <div className="mt-4 text-3xl font-black text-purple-400">
+                  ৳{growthPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> ১০টি সক্রিয় ই-কমার্স শপ</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> আনলিমিটেড প্রোডাক্ট ও স্টাফ</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> রিয়েল-টাইম নিট প্রফিট এনালাইটিক্স</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> প্রিমিয়াম থিম অ্যাক্সেস</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-blue-400 mr-2 shrink-0" /> প্রায়োরিটি ভিআইপি সাপোর্ট</li>
+                <ul className="space-y-2 text-xs text-slate-300">
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-400 mr-2 shrink-0" /> আনলিমিটেড প্রোডাক্ট ও স্টাফ</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-400 mr-2 shrink-0" /> পাঠাও ও স্টিডফাস্ট কুরিয়ার API</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-400 mr-2 shrink-0" /> নিট প্রফিট ও সেলস রিপোর্ট</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-400 mr-2 shrink-0" /> ড্যাডিকেটেড প্রায়োরিটি সাপোর্ট</li>
                 </ul>
               </div>
               <div className="pt-6">
-                <Link href="/register?plan=pro">
-                  <Button className="w-full h-11 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
-                    প্রো প্ল্যান শুরু করুন
+                <Link href="/register?plan=growth">
+                  <Button className="w-full h-11 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition">
+                    গ্রোথ প্ল্যান শুরু করুন
                   </Button>
                 </Link>
               </div>

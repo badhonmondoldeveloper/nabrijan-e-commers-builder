@@ -4,8 +4,12 @@ import Link from 'next/link';
 import { db } from '@/lib/db/prisma';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Star, Truck, ShieldCheck, PhoneCall, ArrowRight, Heart, MessageCircle, Flame, CheckCircle, Search, Zap } from 'lucide-react';
+import { ShoppingBag, Star, Truck, ShieldCheck, PhoneCall, ArrowRight, Heart, MessageCircle, Flame, CheckCircle, Search, Zap, History, LayoutGrid, Award } from 'lucide-react';
 import FlashSaleSection from '@/components/storefront/FlashSaleSection';
+import MobileBottomNav from '@/components/storefront/MobileBottomNav';
+import RecentlyViewedSection from '@/components/storefront/RecentlyViewedSection';
+import ExitIntentPopup from '@/components/storefront/ExitIntentPopup';
+import SocialProofNotify from '@/components/storefront/SocialProofNotify';
 
 export default async function MerchantStorefrontPage({
   params,
@@ -16,14 +20,6 @@ export default async function MerchantStorefrontPage({
     where: { slug: params.slug },
     include: {
       settings: true,
-      themeSettings: {
-        include: {
-          sections: {
-            where: { isVisible: true },
-            orderBy: { sortOrder: 'asc' },
-          },
-        },
-      },
     },
   });
 
@@ -58,24 +54,34 @@ export default async function MerchantStorefrontPage({
       category: { select: { id: true, name: true } },
     },
     orderBy: { createdAt: 'desc' },
-    take: 24,
+    take: 36,
   });
 
   // Fetch store categories
   const categories = await db.category.findMany({
     where: { storeId: store.id, isActive: true },
     orderBy: { sortOrder: 'asc' },
-    take: 8,
+    take: 12,
   });
 
   const settings = store.settings || {};
   const whatsappNumber = settings.whatsappNumber || settings.phone || '';
   const announcementText = settings.announcementText || '🔥 সারা বাংলাদেশে ক্যাশ অন ডেলিভারি এবং দ্রুত ডেলিভারি!';
-  const accentColor = settings.accentColor || '#2563eb';
+
+  const notifyProducts = products.map((p) => ({
+    title: p.title,
+    image: p.images[0]?.url,
+  }));
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-blue-500 selection:text-white">
-      {/* 1. Announcement Bar */}
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white pb-16 md:pb-0">
+      {/* Exit Intent Popup */}
+      <ExitIntentPopup storeSlug={store.slug} />
+
+      {/* Social Proof Live Purchase Toast */}
+      <SocialProofNotify products={notifyProducts} />
+
+      {/* 1. Top Announcement Bar */}
       <div className="bg-slate-900 text-white text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center space-x-2 border-b border-slate-800">
         <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
         <span>{announcementText}</span>
@@ -86,15 +92,15 @@ export default async function MerchantStorefrontPage({
         )}
       </div>
 
-      {/* 2. Daraz / Amazon Style Main Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-md">
+      {/* 2. Amazon / Daraz Style Main Header */}
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-4">
           {/* Store Brand / Logo */}
           <Link href={`/store/${store.slug}`} className="flex items-center space-x-3 group">
             {store.logo ? (
-              <img src={store.logo} alt={store.name} className="h-10 sm:h-12 w-auto object-contain rounded-md" />
+              <img src={store.logo} alt={store.name} className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-slate-100 p-0.5" />
             ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xl shadow-md shadow-blue-500/20">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xl shadow-md">
                 {store.name.charAt(0)}
               </div>
             )}
@@ -102,25 +108,29 @@ export default async function MerchantStorefrontPage({
               <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition">
                 {store.name}
               </span>
-              <p className="text-[10px] text-slate-500 font-medium">Verified E-Commerce Store</p>
+              <p className="text-[10px] text-slate-500 font-bold">Verified E-Commerce Store</p>
             </div>
           </Link>
 
           {/* Quick Actions */}
           <div className="flex items-center space-x-3">
+            <Link href={`/store/${store.slug}/track`} className="hidden sm:inline-flex items-center text-xs font-bold text-slate-700 hover:text-blue-600 bg-slate-100 px-3 py-2 rounded-xl">
+              <Truck className="w-4 h-4 mr-1.5 text-blue-600" /> অর্ডার ট্র্যাকিং
+            </Link>
+
             {whatsappNumber && (
               <a
                 href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(store.name)},%20I%20want%20to%20order`}
                 target="_blank"
                 rel="noreferrer"
-                className="hidden sm:inline-flex items-center text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-lg shadow-sm transition"
+                className="hidden sm:inline-flex items-center text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl shadow-sm transition"
               >
                 <MessageCircle className="w-4 h-4 mr-1.5 fill-current" /> WhatsApp Order
               </a>
             )}
 
             <Link href={`/store/${store.slug}/cart`}>
-              <Button variant="outline" size="sm" className="relative border-slate-300 text-slate-800 hover:bg-slate-50 font-bold px-4 h-10">
+              <Button variant="outline" size="sm" className="relative border-slate-300 text-slate-800 hover:bg-slate-50 font-bold px-4 h-10 rounded-xl">
                 <ShoppingBag className="w-4 h-4 mr-2 text-blue-600" /> Cart
               </Button>
             </Link>
@@ -128,50 +138,77 @@ export default async function MerchantStorefrontPage({
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content Layout */}
       <main className="flex-1 space-y-8 pb-12">
-        {/* 3. Hero Banner Section */}
-        <section className="relative bg-slate-900 text-white overflow-hidden">
-          {store.banner ? (
-            <div className="relative h-64 sm:h-96 w-full">
-              <img src={store.banner} alt={store.name} className="w-full h-full object-cover opacity-80" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex items-end p-6 sm:p-12">
-                <div className="max-w-2xl space-y-3">
-                  <Badge className="bg-blue-600 text-white border-none font-bold">Official Storefront</Badge>
-                  <h1 className="text-2xl sm:text-4xl font-extrabold text-white">{store.name} Collection</h1>
-                  <p className="text-slate-300 text-xs sm:text-sm line-clamp-2">
-                    {settings.seoDescription || 'Browse top quality handpicked products with instant Cash on Delivery all across Bangladesh.'}
-                  </p>
+        {/* 3. Hero Banner & Amazon-Style Sidebar Layout */}
+        <section className="container mx-auto px-4 pt-6">
+          <div className="grid lg:grid-cols-12 gap-6 items-start">
+            {/* Desktop Category Sidebar (Amazon Style) */}
+            {categories.length > 0 && (
+              <aside className="hidden lg:block lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
+                <div className="font-extrabold text-slate-900 text-sm flex items-center border-b border-slate-100 pb-2.5">
+                  <LayoutGrid className="w-4 h-4 text-blue-600 mr-2" /> সকল ক্যাটাগরি
                 </div>
+                <div className="space-y-1">
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      href={`/store/${store.slug}?category=${cat.id}`}
+                      className="block text-xs font-bold text-slate-700 hover:text-blue-600 hover:bg-slate-50 p-2.5 rounded-xl transition"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </aside>
+            )}
+
+            {/* Banner Section */}
+            <div className={`w-full ${categories.length > 0 ? 'lg:col-span-9' : 'lg:col-span-12'}`}>
+              <div className="relative bg-slate-900 text-white rounded-3xl overflow-hidden shadow-md">
+                {store.banner ? (
+                  <div className="relative h-64 sm:h-80 w-full">
+                    <img src={store.banner} alt={store.name} className="w-full h-full object-cover opacity-85" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent flex items-end p-6 sm:p-10">
+                      <div className="max-w-xl space-y-2.5">
+                        <Badge className="bg-blue-600 text-white border-none font-bold">Official Storefront</Badge>
+                        <h1 className="text-2xl sm:text-4xl font-black text-white">{store.name} Collection</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm line-clamp-2">
+                          {settings.seoDescription || 'Browse top quality handpicked products with instant Cash on Delivery all across Bangladesh.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-12 sm:py-20 px-6 bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-center relative overflow-hidden">
+                    <div className="max-w-2xl mx-auto space-y-4">
+                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30 font-bold px-3 py-1 text-xs">
+                        100% Authentic Quality Guaranteed
+                      </Badge>
+                      <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+                        Welcome to <span className="text-blue-400">{store.name}</span>
+                      </h1>
+                      <p className="text-slate-300 text-xs sm:text-sm">
+                        {settings.seoDescription || 'Order premium products online with fast delivery & Cash on Delivery anywhere in Bangladesh.'}
+                      </p>
+                      <div className="pt-2 flex justify-center">
+                        <a href="#products-grid">
+                          <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 rounded-xl shadow-lg shadow-blue-600/30">
+                            পণ্যসমূহ দেখুন <ArrowRight className="ml-2 w-4 h-4" />
+                          </Button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          ) : (
-            <div className="py-16 sm:py-24 px-4 bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-center relative overflow-hidden">
-              <div className="container mx-auto max-w-3xl space-y-6 relative z-10">
-                <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30 font-bold px-3 py-1">
-                  100% Authentic Quality Guaranteed
-                </Badge>
-                <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                  Welcome to <span className="text-blue-400">{store.name}</span>
-                </h1>
-                <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">
-                  {settings.seoDescription || 'Order premium products online with fast delivery & Cash on Delivery anywhere in Bangladesh.'}
-                </p>
-                <div className="pt-2 flex justify-center gap-3">
-                  <a href="#products-grid">
-                    <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 shadow-xl shadow-blue-600/30">
-                      Explore Products <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </section>
 
-        {/* 4. Trust Badges (AliExpress / Amazon style) */}
+        {/* 4. Trust Badges */}
         <section className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
             <div className="flex items-center space-x-3 p-2">
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                 <Truck className="w-5 h-5" />
@@ -214,43 +251,19 @@ export default async function MerchantStorefrontPage({
           </div>
         </section>
 
-        {/* 5. Category Quick Grid */}
-        {categories.length > 0 && (
-          <section className="container mx-auto px-4">
-            <div className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center">
-                <Zap className="w-5 h-5 text-amber-500 mr-2" /> Top Categories
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-                {categories.map((cat) => (
-                  <div
-                    key={cat.id}
-                    className="p-3 bg-white border border-slate-200 hover:border-blue-500 rounded-xl text-center shadow-xs hover:shadow-md transition cursor-pointer group"
-                  >
-                    <div className="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-700 font-bold text-sm group-hover:bg-blue-600 group-hover:text-white transition">
-                      {cat.name.charAt(0)}
-                    </div>
-                    <p className="text-xs font-semibold text-slate-800 mt-2 truncate">{cat.name}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 6. Flash Sale Section */}
+        {/* 5. Flash Sale Section */}
         <section className="container mx-auto px-4">
           <FlashSaleSection storeSlug={store.slug} products={products} />
         </section>
 
-        {/* 7. All Products Grid (Daraz / AliExpress Style Cards) */}
+        {/* 6. All Products Grid (Modern Product Cards with Hover Elevation) */}
         <section id="products-grid" className="container mx-auto px-4 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">All Store Products</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">All Store Products</h2>
               <p className="text-xs text-slate-500">Explore items with price, stock, and instant order</p>
             </div>
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
               {products.length} Products Available
             </span>
           </div>
@@ -274,7 +287,7 @@ export default async function MerchantStorefrontPage({
                 return (
                   <div
                     key={prod.id}
-                    className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-300 transition duration-300 flex flex-col justify-between"
+                    className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-400 hover:-translate-y-1 transition duration-300 flex flex-col justify-between"
                   >
                     <Link href={`/store/${store.slug}/product/${prod.slug}`}>
                       <div className="aspect-square bg-slate-100 relative overflow-hidden">
@@ -308,13 +321,13 @@ export default async function MerchantStorefrontPage({
                             {prod.category.name}
                           </span>
                         )}
-                        <h3 className="font-bold text-slate-900 text-sm sm:text-base line-clamp-2 group-hover:text-blue-600 transition">
+                        <h3 className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 group-hover:text-blue-600 transition">
                           {prod.title}
                         </h3>
 
                         {/* Price Display */}
                         <div className="flex items-baseline space-x-2 pt-1">
-                          <span className="text-lg font-black text-slate-900">
+                          <span className="text-base sm:text-lg font-black text-slate-900">
                             ৳{prod.salePrice || prod.regularPrice}
                           </span>
                           {prod.salePrice && (
@@ -328,7 +341,7 @@ export default async function MerchantStorefrontPage({
 
                     <div className="p-4 pt-0 space-y-2">
                       <Link href={`/store/${store.slug}/product/${prod.slug}`}>
-                        <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold h-10 shadow-sm transition">
+                        <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold h-10 rounded-xl shadow-xs transition">
                           View & Order Now
                         </Button>
                       </Link>
@@ -338,7 +351,7 @@ export default async function MerchantStorefrontPage({
                           href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi,%20I%20want%20to%20order%20*${encodeURIComponent(prod.title)}*%20(Price:%20৳${prod.salePrice || prod.regularPrice})`}
                           target="_blank"
                           rel="noreferrer"
-                          className="w-full flex items-center justify-center text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-1.5 rounded-lg border border-emerald-200 transition"
+                          className="w-full flex items-center justify-center text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-1.5 rounded-xl border border-emerald-200 transition"
                         >
                           <MessageCircle className="w-3.5 h-3.5 mr-1" /> Order on WhatsApp
                         </a>
@@ -350,22 +363,30 @@ export default async function MerchantStorefrontPage({
             </div>
           )}
         </section>
+
+        {/* 7. Recently Viewed Section */}
+        <section className="container mx-auto px-4">
+          <RecentlyViewedSection storeSlug={store.slug} />
+        </section>
       </main>
 
-      {/* 8. Floating WhatsApp Order Button */}
+      {/* 8. Mobile App-Style Bottom Navigation Bar */}
+      <MobileBottomNav storeSlug={store.slug} categories={categories} />
+
+      {/* 9. Floating WhatsApp Order Button */}
       {whatsappNumber && (
         <a
           href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(store.name)},%20I%20have%20an%20inquiry`}
           target="_blank"
           rel="noreferrer"
-          className="fixed bottom-6 right-6 z-50 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 transition hover:scale-105 group"
+          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 transition hover:scale-105 group"
         >
           <MessageCircle className="w-6 h-6 fill-current" />
           <span className="hidden group-hover:inline-block text-xs font-bold pr-1">WhatsApp Chat</span>
         </a>
       )}
 
-      {/* 9. Daraz Style Storefront Footer */}
+      {/* 10. Storefront Footer */}
       <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
         <div className="container mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-8">
@@ -384,6 +405,11 @@ export default async function MerchantStorefrontPage({
               {settings.phone && <p>📞 Phone: {settings.phone}</p>}
               {whatsappNumber && <p>💬 WhatsApp: {whatsappNumber}</p>}
               {settings.email && <p>✉️ Email: {settings.email}</p>}
+              <p>
+                <Link href={`/store/${store.slug}/track`} className="text-blue-400 hover:underline">
+                  🚚 লাইভ অর্ডার ট্র্যাকিং পেজ
+                </Link>
+              </p>
             </div>
 
             <div className="space-y-3">

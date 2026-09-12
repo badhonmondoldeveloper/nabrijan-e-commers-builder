@@ -3,8 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle2, ArrowRight } from 'lucide-react';
+import { db } from '@/lib/db/prisma';
 
-export default function SaaSMarketingPricingPage() {
+export const revalidate = 60;
+
+export default async function SaaSMarketingPricingPage() {
+  let settings = null;
+  try {
+    settings = await db.platformSettings.findUnique({ where: { id: 'default' } });
+  } catch (e) {
+    // fallback
+  }
+
+  const starterPrice = settings?.starterPrice !== undefined ? Number(settings.starterPrice) : 990;
+  const businessPrice = settings?.businessPrice !== undefined ? Number(settings.businessPrice) : 2490;
+  const proPrice = settings?.proPrice !== undefined ? Number(settings.proPrice) : 4990;
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
@@ -33,7 +47,7 @@ export default function SaaSMarketingPricingPage() {
             <CardHeader>
               <CardTitle className="text-xl">Starter Plan</CardTitle>
               <CardDescription className="text-slate-400">For new e-commerce sellers</CardDescription>
-              <div className="mt-4 text-3xl font-extrabold">৳990 <span className="text-sm text-slate-400 font-normal">/ month</span></div>
+              <div className="mt-4 text-3xl font-extrabold">৳{starterPrice.toLocaleString()} <span className="text-sm text-slate-400 font-normal">/ month</span></div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-300">
               <div className="flex items-center"><CheckCircle2 className="w-4 h-4 text-blue-400 mr-2" /> 1 Active Store</div>
@@ -56,7 +70,7 @@ export default function SaaSMarketingPricingPage() {
             <CardHeader>
               <CardTitle className="text-xl">Business Plan</CardTitle>
               <CardDescription className="text-slate-400">For growing retail brands</CardDescription>
-              <div className="mt-4 text-3xl font-extrabold">৳2,490 <span className="text-sm text-slate-400 font-normal">/ month</span></div>
+              <div className="mt-4 text-3xl font-extrabold">৳{businessPrice.toLocaleString()} <span className="text-sm text-slate-400 font-normal">/ month</span></div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-300">
               <div className="flex items-center"><CheckCircle2 className="w-4 h-4 text-blue-400 mr-2" /> 3 Active Stores</div>
@@ -77,7 +91,7 @@ export default function SaaSMarketingPricingPage() {
             <CardHeader>
               <CardTitle className="text-xl">Pro Enterprise</CardTitle>
               <CardDescription className="text-slate-400">High-volume sellers & agencies</CardDescription>
-              <div className="mt-4 text-3xl font-extrabold">৳4,990 <span className="text-sm text-slate-400 font-normal">/ month</span></div>
+              <div className="mt-4 text-3xl font-extrabold">৳{proPrice.toLocaleString()} <span className="text-sm text-slate-400 font-normal">/ month</span></div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-300">
               <div className="flex items-center"><CheckCircle2 className="w-4 h-4 text-blue-400 mr-2" /> 10 Active Stores</div>

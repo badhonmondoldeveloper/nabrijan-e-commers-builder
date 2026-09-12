@@ -47,6 +47,9 @@ export default async function SaaSMarketingPage() {
   const logoUrl = settings?.logoUrl || '';
   const bannerText = settings?.bannerText || '🔥 ৩ দিনের সম্পূর্ণ ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!';
   const trialDays = settings?.trialDays || 3;
+  const starterPrice = settings?.starterPrice !== undefined ? Number(settings.starterPrice) : 990;
+  const businessPrice = settings?.businessPrice !== undefined ? Number(settings.businessPrice) : 2490;
+  const proPrice = settings?.proPrice !== undefined ? Number(settings.proPrice) : 4990;
   const whatsappNumber = settings?.whatsappNumber || '+8801625642420';
   const contactPhone = settings?.contactPhone || '+8801625642420';
   const contactEmail = settings?.contactEmail || 'badhonmondoldeveloper@gmail.com';
@@ -412,7 +415,7 @@ export default async function SaaSMarketingPage() {
                 <h3 className="text-xl sm:text-2xl font-black text-white">স্টার্টার (Starter)</h3>
                 <p className="text-xs text-slate-400 mt-1">নতুন উদ্যোক্তা ও ছোট শপের জন্য</p>
                 <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-white">
-                  ৳৯৯০ <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                  ৳{starterPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
                 <ul className="space-y-2.5 text-xs text-slate-300">
@@ -441,7 +444,7 @@ export default async function SaaSMarketingPage() {
                 <h3 className="text-xl sm:text-2xl font-black text-white">বিজনেস (Business)</h3>
                 <p className="text-xs text-slate-300 mt-1">গ্রোইং ই-কমার্স ব্র্যান্ডের জন্য</p>
                 <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-blue-400">
-                  ৳২,৪৯০ <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                  ৳{businessPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
                 <ul className="space-y-2.5 text-xs text-slate-200">
@@ -467,7 +470,7 @@ export default async function SaaSMarketingPage() {
                 <h3 className="text-xl sm:text-2xl font-black text-white">প্রো (Pro Enterprise)</h3>
                 <p className="text-xs text-slate-400 mt-1">বড় মার্চেন্ট ও এজেন্সির জন্য</p>
                 <div className="mt-4 sm:mt-6 text-3xl sm:text-4xl font-black text-white">
-                  ৳৪,৯৯০ <span className="text-xs text-slate-400 font-normal">/ মাস</span>
+                  ৳{proPrice.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ মাস</span>
                 </div>
                 <div className="my-5 border-b border-slate-800" />
                 <ul className="space-y-2.5 text-xs text-slate-300">

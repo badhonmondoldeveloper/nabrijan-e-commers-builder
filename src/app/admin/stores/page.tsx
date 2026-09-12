@@ -1,9 +1,9 @@
 import { db } from '@/lib/db/prisma';
 import { verifySuperAdmin } from '@/lib/auth/rbac';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Store, ExternalLink } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { StoreStatusToggle } from '@/components/admin/StoreStatusToggle';
 
 export default async function AdminStoresPage() {
   await verifySuperAdmin();
@@ -17,16 +17,16 @@ export default async function AdminStoresPage() {
   });
 
   return (
-    <div className="container mx-auto p-6 md:p-12 space-y-8 font-sans">
+    <div className="container mx-auto p-4 sm:p-6 md:p-12 space-y-8 font-sans max-w-full overflow-x-hidden">
       <div className="border-b border-slate-800 pb-6">
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">Platform Merchant Stores</h1>
-        <p className="text-sm text-slate-400 mt-1">Oversight of all active single-vendor stores running on Nabrijan SaaS.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Platform Merchant Stores</h1>
+        <p className="text-xs sm:text-sm text-slate-400 mt-1">Oversight and status management of all merchant stores on Nabrijan SaaS.</p>
       </div>
 
       <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto select-none">
+            <table className="w-full text-left text-xs min-w-[700px]">
               <thead className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-medium uppercase tracking-wider">
                 <tr>
                   <th className="p-4">Store Name</th>
@@ -34,7 +34,7 @@ export default async function AdminStoresPage() {
                   <th className="p-4">Merchant Owner</th>
                   <th className="p-4">Products</th>
                   <th className="p-4">Orders</th>
-                  <th className="p-4">Status</th>
+                  <th className="p-4">Status & Control</th>
                   <th className="p-4 text-right">Storefront</th>
                 </tr>
               </thead>
@@ -47,9 +47,7 @@ export default async function AdminStoresPage() {
                     <td className="p-4 font-bold text-slate-200">{s._count.products}</td>
                     <td className="p-4 font-bold text-emerald-400">{s._count.orders}</td>
                     <td className="p-4">
-                      <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
-                        {s.status}
-                      </Badge>
+                      <StoreStatusToggle storeId={s.id} initialStatus={s.status} />
                     </td>
                     <td className="p-4 text-right">
                       <Link href={`/store/${s.slug}`} target="_blank">

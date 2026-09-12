@@ -114,8 +114,8 @@ export default async function StoreProductDetailPage({
               )}
             </div>
 
-            {/* Interactive Add to Cart Form Component */}
-            <AddToCartForm storeSlug={store.slug} product={product} />
+            {/* Interactive Add to Cart Form Component with Size/Color selector */}
+            <AddToCartForm storeSlug={store.slug} product={product} storePhone={store.settings?.supportPhone || '01700000000'} />
 
             {/* Merchant Guarantee Badges */}
             <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">

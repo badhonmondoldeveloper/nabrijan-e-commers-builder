@@ -6,7 +6,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2, Plus, Trash2, Upload, Image as ImageIcon, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Trash2, Upload, Image as ImageIcon, Sparkles, CheckCircle2, Layers } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+
+const COMMON_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Free Size'];
+const COMMON_COLORS = ['Black', 'White', 'Red', 'Blue', 'Green', 'Navy', 'Maroon', 'Yellow'];
 
 export default function CreateProductPage({ params }: { params: { storeId: string } }) {
   const router = useRouter();
@@ -16,6 +21,11 @@ export default function CreateProductPage({ params }: { params: { storeId: strin
   const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState('');
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+
+  // Variant options state
+  const [hasVariants, setHasVariants] = useState(false);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
   const [form, setForm] = useState({
     title: '',
@@ -32,13 +42,17 @@ export default function CreateProductPage({ params }: { params: { storeId: strin
     weight: 0.5,
     categoryId: '',
     images: [] as string[],
-    variants: [
-      { title: 'Default Variant', sku: '', price: 0, stock: 10, attributes: { Size: 'Standard' } }
-    ],
+    variants: [] as Array<{
+      title: string;
+      sku: string;
+      price: number;
+      salePrice?: number;
+      stock: number;
+      attributes: Record<string, string>;
+    }>,
   });
 
   useEffect(() => {
-    // Fetch categories for store
     fetch(`/api/stores/${params.storeId}/categories`)
       .then((res) => res.json())
       .then((data) => {
@@ -82,63 +96,148 @@ export default function CreateProductPage({ params }: { params: { storeId: strin
         }
       }
 
-      setForm((p) => ({
-        ...p,
-        images: [...p.images, ...uploadedUrls],
+      setForm((prev) => ({
+        ...prev,
+        images: [...prev.images, ...uploadedUrls],
       }));
     } catch (err: any) {
-      setError(err.message || 'Device image upload failed');
+      setError(err.message || 'Image upload failed. Please try again.');
     } finally {
       setUploadingImage(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
-  const handleAddImageUrl = () => {
-    const url = prompt('Enter Image URL (Unsplash/CDN/Web):');
-    if (url && url.trim()) {
-      setForm((p) => ({ ...p, images: [...p.images, url.trim()] }));
+  const removeImage = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Size/Color chip toggles
+  const toggleSize = (sz: string) => {
+    const updated = selectedSizes.includes(sz)
+      ? selectedSizes.filter((s) => s !== sz)
+      : [...selectedSizes, sz];
+    setSelectedSizes(updated);
+    generateVariants(updated, selectedColors);
+  };
+
+  const toggleColor = (clr: string) => {
+    const updated = selectedColors.includes(clr)
+      ? selectedColors.filter((c) => c !== clr)
+      : [...selectedColors, clr];
+    setSelectedColors(updated);
+    generateVariants(selectedSizes, updated);
+  };
+
+  const generateVariants = (sizes: string[], colors: string[]) => {
+    if (sizes.length === 0 && colors.length === 0) {
+      setForm((p) => ({ ...p, variants: [] }));
+      return;
     }
+
+    const generated: Array<{
+      title: string;
+      sku: string;
+      price: number;
+      salePrice?: number;
+      stock: number;
+      attributes: Record<string, string>;
+    }> = [];
+
+    const regPrice = Number(form.regularPrice) || 0;
+    const slPrice = Number(form.salePrice) || undefined;
+    const stk = Number(form.stock) || 10;
+
+    if (sizes.length > 0 && colors.length > 0) {
+      sizes.forEach((sz) => {
+        colors.forEach((clr) => {
+          generated.push({
+            title: `${sz} / ${clr}`,
+            sku: `${form.sku ? form.sku + '-' : ''}${sz.toUpperCase()}-${clr.toUpperCase()}`,
+            price: regPrice,
+            salePrice: slPrice,
+            stock: stk,
+            attributes: { Size: sz, Color: clr },
+          });
+        });
+      });
+    } else if (sizes.length > 0) {
+      sizes.forEach((sz) => {
+        generated.push({
+          title: `Size: ${sz}`,
+          sku: `${form.sku ? form.sku + '-' : ''}${sz.toUpperCase()}`,
+          price: regPrice,
+          salePrice: slPrice,
+          stock: stk,
+          attributes: { Size: sz },
+        });
+      });
+    } else if (colors.length > 0) {
+      colors.forEach((clr) => {
+        generated.push({
+          title: `Color: ${clr}`,
+          sku: `${form.sku ? form.sku + '-' : ''}${clr.toUpperCase()}`,
+          price: regPrice,
+          salePrice: slPrice,
+          stock: stk,
+          attributes: { Color: clr },
+        });
+      });
+    }
+
+    setForm((p) => ({ ...p, variants: generated }));
+  };
+
+  const updateVariantItem = (idx: number, field: string, value: any) => {
+    setForm((prev) => {
+      const updated = [...prev.variants];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return { ...prev, variants: updated };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (!form.title.trim()) return setError('Product Title is required');
-    if (form.regularPrice <= 0) return setError('Regular Price must be greater than 0');
+    if (!form.title || !form.slug || form.regularPrice <= 0) {
+      setError('Please fill in product title, unique slug, and valid regular price');
+      return;
+    }
 
     setLoading(true);
+    setError('');
 
     try {
-      const finalImages = form.images.length > 0 ? form.images : [
-        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80'
-      ];
-
       const payload = {
-        title: form.title.trim(),
-        slug: form.slug.trim() || form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        shortDescription: form.shortDescription.trim() || undefined,
-        fullDescription: form.fullDescription.trim() || undefined,
+        title: form.title,
+        slug: form.slug,
+        shortDescription: form.shortDescription,
+        fullDescription: form.fullDescription,
         regularPrice: Number(form.regularPrice),
-        salePrice: form.salePrice > 0 ? Number(form.salePrice) : null,
-        costPrice: form.costPrice > 0 ? Number(form.costPrice) : 0,
-        sku: form.sku.trim() || undefined,
-        barcode: form.barcode.trim() || undefined,
-        categoryId: form.categoryId || null,
+        salePrice: form.salePrice ? Number(form.salePrice) : null,
+        costPrice: Number(form.costPrice) || 0,
+        sku: form.sku,
+        barcode: form.barcode,
         stock: Number(form.stock) || 0,
-        lowStockThreshold: Number(form.lowStockThreshold) || 5,
+        lowStockThreshold: Number(form.lowStockThreshold) || 3,
         weight: Number(form.weight) || 0,
+        categoryId: form.categoryId || null,
         status: 'ACTIVE',
-        images: finalImages,
-        variants: form.variants.map((v) => ({
-          title: v.title || 'Standard',
-          sku: v.sku.trim() || undefined,
-          price: v.price > 0 ? Number(v.price) : Number(form.regularPrice),
-          salePrice: form.salePrice > 0 ? Number(form.salePrice) : null,
-          stock: Number(v.stock) || Number(form.stock) || 0,
-          attributes: v.attributes || { Standard: 'Default' },
-        })),
+        images: form.images,
+        variants: hasVariants && form.variants.length > 0 ? form.variants : [
+          {
+            title: 'Default Variant',
+            sku: form.sku || 'DEF-01',
+            price: Number(form.regularPrice),
+            salePrice: form.salePrice ? Number(form.salePrice) : undefined,
+            stock: Number(form.stock) || 0,
+            attributes: { Standard: 'Default' },
+          }
+        ],
       };
 
       const res = await fetch(`/api/stores/${params.storeId}/products`, {
@@ -149,80 +248,76 @@ export default function CreateProductPage({ params }: { params: { storeId: strin
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to create product');
+      if (res.ok && data.success) {
+        router.push(`/dashboard/stores/${params.storeId}/products`);
+      } else {
+        setError(data.message || 'Failed to create product');
       }
-
-      router.push(`/dashboard/stores/${params.storeId}/products`);
     } catch (err: any) {
-      setError(err.message || 'Failed to save product');
+      setError(err.message || 'Product creation error occurred');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <Link
-        href={`/dashboard/stores/${params.storeId}/products`}
-        className="inline-flex items-center text-xs text-slate-400 hover:text-white transition"
-      >
-        <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Products Catalog
-      </Link>
+    <div className="max-w-4xl mx-auto space-y-6 max-w-full overflow-x-hidden font-sans pb-12">
+      <div className="flex items-center space-x-4">
+        <Link href={`/dashboard/stores/${params.storeId}/products`}>
+          <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Products
+          </Button>
+        </Link>
+      </div>
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Add New Product</h1>
         <p className="text-sm text-slate-400">
-          Configure product titles, pricing, device image uploads, stock levels, and category.
+          Create a new single-vendor product item with pricing, images, and Size/Color variants.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="p-3 text-xs bg-red-500/10 border border-red-500/30 text-red-400 rounded-md">
-            {error}
-          </div>
-        )}
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl">
+          {error}
+        </div>
+      )}
 
-        {/* Basic Details */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg">Product Details</CardTitle>
-            <CardDescription className="text-slate-400">Core title, slug, category, and description</CardDescription>
+            <CardTitle className="text-lg text-white">Product Basic Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Product Title *</label>
-                <Input
-                  type="text"
-                  placeholder="Premium Smart Watch"
-                  value={form.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  required
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">URL Slug *</label>
-                <Input
-                  type="text"
-                  placeholder="premium-smart-watch"
-                  value={form.slug}
-                  onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))}
-                  required
-                  className="bg-slate-950 border-slate-800 text-white font-mono text-xs"
-                />
-              </div>
+            <div>
+              <Label className="text-xs text-slate-300">Product Title *</Label>
+              <Input
+                value={form.title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                placeholder="e.g. Auravia Melasma Brightening Serum"
+                className="bg-slate-950 border-slate-800 text-white mt-1"
+                required
+              />
             </div>
 
-            {categories.length > 0 && (
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Category (ক্যাটাগরি)</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-xs text-slate-300">Product Slug *</Label>
+                <Input
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  placeholder="auravia-melasma-brightening-serum"
+                  className="bg-slate-950 border-slate-800 text-white mt-1 font-mono text-xs"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label className="text-xs text-slate-300">Category</Label>
                 <select
                   value={form.categoryId}
-                  onChange={(e) => setForm((p) => ({ ...p, categoryId: e.target.value }))}
-                  className="flex h-9 w-full rounded-md border border-slate-800 bg-slate-950 px-3 py-1 text-sm text-white shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                  className="w-full h-9 rounded-md bg-slate-950 border border-slate-800 text-white text-xs px-3 mt-1"
                 >
                   <option value="">Select Category (Optional)</option>
                   {categories.map((c) => (
@@ -232,234 +327,296 @@ export default function CreateProductPage({ params }: { params: { storeId: strin
                   ))}
                 </select>
               </div>
-            )}
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-slate-300">Short Summary</label>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (!form.title) return alert('Please enter Product Title first!');
-                    try {
-                      const res = await fetch(`/api/stores/${params.storeId}/ai/generate-copy`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title: form.title }),
-                      });
-                      const data = await res.json();
-                      if (res.ok && data.copy) {
-                        setForm((p) => ({
-                          ...p,
-                          shortDescription: data.copy.shortDescription,
-                          fullDescription: data.copy.fullDescription,
-                        }));
-                      } else {
-                        alert(data.message || 'AI generation failed');
-                      }
-                    } catch (e) {
-                      alert('AI generation failed');
-                    }
-                  }}
-                  className="text-xs text-pink-400 hover:text-pink-300 flex items-center font-semibold"
-                >
-                  <Sparkles className="w-3.5 h-3.5 mr-1" /> ✨ Generate AI Copy
-                </button>
-              </div>
-              <Input
-                type="text"
-                placeholder="High resolution AMOLED display with fitness tracking"
-                value={form.shortDescription}
-                onChange={(e) => setForm((p) => ({ ...p, shortDescription: e.target.value }))}
-                className="bg-slate-950 border-slate-800 text-white"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Pricing & Cost Profit Analysis */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100">
-          <CardHeader>
-            <CardTitle className="text-lg">Pricing & Profit Estimation</CardTitle>
-            <CardDescription className="text-slate-400">Regular price and optional discount price</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Regular Price (৳) *</label>
-                <Input
-                  type="number"
-                  placeholder="2500"
-                  value={form.regularPrice || ''}
-                  onChange={(e) => setForm((p) => ({ ...p, regularPrice: parseFloat(e.target.value) || 0 }))}
-                  required
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Sale Price (৳ Optional)</label>
-                <Input
-                  type="number"
-                  placeholder="1990"
-                  value={form.salePrice || ''}
-                  onChange={(e) => setForm((p) => ({ ...p, salePrice: parseFloat(e.target.value) || 0 }))}
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Cost Price (৳ Product Cost)</label>
-                <Input
-                  type="number"
-                  placeholder="1200"
-                  value={form.costPrice || ''}
-                  onChange={(e) => setForm((p) => ({ ...p, costPrice: parseFloat(e.target.value) || 0 }))}
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
             </div>
 
-            {form.regularPrice > 0 && form.costPrice > 0 && (
-              <div className="p-3 bg-blue-600/10 border border-blue-500/20 rounded-md flex items-center justify-between text-xs text-blue-300">
-                <span>Estimated Profit per unit:</span>
-                <span className="font-bold text-emerald-400">
-                  ৳{(form.salePrice || form.regularPrice) - form.costPrice} profit / unit
-                </span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Stock & SKU */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100">
-          <CardHeader>
-            <CardTitle className="text-lg">Inventory & Stock Controls</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Initial Stock Quantity</label>
-                <Input
-                  type="number"
-                  value={form.stock}
-                  onChange={(e) => setForm((p) => ({ ...p, stock: parseInt(e.target.value) || 0 }))}
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">Low Stock Alert Level</label>
-                <Input
-                  type="number"
-                  value={form.lowStockThreshold}
-                  onChange={(e) => setForm((p) => ({ ...p, lowStockThreshold: parseInt(e.target.value) || 0 }))}
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-300">SKU Code</label>
-                <Input
-                  type="text"
-                  placeholder="SW-001"
-                  value={form.sku}
-                  onChange={(e) => setForm((p) => ({ ...p, sku: e.target.value }))}
-                  className="bg-slate-950 border-slate-800 text-white font-mono text-xs"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Device Image Uploader & Media Gallery */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100">
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <CardTitle className="text-lg">Product Photos (প্রোডাক্টের ছবি)</CardTitle>
-              <CardDescription className="text-slate-400">
-                Upload photos directly from your device (Mobile / Laptop / Gallery)
-              </CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                multiple
-                onChange={handleDeviceFileUpload}
-                className="hidden"
+              <Label className="text-xs text-slate-300">Short Description</Label>
+              <textarea
+                value={form.shortDescription}
+                onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
+                rows={2}
+                placeholder="Brief summary of product features..."
+                className="w-full rounded-md bg-slate-950 border border-slate-800 text-white text-xs p-3 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
-              <Button
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pricing & Stock */}
+        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-lg text-white">Pricing & Stock Inventory</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <Label className="text-xs text-slate-300">Regular Price (৳) *</Label>
+              <Input
+                type="number"
+                value={form.regularPrice}
+                onChange={(e) => setForm({ ...form, regularPrice: Number(e.target.value) })}
+                className="bg-slate-950 border-slate-800 text-white mt-1 font-bold text-emerald-400"
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-slate-300">Sale Price (৳)</Label>
+              <Input
+                type="number"
+                value={form.salePrice}
+                onChange={(e) => setForm({ ...form, salePrice: Number(e.target.value) })}
+                className="bg-slate-950 border-slate-800 text-white mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-slate-300">Stock Quantity *</Label>
+              <Input
+                type="number"
+                value={form.stock}
+                onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+                className="bg-slate-950 border-slate-800 text-white mt-1"
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-slate-300">SKU Code</Label>
+              <Input
+                value={form.sku}
+                onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                placeholder="SKU-1001"
+                className="bg-slate-950 border-slate-800 text-white mt-1 font-mono text-xs"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-slate-300">Cost Price (৳)</Label>
+              <Input
+                type="number"
+                value={form.costPrice}
+                onChange={(e) => setForm({ ...form, costPrice: Number(e.target.value) })}
+                className="bg-slate-950 border-slate-800 text-white mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-slate-300">Low Stock Alert Level</Label>
+              <Input
+                type="number"
+                value={form.lowStockThreshold}
+                onChange={(e) => setForm({ ...form, lowStockThreshold: Number(e.target.value) })}
+                className="bg-slate-950 border-slate-800 text-white mt-1"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Product Images */}
+        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-lg text-white">Product Images</CardTitle>
+            <CardDescription className="text-xs text-slate-400">
+              Upload high-quality images from your phone or device. First image is the main cover.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-3">
+              {form.images.map((imgUrl, idx) => (
+                <div key={idx} className="relative w-24 h-24 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden group">
+                  <img src={imgUrl} alt={`Product ${idx}`} className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(idx)}
+                    className="absolute top-1 right-1 bg-red-600/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                  {idx === 0 && (
+                    <span className="absolute bottom-1 left-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                      Main
+                    </span>
+                  )}
+                </div>
+              ))}
+
+              <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingImage}
-                className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold"
+                className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-700 hover:border-blue-500 bg-slate-950 flex flex-col items-center justify-center text-slate-400 hover:text-white transition"
               >
                 {uploadingImage ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Uploading...
-                  </>
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <Upload className="w-3.5 h-3.5 mr-1.5" /> 📷 Device থেকে ছবি দিন
+                    <Upload className="w-5 h-5 mb-1" />
+                    <span className="text-[10px] font-semibold">Upload Device Image</span>
                   </>
                 )}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleAddImageUrl}
-                size="sm"
-                className="border-slate-800 bg-slate-950 text-slate-300 text-xs"
-              >
-                <ImageIcon className="w-3.5 h-3.5 mr-1" /> URL দিন
-              </Button>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleDeviceFileUpload}
+              />
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {form.images.length === 0 ? (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-800 hover:border-blue-500/50 rounded-xl p-8 text-center cursor-pointer transition bg-slate-950/50"
-              >
-                <Upload className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-                <p className="text-sm font-medium text-slate-300">ডিভাইস থেকে ছবি আপলোড করতে এখানে ক্লিক করুন</p>
-                <p className="text-xs text-slate-500 mt-1">JPG, PNG, WEBP files allowed (Multiple files supported)</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {form.images.map((url, idx) => (
-                  <div key={idx} className="relative group rounded-lg border border-slate-800 overflow-hidden bg-slate-950 aspect-square">
-                    <img src={url} alt={`Product ${idx}`} className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setForm((p) => ({ ...p, images: p.images.filter((_, i) => i !== idx) }))}
-                      className="absolute top-2 right-2 p-1.5 bg-red-600/90 text-white rounded-md opacity-0 group-hover:opacity-100 transition shadow-lg"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                    {idx === 0 && (
-                      <span className="absolute bottom-2 left-2 text-[10px] bg-blue-600 text-white font-bold px-2 py-0.5 rounded shadow flex items-center">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> Main Image
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
           </CardContent>
         </Card>
 
-        <div className="flex justify-end gap-3">
+        {/* Size & Color Variant Builder */}
+        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg text-white flex items-center">
+                  <Layers className="w-5 h-5 mr-2 text-indigo-400" /> Size & Color Variants
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-400 mt-0.5">
+                  Enable size or color selection options for buyers.
+                </CardDescription>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hasVariantsToggle"
+                  checked={hasVariants}
+                  onCheckedChange={(c) => {
+                    const checked = Boolean(c);
+                    setHasVariants(checked);
+                    if (!checked) {
+                      setForm((p) => ({ ...p, variants: [] }));
+                      setSelectedSizes([]);
+                      setSelectedColors([]);
+                    }
+                  }}
+                  className="data-[state=checked]:bg-indigo-600"
+                />
+                <Label htmlFor="hasVariantsToggle" className="text-xs text-white cursor-pointer font-bold">
+                  Enable Variants
+                </Label>
+              </div>
+            </div>
+          </CardHeader>
+
+          {hasVariants && (
+            <CardContent className="space-y-6">
+              {/* Size Selectors */}
+              <div className="space-y-2">
+                <Label className="text-xs text-indigo-400 font-bold uppercase tracking-wider">Select Available Sizes</Label>
+                <div className="flex flex-wrap gap-2">
+                  {COMMON_SIZES.map((sz) => {
+                    const active = selectedSizes.includes(sz);
+                    return (
+                      <button
+                        key={sz}
+                        type="button"
+                        onClick={() => toggleSize(sz)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                          active
+                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-md'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Color Selectors */}
+              <div className="space-y-2">
+                <Label className="text-xs text-indigo-400 font-bold uppercase tracking-wider">Select Available Colors</Label>
+                <div className="flex flex-wrap gap-2">
+                  {COMMON_COLORS.map((clr) => {
+                    const active = selectedColors.includes(clr);
+                    return (
+                      <button
+                        key={clr}
+                        type="button"
+                        onClick={() => toggleColor(clr)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                          active
+                            ? 'bg-purple-600 border-purple-500 text-white shadow-md'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {clr}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Variants Matrix Table */}
+              {form.variants.length > 0 && (
+                <div className="space-y-3 border-t border-slate-800 pt-4">
+                  <div className="text-xs font-bold text-white flex items-center justify-between">
+                    <span>Generated Variants Matrix ({form.variants.length})</span>
+                    <span className="text-[11px] text-slate-400">Customize price and stock per variant below</span>
+                  </div>
+                  <div className="overflow-x-auto select-none">
+                    <table className="w-full text-left text-xs min-w-[500px]">
+                      <thead className="bg-slate-950 text-slate-400 font-semibold uppercase tracking-wider">
+                        <tr>
+                          <th className="p-3">Variant Option</th>
+                          <th className="p-3">SKU</th>
+                          <th className="p-3">Price (৳)</th>
+                          <th className="p-3">Stock</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60">
+                        {form.variants.map((v, idx) => (
+                          <tr key={idx} className="hover:bg-slate-800/30">
+                            <td className="p-3 font-bold text-indigo-300">{v.title}</td>
+                            <td className="p-3">
+                              <Input
+                                value={v.sku}
+                                onChange={(e) => updateVariantItem(idx, 'sku', e.target.value)}
+                                className="h-7 bg-slate-950 border-slate-800 text-xs font-mono text-white"
+                              />
+                            </td>
+                            <td className="p-3">
+                              <Input
+                                type="number"
+                                value={v.price}
+                                onChange={(e) => updateVariantItem(idx, 'price', Number(e.target.value))}
+                                className="h-7 bg-slate-950 border-slate-800 text-xs font-bold text-emerald-400"
+                              />
+                            </td>
+                            <td className="p-3">
+                              <Input
+                                type="number"
+                                value={v.stock}
+                                onChange={(e) => updateVariantItem(idx, 'stock', Number(e.target.value))}
+                                className="h-7 bg-slate-950 border-slate-800 text-xs text-white"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+
+        <div className="flex items-center justify-end space-x-4">
           <Link href={`/dashboard/stores/${params.storeId}/products`}>
-            <Button type="button" variant="outline" className="border-slate-800 bg-slate-950 text-slate-300">
+            <Button variant="ghost" className="text-slate-400 hover:text-white">
               Cancel
             </Button>
           </Link>
-          <Button type="submit" disabled={loading || uploadingImage} className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Save & Publish Product'}
+          <Button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 shadow-lg shadow-blue-600/30"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
+            Save & Publish Product
           </Button>
         </div>
       </form>
     </div>
   );
 }
-

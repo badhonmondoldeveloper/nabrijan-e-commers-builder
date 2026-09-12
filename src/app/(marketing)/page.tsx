@@ -32,6 +32,8 @@ import {
 } from 'lucide-react';
 import { db } from '@/lib/db/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export const revalidate = 60; // Refresh dynamic platform settings every 60 seconds
 
 export default async function SaaSMarketingPage() {

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle2, ArrowRight, Sparkles, Zap, Shield, Crown } from 'lucide-react';
 import { db } from '@/lib/db/prisma';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60;
 
 export default async function SaaSMarketingPricingPage() {

@@ -32,6 +32,11 @@ export async function GET(req: Request) {
           syncLog.push('Live chat DB tables created');
         }
 
+        if (fs.existsSync(`${appDir}/update_db_affiliate.php`)) {
+          execSync(`cd ${appDir} && php update_db_affiliate.php`, { stdio: 'ignore' });
+          syncLog.push('Affiliate DB tables created');
+        }
+
         execSync(`mkdir -p ${appDir}/tmp && touch ${appDir}/tmp/restart.txt`, { stdio: 'ignore' });
         syncLog.push('Passenger restart triggered');
       }

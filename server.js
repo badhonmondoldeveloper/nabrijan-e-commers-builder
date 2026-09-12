@@ -6,7 +6,7 @@ const dev = false;
 const hostname = 'localhost';
 const port = process.env.PORT || 3000;
 
-const app = next({ dev, hostname, port: typeof port === 'number' ? port : undefined });
+const app = next({ dev, dir: __dirname, hostname, port: typeof port === 'number' ? port : undefined });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {

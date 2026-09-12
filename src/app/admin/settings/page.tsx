@@ -1,26 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Save, Sparkles, CheckCircle2, Globe, Shield, MessageCircle, Phone, Mail } from 'lucide-react';
+import { Settings, Save, Sparkles, CheckCircle2, Globe, Shield, MessageCircle, Phone, Mail, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const logoInputRef = useRef<HTMLInputElement | null>(null);
 
   const [form, setForm] = useState({
     siteName: 'Nabrijan E-Commerce',
     siteTagline: 'Create your professional online store in minutes',
-    logoUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=100&q=80',
+    logoUrl: '',
     bannerText: '🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!',
     trialDays: 3,
     contactEmail: 'badhonmondoldeveloper@gmail.com',
-    contactPhone: '01700000000',
-    whatsappNumber: '01700000000',
+    contactPhone: '+8801625642420',
+    whatsappNumber: '+8801625642420',
   });
 
   useEffect(() => {
@@ -39,15 +42,41 @@ export default function AdminSettingsPage() {
           logoUrl: data.settings.logoUrl || '',
           bannerText: data.settings.bannerText || '',
           trialDays: data.settings.trialDays || 3,
-          contactEmail: data.settings.contactEmail || '',
-          contactPhone: data.settings.contactPhone || '',
-          whatsappNumber: data.settings.whatsappNumber || '',
+          contactEmail: data.settings.contactEmail || 'badhonmondoldeveloper@gmail.com',
+          contactPhone: data.settings.contactPhone || '+8801625642420',
+          whatsappNumber: data.settings.whatsappNumber || '+8801625642420',
         });
       }
     } catch (err) {
       console.error('Failed to fetch platform settings:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogoUpload = async (file: File) => {
+    setUploadingLogo(true);
+    setMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Logo upload failed');
+
+      if (data.url) {
+        setForm((prev) => ({ ...prev, logoUrl: data.url }));
+        setMessage({ type: 'success', text: 'Logo image uploaded successfully from your device!' });
+      }
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Failed to upload logo image' });
+    } finally {
+      setUploadingLogo(false);
     }
   };
 
@@ -63,7 +92,7 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Platform settings saved successfully!' });
+        setMessage({ type: 'success', text: 'Platform settings and branding logo saved successfully!' });
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to save settings' });
       }
@@ -93,7 +122,7 @@ export default function AdminSettingsPage() {
           </Badge>
           <h1 className="text-3xl font-extrabold tracking-tight text-white">Site Branding & Customization</h1>
           <p className="text-sm text-slate-400">
-            Dynamically customize platform logo, hero title, announcement text, trial policy, and support contacts.
+            Dynamically upload site logo from device, customize hero tagline, announcement bar, trial policy, and support numbers.
           </p>
         </div>
       </div>
@@ -114,16 +143,73 @@ export default function AdminSettingsPage() {
         <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Globe className="w-5 h-5 text-indigo-400" /> Platform Identity & Logo
+              <Globe className="w-5 h-5 text-indigo-400" /> Platform Identity & Website Logo
             </CardTitle>
             <CardDescription className="text-slate-400">
-              Customize the site name, tagline, and brand logo URL across the main homepage and header.
+              Upload your official Nabrijan logo photo from your device or paste a URL.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Logo Device Upload Box */}
+            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+              <label className="text-xs font-semibold text-slate-300 block">
+                Nabrijan Official Website Logo (ডিভাইস থেকে ফটো আপলোড করুন)
+              </label>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-24 h-24 rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden flex items-center justify-center shrink-0">
+                  {form.logoUrl ? (
+                    <img src={form.logoUrl} alt="Nabrijan Logo" className="w-full h-full object-contain p-2" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-xl">
+                      N
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2 w-full">
+                  <input
+                    type="file"
+                    ref={logoInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => e.target.files?.[0] && handleLogoUpload(e.target.files[0])}
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      disabled={uploadingLogo}
+                      className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl"
+                    >
+                      {uploadingLogo ? (
+                        <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                      ) : (
+                        <Upload className="w-4 h-4 mr-1.5" />
+                      )}
+                      📷 Device থেকে লোগো পিকচার সিলেক্ট করুন
+                    </Button>
+                    {form.logoUrl && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setForm((p) => ({ ...p, logoUrl: '' }))}
+                        className="border-slate-800 text-slate-400 hover:text-white text-xs"
+                      >
+                        Reset Default
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Supports PNG, JPG, WEBP, SVG images up to 10MB.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Site Platform Name</label>
+                <label className="text-xs font-semibold text-slate-300 block">Site Platform Name</label>
                 <Input
                   value={form.siteName}
                   onChange={(e) => setForm({ ...form, siteName: e.target.value })}
@@ -134,18 +220,18 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Logo Image URL</label>
+                <label className="text-xs font-semibold text-slate-300 block">Logo URL Path</label>
                 <Input
                   value={form.logoUrl}
                   onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
-                  placeholder="https://example.com/logo.png"
-                  className="bg-slate-950 border-slate-800 text-white"
+                  placeholder="/uploads/site-logo.png"
+                  className="bg-slate-950 border-slate-800 text-white font-mono text-xs"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Hero Tagline / Subtitle</label>
+              <label className="text-xs font-semibold text-slate-300 block">Hero Subtitle / Tagline</label>
               <Input
                 value={form.siteTagline}
                 onChange={(e) => setForm({ ...form, siteTagline: e.target.value })}
@@ -215,7 +301,7 @@ export default function AdminSettingsPage() {
                 <Input
                   value={form.contactPhone}
                   onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
-                  placeholder="01700000000"
+                  placeholder="+8801625642420"
                   className="bg-slate-950 border-slate-800 text-white"
                 />
               </div>
@@ -227,7 +313,7 @@ export default function AdminSettingsPage() {
                 <Input
                   value={form.whatsappNumber}
                   onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
-                  placeholder="01700000000"
+                  placeholder="+8801625642420"
                   className="bg-slate-950 border-slate-800 text-white"
                 />
               </div>

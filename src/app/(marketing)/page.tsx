@@ -24,7 +24,11 @@ import {
   Layers,
   Star,
   CheckCircle,
-  Phone
+  Phone,
+  UserPlus,
+  PackagePlus,
+  TrendingUp,
+  Award
 } from 'lucide-react';
 import { db } from '@/lib/db/prisma';
 
@@ -40,6 +44,7 @@ export default async function SaaSMarketingPage() {
   }
 
   const siteName = settings?.siteName || 'Nabrijan E-Commerce';
+  const logoUrl = settings?.logoUrl || '';
   const bannerText = settings?.bannerText || '🔥 ৩ দিনের সম্পূর্ণ ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!';
   const trialDays = settings?.trialDays || 3;
   const whatsappNumber = settings?.whatsappNumber || '+8801625642420';
@@ -57,24 +62,29 @@ export default async function SaaSMarketingPage() {
         </Link>
       </div>
 
-      {/* Glassmorphic Sticky Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/80 border-b border-slate-800/80 transition-all duration-300">
+      {/* Clean Modern Glass Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/85 border-b border-slate-800/80 transition-all duration-300">
         <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-rose-500 flex items-center justify-center font-black text-white text-lg sm:text-2xl shadow-xl shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
-              N
-            </div>
+          <Link href="/" className="flex items-center space-x-3 group">
+            {logoUrl ? (
+              <img src={logoUrl} alt={siteName} className="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-xl bg-slate-900 p-1 border border-slate-800 shadow-lg group-hover:scale-105 transition-transform" />
+            ) : (
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-rose-500 flex items-center justify-center font-black text-white text-lg sm:text-2xl shadow-xl shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
+                N
+              </div>
+            )}
             <div className="flex flex-col">
               <span className="text-base sm:text-xl font-black tracking-tight text-white leading-none">
                 {siteName}
               </span>
               <span className="text-[9px] sm:text-[10px] text-blue-400 font-extrabold uppercase tracking-widest mt-0.5">
-                Multi-Tenant SaaS
+                Multi-Tenant SaaS Engine
               </span>
             </div>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <Link href="#how-it-works" className="hover:text-white hover:scale-105 transition duration-200">কিভাবে কাজ করে</Link>
             <Link href="#features" className="hover:text-white hover:scale-105 transition duration-200">ফিচারসমূহ</Link>
             <Link href="#demo" className="hover:text-white hover:scale-105 transition duration-200">লাইভ ডেমো</Link>
             <Link href="#pricing" className="hover:text-white hover:scale-105 transition duration-200">সাবস্ক্রিপশন</Link>
@@ -88,24 +98,22 @@ export default async function SaaSMarketingPage() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-[11px] sm:text-xs font-black shadow-xl shadow-blue-600/30 rounded-xl px-3 sm:px-5 py-2 transition duration-300">
-                {trialDays}-দিন ফ্রি <ArrowRight className="ml-1 w-3 h-3 hidden sm:inline" />
+              <Button className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-[11px] sm:text-xs font-black shadow-xl shadow-blue-600/30 rounded-xl px-3.5 sm:px-5 py-2 transition duration-300">
+                {trialDays}-দিন ফ্রি ট্রায়াল <ArrowRight className="ml-1 w-3 h-3 hidden sm:inline" />
               </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero Section with 3D Glass Atmosphere */}
+      {/* Fresh Hero Section */}
       <section className="relative pt-16 sm:pt-24 pb-20 sm:pb-28 overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-indigo-950/20 to-slate-950">
-        {/* Glow Orbs */}
         <div className="glow-orb-blue -top-20 -left-20 max-w-full" />
         <div className="glow-orb-purple top-40 -right-20 max-w-full" />
-        <div className="glow-orb-emerald bottom-10 left-1/3 max-w-full" />
 
         <div className="container mx-auto px-4 text-center relative z-10 max-w-5xl">
           <Badge variant="outline" className="mb-4 sm:mb-6 border-blue-500/40 text-blue-400 bg-blue-500/10 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-black tracking-wider uppercase shadow-inner inline-flex items-center gap-1.5 max-w-full break-words">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-spin shrink-0" /> Bangladesh's #1 E-Commerce SaaS Engine
+            <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-spin shrink-0" /> বাংলাদেশের সহজতম ই-কমার্স প্ল্যাটফর্ম
           </Badge>
 
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-6 sm:mb-8 leading-[1.18] text-white break-words">
@@ -116,7 +124,7 @@ export default async function SaaSMarketingPage() {
           </h1>
 
           <p className="text-sm sm:text-xl text-slate-300 mb-8 sm:mb-10 max-w-3xl mx-auto font-normal leading-relaxed">
-            কোনো কোডিং ছাড়াই দারাজ ও অ্যামাজন স্টাইলের সম্পূর্ণ কাস্টমাইজড ই-কমার্স শপ তৈরি করুন। ক্যাশ অন ডেলিভারি, bKash/Nagad পেমেন্ট গেটওয়ে, ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার ও অটো কুরিয়ার ট্র্যাকিং সহ।
+            কোনো কোডিং ছাড়াই দারাজ ও অ্যামাজন স্টাইলের আকর্ষণীয় নিজস্ব ওয়েবসাইট তৈরি করুন। ক্যাশ অন ডেলিভারি, bKash/Nagad পেমেন্ট, ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার ও অটো কুরিয়ার বুকিং সুবিধা সহ।
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-12 sm:mb-16 w-full max-w-md sm:max-w-none mx-auto">
@@ -132,7 +140,7 @@ export default async function SaaSMarketingPage() {
             </Link>
           </div>
 
-          {/* 3D Dynamic Stats Grid */}
+          {/* Dynamic Platform Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-6 glass-card rounded-2xl sm:rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl">
             <div className="text-center p-2.5 sm:p-4 border-r border-b sm:border-b-0 border-slate-800/80">
               <div className="text-2xl sm:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-200">500+</div>
@@ -154,15 +162,64 @@ export default async function SaaSMarketingPage() {
         </div>
       </section>
 
+      {/* How It Works Section - 3 Simple Steps */}
+      <section id="how-it-works" className="py-16 sm:py-24 bg-slate-950 relative">
+        <div className="container mx-auto px-4 max-w-6xl relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <Badge className="bg-indigo-500/20 text-indigo-400 border-indigo-500/30 mb-3 px-4 py-1 rounded-full font-bold">
+              ⚡ ৩টি সহজ ধাপ
+            </Badge>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-3 sm:mb-4">
+              কিভাবে মাত্র ৩ মিনিটে শপ চালু করবেন?
+            </h2>
+            <p className="text-slate-400 text-xs sm:text-base">
+              কোনো টেকনিক্যাল জ্ঞান বা কোডিং ছাড়াই নিমিষেই আপনার দোকান ইন্টারনেটে লাইভ করুন।
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-4 relative border border-slate-800">
+              <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-black text-xl">
+                ১
+              </div>
+              <h3 className="text-xl font-bold text-white">রেজিস্ট্রেশন করুন</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                আপনার নাম, ইমেইল ও দোকানের নাম দিয়ে ১-ক্লিকে বিনামূল্যে অ্যাকাউন্ট খুলুন এবং {trialDays} দিনের ট্রায়াল নিন।
+              </p>
+            </div>
+
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-4 relative border border-slate-800">
+              <div className="w-12 h-12 rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-black text-xl">
+                ২
+              </div>
+              <h3 className="text-xl font-bold text-white">প্রোডাক্ট ও সাইজ যুক্ত করুন</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                ছবি আপলোড করে সাইজ (S, M, L), কালার এবং দাম নির্ধারণ করে প্রোডাক্ট পাবলিশ করুন।
+              </p>
+            </div>
+
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-4 relative border border-slate-800">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-xl">
+                ৩
+              </div>
+              <h3 className="text-xl font-bold text-white">অর্ডার গ্রহণ ও ডেলিভারি</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                কাস্টমার থেকে ১-ক্লিক হোয়াটসঅ্যাপ বা ক্যাশ অন ডেলিভারিতে সরাসরি বুকিং ও কুরিয়ার ট্র্যাকিং কোড পান।
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Live Store Showcase Section */}
-      <section id="demo" className="py-16 sm:py-24 bg-slate-900/50 border-b border-slate-800/80 relative overflow-hidden">
+      <section id="demo" className="py-16 sm:py-24 bg-slate-900/50 border-y border-slate-800/80 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/40 mb-3 px-4 py-1.5 rounded-full font-bold">
               <Store className="w-4 h-4 mr-1.5 inline" /> Live Demo Showcase
             </Badge>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-3 sm:mb-4">
-              বাস্তব ই-কমার্স শপের প্রিমিয়াম এক্সপেরিয়েন্স
+              বাস্তব ই-কমার্স শপের চমৎকার অভিজ্ঞতা
             </h2>
             <p className="text-slate-400 text-xs sm:text-base">
               আপনার কাস্টমাররা যেভাবে আপনার স্টোর থেকে পণ্য ক্রয় করবেন তার একটি বাস্তবসম্মত ডেমো প্রিভিউ।
@@ -254,7 +311,7 @@ export default async function SaaSMarketingPage() {
         </div>
       </section>
 
-      {/* Feature Highlights 3D Cards */}
+      {/* Feature Highlights Cards */}
       <section id="features" className="py-16 sm:py-24 bg-slate-950 relative">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
@@ -483,7 +540,11 @@ export default async function SaaSMarketingPage() {
           <div className="grid md:grid-cols-3 gap-8 sm:gap-10 mb-8 sm:mb-10">
             <div className="space-y-3">
               <div className="font-black text-white text-lg flex items-center space-x-2">
-                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm">N</div>
+                {logoUrl ? (
+                  <img src={logoUrl} alt={siteName} className="w-7 h-7 object-contain rounded-lg bg-slate-900 p-0.5 border border-slate-800" />
+                ) : (
+                  <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm">N</div>
+                )}
                 <span>{siteName}</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed max-w-sm">

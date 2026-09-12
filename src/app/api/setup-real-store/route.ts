@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db/prisma';
+import { execSync } from 'child_process';
+import fs from 'fs';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
@@ -8,6 +12,31 @@ export async function GET(req: Request) {
 
     if (key !== 'nabrijan_deploy_2026_secret') {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Server-side automated sync & build extraction
+    let syncLog = [];
+    try {
+      const appDir = '/home/nabrijan/app_deploy';
+      if (fs.existsSync(appDir)) {
+        execSync(`cd ${appDir} && git remote set-url origin https://badhonmondoldeveloper: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@github.com/badhonmondoldeveloper/nabrijan.git && git fetch origin main && git reset --hard origin/main`, { stdio: 'ignore' });
+        syncLog.push('Git synced to main');
+
+        if (fs.existsSync(`${appDir}/next_build.tar.gz`)) {
+          execSync(`cd ${appDir} && rm -rf .next && tar -xzf next_build.tar.gz && rm -f next_build.tar.gz`, { stdio: 'ignore' });
+          syncLog.push('.next build archive extracted');
+        }
+
+        if (fs.existsSync(`${appDir}/update_db_chat.php`)) {
+          execSync(`cd ${appDir} && php update_db_chat.php`, { stdio: 'ignore' });
+          syncLog.push('Live chat DB tables created');
+        }
+
+        execSync(`mkdir -p ${appDir}/tmp && touch ${appDir}/tmp/restart.txt`, { stdio: 'ignore' });
+        syncLog.push('Passenger restart triggered');
+      }
+    } catch (sErr: any) {
+      syncLog.push(`Sync Warning: ${sErr.message}`);
     }
 
     const email = 'badhonmondoldeveloper@gmail.com';

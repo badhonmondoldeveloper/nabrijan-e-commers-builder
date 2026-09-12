@@ -1,3 +1,10 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+
+process.env.PRISMA_CLIENT_ENGINE_TYPE = 'library';
+process.env.PRISMA_CLI_QUERY_ENGINE_TYPE = 'library';
+
 const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('./node_modules/next');

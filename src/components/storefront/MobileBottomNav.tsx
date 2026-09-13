@@ -41,45 +41,45 @@ export default function MobileBottomNav({ storeSlug, categories, cartCount = 0 }
   return (
     <>
       {/* Mobile Bottom Fixed Nav Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-2xl md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#DCE7DF] shadow-2xl md:hidden">
         <div className="grid grid-cols-4 h-15">
           <Link
             href={`/store/${storeSlug}`}
-            className="flex flex-col items-center justify-center text-slate-600 hover:text-blue-600 transition"
+            className="flex flex-col items-center justify-center text-[#66736C] hover:text-[#55B510] transition"
           >
-            <Home className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-1">হোম</span>
+            <Home className="w-5 h-5 text-[#063B2A]" />
+            <span className="text-[10px] font-bold mt-1 text-[#063B2A]">হোম</span>
           </Link>
 
           <button
             onClick={() => setShowCategoryModal(true)}
-            className="flex flex-col items-center justify-center text-slate-600 hover:text-blue-600 transition"
+            className="flex flex-col items-center justify-center text-[#66736C] hover:text-[#55B510] transition"
           >
-            <LayoutGrid className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-1">ক্যাটাগরি</span>
+            <LayoutGrid className="w-5 h-5 text-[#063B2A]" />
+            <span className="text-[10px] font-bold mt-1 text-[#063B2A]">ক্যাটাগরি</span>
           </button>
 
           <button
             onClick={() => setShowSearchModal(true)}
-            className="flex flex-col items-center justify-center text-slate-600 hover:text-blue-600 transition"
+            className="flex flex-col items-center justify-center text-[#66736C] hover:text-[#55B510] transition"
           >
-            <Search className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-1">সার্চ</span>
+            <Search className="w-5 h-5 text-[#063B2A]" />
+            <span className="text-[10px] font-bold mt-1 text-[#063B2A]">সার্চ</span>
           </button>
 
           <Link
             href={`/store/${storeSlug}/cart`}
-            className="flex flex-col items-center justify-center text-slate-600 hover:text-blue-600 transition relative"
+            className="flex flex-col items-center justify-center text-[#66736C] hover:text-[#55B510] transition relative"
           >
             <div className="relative">
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingBag className="w-5 h-5 text-[#063B2A]" />
               {localCartCount > 0 && (
-                <span className="absolute -top-1.5 -right-2.5 bg-rose-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                <span className="absolute -top-1.5 -right-2.5 bg-[#55B510] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                   {localCartCount}
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-bold mt-1">কার্ট</span>
+            <span className="text-[10px] font-bold mt-1 text-[#063B2A]">কার্ট</span>
           </Link>
         </div>
       </nav>

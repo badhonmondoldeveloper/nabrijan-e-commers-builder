@@ -35,11 +35,11 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export async function createSessionToken(payload: Omit<SessionPayload, 'expiresAt'>): Promise<string> {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
   const token = await new SignJWT({ ...payload, expiresAt })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime('365d')
     .sign(JWT_SECRET);
   return token;
 }
@@ -60,7 +60,7 @@ export async function setSessionCookie(token: string) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 365 * 24 * 60 * 60, // 365 days (1 year persistent login)
       path: '/',
     });
   } catch (error) {

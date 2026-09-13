@@ -50,6 +50,16 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        nabrijan: {
+          green: "#55B510",
+          dark: "#063B2A",
+          white: "#FFFFFF",
+          lightGreen: "#EAF7DF",
+          bg: "#F6FAF4",
+          text: "#17221D",
+          muted: "#66736C",
+          border: "#DCE7DF",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

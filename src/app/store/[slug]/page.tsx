@@ -70,209 +70,179 @@ export default async function MerchantStorefrontPage({
 
   const notifyProducts = products.map((p) => ({
     title: p.title,
-    image: p.images[0]?.url,
+    image: typeof p.images?.[0] === 'string' ? p.images[0] : (p.images?.[0]?.url || ''),
   }));
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white pb-16 md:pb-0">
+    <div className="min-h-screen bg-[#F6FAF4] text-[#17221D] flex flex-col font-sans pb-16 md:pb-0">
       {/* Exit Intent Popup */}
       <ExitIntentPopup storeSlug={store.slug} />
 
       {/* Social Proof Live Purchase Toast */}
       <SocialProofNotify products={notifyProducts} />
 
-      {/* 1. Top Announcement Bar */}
-      <div className="bg-slate-900 text-white text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center space-x-2 border-b border-slate-800">
-        <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+      {/* 1. Top Announcement Bar (Dark Green background + Brand Green accent) */}
+      <div className="bg-[#063B2A] text-white text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center space-x-2 border-b border-[#063B2A]/20">
+        <Flame className="w-3.5 h-3.5 text-[#55B510] animate-pulse" />
         <span>{announcementText}</span>
         {settings.phone && (
-          <span className="hidden md:inline-block text-slate-400 pl-4 border-l border-slate-700">
-            📞 হেল্পলাইন: <a href={`tel:${settings.phone}`} className="text-white hover:underline">{settings.phone}</a>
+          <span className="hidden md:inline-block text-emerald-200 pl-4 border-l border-emerald-800/50">
+            📞 হেল্পলাইন: <a href={`tel:${settings.phone}`} className="text-white hover:text-[#55B510] transition">{settings.phone}</a>
           </span>
         )}
       </div>
 
-      {/* 2. Amazon / Daraz Style Main Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
-        <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-4">
+      {/* 2. Sleek Modern Header (Matching Uploaded UI Screenshot) */}
+      <header className="sticky top-0 z-40 bg-white border-b border-[#DCE7DF] shadow-xs py-3 px-4">
+        <div className="container mx-auto flex items-center justify-between gap-3">
           {/* Store Brand / Logo */}
-          <Link href={`/store/${store.slug}`} className="flex items-center space-x-3 group">
+          <Link href={`/store/${store.slug}`} className="flex items-center space-x-2.5 shrink-0">
             {store.logo ? (
-              <img src={store.logo} alt={store.name} className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-slate-100 p-0.5" />
+              <img src={store.logo} alt={store.name} className="h-10 w-auto object-contain rounded-xl border border-[#DCE7DF] p-0.5" />
             ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xl shadow-md">
+              <div className="w-10 h-10 rounded-2xl bg-[#063B2A] text-[#55B510] flex items-center justify-center font-black text-lg shadow-xs border border-[#55B510]/30">
                 {store.name.charAt(0)}
               </div>
             )}
-            <div>
-              <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition">
+            <div className="hidden sm:block">
+              <span className="text-base font-black text-[#063B2A] tracking-tight block leading-none">
                 {store.name}
               </span>
-              <p className="text-[10px] text-slate-500 font-bold">Verified E-Commerce Store</p>
+              <span className="text-[10px] text-[#55B510] font-bold">✓ Official Store</span>
             </div>
           </Link>
 
-          {/* Quick Actions */}
-          <div className="flex items-center space-x-3">
-            <Link href={`/store/${store.slug}/track`} className="hidden sm:inline-flex items-center text-xs font-bold text-slate-700 hover:text-blue-600 bg-slate-100 px-3 py-2 rounded-xl">
-              <Truck className="w-4 h-4 mr-1.5 text-blue-600" /> অর্ডার ট্র্যাকিং
+          {/* App Style Pill Search Bar (Matching Screenshot Search Field) */}
+          <div className="flex-1 max-w-md mx-2">
+            <div className="relative w-full flex items-center bg-[#F6FAF4] border border-[#DCE7DF] focus-within:border-[#55B510] rounded-full px-3.5 py-1.5 transition">
+              <Search className="w-4 h-4 text-[#66736C] shrink-0 mr-2" />
+              <input
+                type="text"
+                placeholder="Search products in store..."
+                className="w-full bg-transparent text-xs text-[#17221D] focus:outline-none placeholder-[#66736C]"
+              />
+              <button className="text-[#66736C] hover:text-[#55B510] transition shrink-0 ml-1">
+                <Zap className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Actions (Cart Icon Badge) */}
+          <div className="flex items-center space-x-2">
+            <Link href={`/store/${store.slug}/track`} className="hidden md:inline-flex items-center text-xs font-bold text-[#063B2A] bg-[#EAF7DF] hover:bg-[#55B510] hover:text-white px-3 py-2 rounded-full transition border border-[#55B510]/20">
+              <Truck className="w-3.5 h-3.5 mr-1" /> ট্র্যাকিং
             </Link>
 
-            {whatsappNumber && (
-              <a
-                href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(store.name)},%20I%20want%20to%20order`}
-                target="_blank"
-                rel="noreferrer"
-                className="hidden sm:inline-flex items-center text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl shadow-sm transition"
-              >
-                <MessageCircle className="w-4 h-4 mr-1.5 fill-current" /> WhatsApp Order
-              </a>
-            )}
-
             <Link href={`/store/${store.slug}/cart`}>
-              <Button variant="outline" size="sm" className="relative border-slate-300 text-slate-800 hover:bg-slate-50 font-bold px-4 h-10 rounded-xl">
-                <ShoppingBag className="w-4 h-4 mr-2 text-blue-600" /> Cart
-              </Button>
+              <button className="relative w-10 h-10 rounded-full bg-[#F6FAF4] hover:bg-[#EAF7DF] border border-[#DCE7DF] flex items-center justify-center text-[#063B2A] transition">
+                <ShoppingBag className="w-4 h-4" />
+                <span className="absolute -top-1 -right-1 bg-[#55B510] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  0
+                </span>
+              </button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content Layout */}
-      <main className="flex-1 space-y-8 pb-12">
-        {/* 3. Hero Banner & Amazon-Style Sidebar Layout */}
-        <section className="container mx-auto px-4 pt-6">
-          <div className="grid lg:grid-cols-12 gap-6 items-start">
-            {/* Desktop Category Sidebar (Amazon Style) */}
-            {categories.length > 0 && (
-              <aside className="hidden lg:block lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
-                <div className="font-extrabold text-slate-900 text-sm flex items-center border-b border-slate-100 pb-2.5">
-                  <LayoutGrid className="w-4 h-4 text-blue-600 mr-2" /> সকল ক্যাটাগরি
+      <main className="flex-1 space-y-8 pb-12 max-w-7xl mx-auto w-full">
+        {/* 3. Hero Promo Banner (Matching Screenshot Card Carousel) */}
+        <section className="px-4 pt-4">
+          <div className="relative bg-gradient-to-r from-[#063B2A] via-[#084c36] to-[#063B2A] text-white rounded-3xl p-6 sm:p-8 shadow-md border border-[#55B510]/20 overflow-hidden">
+            <div className="grid md:grid-cols-12 gap-6 items-center">
+              <div className="md:col-span-7 space-y-3 z-10">
+                <Badge className="bg-[#55B510] text-white border-none font-extrabold text-[10px] px-3 py-0.5 rounded-full uppercase tracking-wider">
+                  Featured Showcase
+                </Badge>
+                <h1 className="text-2xl sm:text-4xl font-black text-white leading-tight tracking-tight">
+                  {store.name} <span className="text-[#55B510]">Collection</span>
+                </h1>
+                <p className="text-emerald-100 text-xs sm:text-sm max-w-md line-clamp-2">
+                  {settings.seoDescription || 'Extraordinary Visual & Exceptional Power. Browse top handpicked products with instant COD.'}
+                </p>
+                <div className="pt-2">
+                  <a href="#products-grid">
+                    <Button className="bg-white hover:bg-[#55B510] text-[#063B2A] hover:text-white font-black text-xs px-6 py-2.5 rounded-full shadow-md transition duration-300">
+                      Shop Now <ArrowRight className="w-4 h-4 ml-1.5" />
+                    </Button>
+                  </a>
                 </div>
-                <div className="space-y-1">
-                  {categories.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      href={`/store/${store.slug}?category=${cat.id}`}
-                      className="block text-xs font-bold text-slate-700 hover:text-blue-600 hover:bg-slate-50 p-2.5 rounded-xl transition"
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              </aside>
-            )}
+              </div>
 
-            {/* Banner Section */}
-            <div className={`w-full ${categories.length > 0 ? 'lg:col-span-9' : 'lg:col-span-12'}`}>
-              <div className="relative bg-slate-900 text-white rounded-3xl overflow-hidden shadow-md">
+              {/* Banner Right Image Preview */}
+              <div className="md:col-span-5 flex justify-center items-center">
                 {store.banner ? (
-                  <div className="relative h-64 sm:h-80 w-full">
-                    <img src={store.banner} alt={store.name} className="w-full h-full object-cover opacity-85" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent flex items-end p-6 sm:p-10">
-                      <div className="max-w-xl space-y-2.5">
-                        <Badge className="bg-blue-600 text-white border-none font-bold">Official Storefront</Badge>
-                        <h1 className="text-2xl sm:text-4xl font-black text-white">{store.name} Collection</h1>
-                        <p className="text-slate-300 text-xs sm:text-sm line-clamp-2">
-                          {settings.seoDescription || 'Browse top quality handpicked products with instant Cash on Delivery all across Bangladesh.'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <img src={store.banner} alt={store.name} className="h-44 sm:h-52 w-auto object-cover rounded-2xl border border-white/10 shadow-lg" />
                 ) : (
-                  <div className="py-12 sm:py-20 px-6 bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-center relative overflow-hidden">
-                    <div className="max-w-2xl mx-auto space-y-4">
-                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30 font-bold px-3 py-1 text-xs">
-                        100% Authentic Quality Guaranteed
-                      </Badge>
-                      <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-                        Welcome to <span className="text-blue-400">{store.name}</span>
-                      </h1>
-                      <p className="text-slate-300 text-xs sm:text-sm">
-                        {settings.seoDescription || 'Order premium products online with fast delivery & Cash on Delivery anywhere in Bangladesh.'}
-                      </p>
-                      <div className="pt-2 flex justify-center">
-                        <a href="#products-grid">
-                          <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 rounded-xl shadow-lg shadow-blue-600/30">
-                            পণ্যসমূহ দেখুন <ArrowRight className="ml-2 w-4 h-4" />
-                          </Button>
-                        </a>
-                      </div>
-                    </div>
+                  <div className="w-44 h-44 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                    <ShoppingBag className="w-16 h-16 text-[#55B510]/70" />
                   </div>
                 )}
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* 4. Trust Badges */}
-        <section className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="flex items-center space-x-3 p-2">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                <Truck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900">দ্রুত ডেলিভারি</h4>
-                <p className="text-[11px] text-slate-500">সারা বাংলাদেশে হোম ডেলিভারি</p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                <CheckCircle className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900">ক্যাশ অন ডেলিভারি</h4>
-                <p className="text-[11px] text-slate-500">পণ্য হাতে পেয়ে টাকা দিন</p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900">১০০% আসল পণ্য</h4>
-                <p className="text-[11px] text-slate-500">সেরা মানের প্রিমিয়াম প্রোডাক্ট</p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                <PhoneCall className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900">সরাসরি সাপোর্ট</h4>
-                <p className="text-[11px] text-slate-500">যেকোনো তথ্যে কল বা মেসেজ দিন</p>
-              </div>
+            {/* Carousel Dots Pagination Indicator (Matching Screenshot) */}
+            <div className="flex justify-center space-x-1.5 pt-4">
+              <span className="w-6 h-1.5 bg-[#55B510] rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full"></span>
             </div>
           </div>
         </section>
 
-        {/* 5. Flash Sale Section */}
-        <section className="container mx-auto px-4">
+        {/* 4. Categories Section (Matching Screenshot Category Icon Grid) */}
+        {categories.length > 0 && (
+          <section className="px-4 space-y-4">
+            <h2 className="text-lg sm:text-xl font-extrabold text-[#063B2A] tracking-tight">Categories</h2>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
+              {categories.slice(0, 6).map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/store/${store.slug}?category=${cat.id}`}
+                  className="group bg-white rounded-2xl p-3.5 text-center border border-[#DCE7DF] hover:border-[#55B510] hover:shadow-md transition duration-300 flex flex-col items-center justify-between"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-[#F6FAF4] group-hover:bg-[#EAF7DF] flex items-center justify-center text-[#55B510] transition mb-2">
+                    <LayoutGrid className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs font-bold text-[#17221D] group-hover:text-[#063B2A] transition line-clamp-1">
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 5. Flash Deals For You Section (Matching Screenshot Flash Deals Layout) */}
+        <section className="px-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg sm:text-xl font-extrabold text-[#063B2A] tracking-tight">Flash Deals For You</h2>
+            <a href="#products-grid" className="text-xs font-bold text-[#55B510] hover:underline flex items-center">
+              See All <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+            </a>
+          </div>
           <FlashSaleSection storeSlug={store.slug} products={products} />
         </section>
 
-        {/* 6. All Products Grid (Modern Product Cards with Hover Elevation) */}
-        <section id="products-grid" className="container mx-auto px-4 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        {/* 6. All Products Grid (Matching App Card UI in Screenshot) */}
+        <section id="products-grid" className="px-4 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DCE7DF] pb-3">
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">All Store Products</h2>
-              <p className="text-xs text-slate-500">Explore items with price, stock, and instant order</p>
+              <h2 className="text-lg sm:text-xl font-extrabold text-[#063B2A] tracking-tight">All Products</h2>
+              <p className="text-xs text-[#66736C]">Browse items with instant order & COD delivery</p>
             </div>
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-              {products.length} Products Available
+            <span className="text-xs font-bold text-[#063B2A] bg-[#EAF7DF] px-3 py-1 rounded-full border border-[#55B510]/30">
+              {products.length} Items
             </span>
           </div>
 
           {products.length === 0 ? (
-            <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 space-y-3">
+            <div className="bg-white rounded-3xl p-12 text-center border border-[#DCE7DF] space-y-3">
               <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto" />
-              <h3 className="font-bold text-slate-800 text-lg">No Products Available</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <h3 className="font-bold text-[#063B2A] text-lg">No Products Available</h3>
+              <p className="text-xs text-[#66736C] max-w-sm mx-auto">
                 This store has not published any items in the catalog yet. Check back soon!
               </p>
             </div>
@@ -287,15 +257,15 @@ export default async function MerchantStorefrontPage({
                 return (
                   <div
                     key={prod.id}
-                    className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-400 hover:-translate-y-1 transition duration-300 flex flex-col justify-between"
+                    className="group bg-white rounded-3xl border border-[#DCE7DF] overflow-hidden hover:shadow-xl hover:border-[#55B510] transition duration-300 flex flex-col justify-between"
                   >
                     <Link href={`/store/${store.slug}/product/${prod.slug}`}>
-                      <div className="aspect-square bg-slate-100 relative overflow-hidden">
+                      <div className="aspect-square bg-[#F6FAF4] relative overflow-hidden p-2">
                         {prod.images[0] ? (
                           <img
                             src={prod.images[0].url}
                             alt={prod.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                            className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
@@ -303,35 +273,41 @@ export default async function MerchantStorefrontPage({
                           </div>
                         )}
 
+                        {/* Floating Wishlist Heart Icon (Matching Screenshot UI) */}
+                        <button
+                          type="button"
+                          className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs text-[#063B2A] hover:text-rose-600 flex items-center justify-center shadow-xs transition"
+                        >
+                          <Heart className="w-4 h-4" />
+                        </button>
+
                         {/* Discount Badge */}
                         {discountPercent > 0 && (
-                          <span className="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md shadow-md">
+                          <span className="absolute top-3.5 left-3.5 bg-[#55B510] text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
                             -{discountPercent}% OFF
                           </span>
                         )}
-
-                        <span className="absolute top-2.5 right-2.5 bg-slate-900/60 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                          In Stock ({prod.stock})
-                        </span>
                       </div>
 
                       <div className="p-4 space-y-2">
-                        {prod.category && (
-                          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
-                            {prod.category.name}
-                          </span>
-                        )}
-                        <h3 className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 group-hover:text-blue-600 transition">
+                        <h3 className="font-bold text-[#17221D] text-xs sm:text-sm line-clamp-2 group-hover:text-[#063B2A] transition">
                           {prod.title}
                         </h3>
 
+                        {/* Star Rating Badge (Matching Screenshot Rating Badges) */}
+                        <div className="flex items-center space-x-1 text-amber-500 text-xs">
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                          <span className="text-[11px] font-extrabold text-[#063B2A]">4.9</span>
+                          <span className="text-[10px] text-[#66736C] font-semibold">(2.2k)</span>
+                        </div>
+
                         {/* Price Display */}
                         <div className="flex items-baseline space-x-2 pt-1">
-                          <span className="text-base sm:text-lg font-black text-slate-900">
+                          <span className="text-base sm:text-lg font-black text-[#063B2A]">
                             ৳{prod.salePrice || prod.regularPrice}
                           </span>
                           {prod.salePrice && (
-                            <span className="text-xs text-slate-400 line-through">
+                            <span className="text-xs text-[#66736C] line-through">
                               ৳{prod.regularPrice}
                             </span>
                           )}
@@ -341,21 +317,10 @@ export default async function MerchantStorefrontPage({
 
                     <div className="p-4 pt-0 space-y-2">
                       <Link href={`/store/${store.slug}/product/${prod.slug}`}>
-                        <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold h-10 rounded-xl shadow-xs transition">
-                          View & Order Now
+                        <Button className="w-full bg-[#55B510] hover:bg-[#063B2A] text-white text-xs font-bold h-10 rounded-full shadow-xs transition">
+                          View Details
                         </Button>
                       </Link>
-
-                      {whatsappNumber && (
-                        <a
-                          href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi,%20I%20want%20to%20order%20*${encodeURIComponent(prod.title)}*%20(Price:%20৳${prod.salePrice || prod.regularPrice})`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="w-full flex items-center justify-center text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-1.5 rounded-xl border border-emerald-200 transition"
-                        >
-                          <MessageCircle className="w-3.5 h-3.5 mr-1" /> Order on WhatsApp
-                        </a>
-                      )}
                     </div>
                   </div>
                 );
@@ -365,7 +330,7 @@ export default async function MerchantStorefrontPage({
         </section>
 
         {/* 7. Recently Viewed Section */}
-        <section className="container mx-auto px-4">
+        <section className="px-4">
           <RecentlyViewedSection storeSlug={store.slug} />
         </section>
       </main>
@@ -379,7 +344,7 @@ export default async function MerchantStorefrontPage({
           href={`https://wa.me/88${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(store.name)},%20I%20have%20an%20inquiry`}
           target="_blank"
           rel="noreferrer"
-          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 transition hover:scale-105 group"
+          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 bg-[#063B2A] hover:bg-[#55B510] text-[#55B510] hover:text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 border border-[#55B510]/40 transition hover:scale-105 group"
         >
           <MessageCircle className="w-6 h-6 fill-current" />
           <span className="hidden group-hover:inline-block text-xs font-bold pr-1">WhatsApp Chat</span>
@@ -387,16 +352,19 @@ export default async function MerchantStorefrontPage({
       )}
 
       {/* 10. Storefront Footer */}
-      <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
+      <footer className="bg-[#063B2A] text-emerald-100 text-xs border-t border-[#55B510]/20 mt-12">
         <div className="container mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="space-y-3">
-              <h3 className="font-bold text-white text-base">{store.name}</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <h3 className="font-extrabold text-white text-base flex items-center">
+                <span className="w-3 h-3 rounded-full bg-[#55B510] inline-block mr-2"></span>
+                {store.name}
+              </h3>
+              <p className="text-emerald-200 text-xs leading-relaxed">
                 {settings.seoDescription || 'Your trusted online shopping destination for high quality products across Bangladesh.'}
               </p>
               {settings.address && (
-                <p className="text-slate-400 text-xs">📍 {settings.address}</p>
+                <p className="text-emerald-300 text-xs">📍 {settings.address}</p>
               )}
             </div>
 
@@ -406,7 +374,7 @@ export default async function MerchantStorefrontPage({
               {whatsappNumber && <p>💬 WhatsApp: {whatsappNumber}</p>}
               {settings.email && <p>✉️ Email: {settings.email}</p>}
               <p>
-                <Link href={`/store/${store.slug}/track`} className="text-blue-400 hover:underline">
+                <Link href={`/store/${store.slug}/track`} className="text-[#55B510] hover:underline font-bold">
                   🚚 লাইভ অর্ডার ট্র্যাকিং পেজ
                 </Link>
               </p>
@@ -414,16 +382,16 @@ export default async function MerchantStorefrontPage({
 
             <div className="space-y-3">
               <h4 className="font-bold text-white text-sm">Accepted Payment Methods</h4>
-              <div className="flex flex-wrap gap-2 text-[10px] text-slate-300 font-bold">
-                <span className="bg-pink-600 text-white px-2.5 py-1 rounded">bKash</span>
-                <span className="bg-orange-600 text-white px-2.5 py-1 rounded">Nagad</span>
-                <span className="bg-purple-600 text-white px-2.5 py-1 rounded">Rocket</span>
-                <span className="bg-slate-800 text-white px-2.5 py-1 rounded">Cash On Delivery</span>
+              <div className="flex flex-wrap gap-2 text-[10px] text-white font-bold">
+                <span className="bg-pink-600 text-white px-2.5 py-1 rounded-full">bKash</span>
+                <span className="bg-orange-600 text-white px-2.5 py-1 rounded-full">Nagad</span>
+                <span className="bg-purple-600 text-white px-2.5 py-1 rounded-full">Rocket</span>
+                <span className="bg-[#55B510] text-white px-2.5 py-1 rounded-full">Cash On Delivery</span>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-slate-900 mt-8 pt-6 text-center text-slate-600 text-[11px]">
+          <div className="border-t border-emerald-900/60 mt-8 pt-6 text-center text-emerald-300/60 text-[11px]">
             © {new Date().getFullYear()} {store.name}. All rights reserved. Powered by Nabrijan E-Commerce SaaS.
           </div>
         </div>

@@ -22,10 +22,7 @@ export async function GET(req: Request) {
         execSync(`cd ${appDir} && git remote set-url origin https://badhonmondoldeveloper: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@github.com/badhonmondoldeveloper/nabrijan.git && git fetch origin main && git reset --hard origin/main`, { stdio: 'ignore' });
         syncLog.push('Git synced to main');
 
-        if (fs.existsSync(`${appDir}/next_build.tar.gz`)) {
-          execSync(`cd ${appDir} && rm -rf .next && tar -xzf next_build.tar.gz && rm -f next_build.tar.gz`, { stdio: 'ignore' });
-          syncLog.push('.next build archive extracted');
-        }
+        // Automated sync completed
 
         if (fs.existsSync(`${appDir}/update_db_chat.php`)) {
           execSync(`cd ${appDir} && php update_db_chat.php`, { stdio: 'ignore' });

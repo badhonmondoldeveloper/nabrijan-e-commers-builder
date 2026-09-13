@@ -1,6 +1,7 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
-require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+try {
+  require('dotenv').config({ path: path.join(__dirname, '.env') });
+  require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+} catch (e) {}
 
 process.env.PRISMA_CLIENT_ENGINE_TYPE = 'library';
 process.env.PRISMA_CLI_QUERY_ENGINE_TYPE = 'library';

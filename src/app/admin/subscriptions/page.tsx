@@ -7,14 +7,21 @@ import BkashApprovalsClient from './BkashApprovalsClient';
 export default async function AdminSubscriptionsPage() {
   await verifySuperAdmin();
 
-  const plans = await db.plan.findMany({
+  const plansRaw = await db.plan.findMany({
     include: {
       _count: { select: { subscriptions: true } },
     },
     orderBy: { price: 'asc' },
   });
 
-  const submissions = await db.manualPaymentSubmission.findMany({
+  const plans = plansRaw.map((p) => ({
+    ...p,
+    price: Number(p.price),
+    createdAt: p.createdAt.toISOString(),
+    updatedAt: p.updatedAt.toISOString(),
+  }));
+
+  const submissionsRaw = await db.manualPaymentSubmission.findMany({
     include: {
       store: { select: { name: true, slug: true, status: true } },
       user: { select: { name: true, email: true } },
@@ -22,7 +29,15 @@ export default async function AdminSubscriptionsPage() {
     orderBy: { createdAt: 'desc' },
   });
 
-  const activeSubscriptions = await db.subscription.findMany({
+  const submissions = submissionsRaw.map((s) => ({
+    ...s,
+    amount: Number(s.amount),
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+    approvedAt: s.approvedAt ? s.approvedAt.toISOString() : null,
+  }));
+
+  const activeSubscriptionsRaw = await db.subscription.findMany({
     include: {
       user: { select: { name: true, email: true } },
       plan: true,
@@ -30,6 +45,14 @@ export default async function AdminSubscriptionsPage() {
     },
     orderBy: { createdAt: 'desc' },
   });
+
+  const activeSubscriptions = activeSubscriptionsRaw.map((sub) => ({
+    ...sub,
+    currentPeriodStart: sub.currentPeriodStart.toISOString(),
+    currentPeriodEnd: sub.currentPeriodEnd.toISOString(),
+    createdAt: sub.createdAt.toISOString(),
+    updatedAt: sub.updatedAt.toISOString(),
+  }));
 
   return (
     <div className="container mx-auto p-6 md:p-12 space-y-8 font-sans">

@@ -79,8 +79,20 @@ foreach ($items as $item) {
 }
 echo "Cleaned public_html directory successfully.\n";
 
-echo "\n=== RESTARTING NODE PROCESSES & PURGING LITESPEED CACHE ===\n";
+echo "\n=== RESTARTING NODE PROCESSES & PURGING ALL CACHES ===\n";
 shell_exec("pkill -9 -f node 2>&1");
+shell_exec("pkill -9 -f passenger 2>&1");
+
+// Clean tmp directories
+@shell_exec("rm -rf /home/nabrijan/tmp/* 2>&1");
+@shell_exec("rm -rf /tmp/passenger.* 2>&1");
+
+foreach ($appDirs as $appDir) {
+    if (file_exists($appDir)) {
+        shell_exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt"));
+        echo "Touched $appDir/tmp/restart.txt\n";
+    }
+}
 
 $htaccessPath = '/home/nabrijan/public_html/.htaccess';
 $htaccessRule = "\n<IfModule LiteSpeed>\n    CacheLookup off\n    CacheDisable public /\n</IfModule>\n";

@@ -1,3 +1,4 @@
+// Supabase PostgreSQL Database Configuration
 generator client {
   provider      = "prisma-client-js"
   engineType    = "library"

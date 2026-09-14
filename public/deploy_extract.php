@@ -2,8 +2,8 @@
 header('Content-Type: text/plain');
 header('X-LiteSpeed-Purge: *');
 
-echo "=== ALL DIRECTORIES IN /home/nabrijan ===\n";
-echo shell_exec("ls -la /home/nabrijan");
+echo "=== FINDING ALL PACKAGE.JSON FILES IN /home/nabrijan ===\n";
+echo shell_exec("find /home/nabrijan -name package.json -not -path '*/node_modules/*' 2>/dev/null");
 echo "\n";
 
 $githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz';

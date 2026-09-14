@@ -19,10 +19,12 @@ if (file_exists($targetTar) && filesize($targetTar) > 1000) {
 }
 
 echo "=== 3. GIT PULL SOURCE FILES ===\n";
-$gitPull = shell_exec("cd " . escapeshellarg($appDir) . " && git pull origin main 2>&1");
+$gitPull = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
 echo ($gitPull ? $gitPull : "Git pull executed.") . "\n\n";
 
-echo "=== 4. RESTARTING PASSENGER NODE.JS APP ===\n";
+echo "=== 4. DIAGNOSTICS & RESTARTING PASSENGER NODE.JS APP ===\n";
+$diag = shell_exec("cd " . escapeshellarg($appDir) . " && pwd && ls -la .next/server/app/pricing 2>&1");
+echo "Pricing build dir: " . $diag . "\n";
 shell_exec("pkill -9 -f node 2>&1");
 $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";
 $touchRes = shell_exec($touchCmd);

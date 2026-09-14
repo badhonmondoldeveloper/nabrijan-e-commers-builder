@@ -52,6 +52,14 @@ export default async function AdminSubscriptionsPage() {
     currentPeriodEnd: sub.currentPeriodEnd.toISOString(),
     createdAt: sub.createdAt.toISOString(),
     updatedAt: sub.updatedAt.toISOString(),
+    plan: sub.plan
+      ? {
+          ...sub.plan,
+          price: Number(sub.plan.price),
+          createdAt: sub.plan.createdAt.toISOString(),
+          updatedAt: sub.plan.updatedAt.toISOString(),
+        }
+      : null,
   }));
 
   return (

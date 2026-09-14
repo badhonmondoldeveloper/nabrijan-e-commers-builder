@@ -47,33 +47,28 @@ async function main() {
     },
   });
 
-  // 4. Create Subscription Plans
-  const starterPlan = await prisma.plan.upsert({
-    where: { slug: 'starter' },
-    update: {},
-    create: {
-      name: 'Starter Plan',
-      slug: 'starter',
-      price: 990,
+  // 4. Create Single Subscription Plan (৳500 Full Package)
+  const fullPackagePlan = await prisma.plan.upsert({
+    where: { slug: 'full-package' },
+    update: {
+      name: 'Full Package',
+      price: 500,
       storeLimit: 1,
-      productLimit: 100,
-      staffLimit: 2,
-      features: JSON.stringify(['COD Checkout', '1 Store', 'Basic Analytics']),
-    },
-  });
-
-  const businessPlan = await prisma.plan.upsert({
-    where: { slug: 'business' },
-    update: {},
-    create: {
-      name: 'Business Plan',
-      slug: 'business',
-      price: 2490,
-      isPopular: true,
-      storeLimit: 3,
-      productLimit: 1000,
+      productLimit: 10000,
       staffLimit: 10,
-      features: JSON.stringify(['3 Stores', 'Visual Theme Customizer', 'Custom Domain']),
+      customDomainAllowed: true,
+      features: JSON.stringify(['Unlimited Products', 'Custom Domain', 'Theme Customizer', 'Courier Integration', 'bKash/Nagad/COD']),
+    },
+    create: {
+      name: 'Full Package',
+      slug: 'full-package',
+      price: 500,
+      isPopular: true,
+      storeLimit: 1,
+      productLimit: 10000,
+      staffLimit: 10,
+      customDomainAllowed: true,
+      features: JSON.stringify(['Unlimited Products', 'Custom Domain', 'Theme Customizer', 'Courier Integration', 'bKash/Nagad/COD']),
     },
   });
 

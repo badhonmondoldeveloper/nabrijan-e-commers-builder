@@ -14,14 +14,11 @@ export async function GET() {
           id: 'default',
           siteName: 'Nabrijan E-Commerce',
           siteTagline: 'Create your professional online store in minutes',
-          logoUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=100&q=80',
-          bannerText: '🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!',
-          trialDays: 3,
-          freePrice: 0,
-          starterPrice: 599,
-          proPrice: 1099,
-          growthPrice: 2499,
-          businessPrice: 2499,
+          logoUrl: '/logo.png',
+          bannerText: '🔥 ৳৫০০ টাকায় ফুল স্টোর প্যাকেজ সাবস্ক্রিপশন চালু করুন!',
+          fullPackagePrice: 500,
+          bkashNumber: '01625642420',
+          bkashType: 'Personal',
           contactEmail: 'badhonmondoldeveloper@gmail.com',
           contactPhone: '+8801625642420',
           whatsappNumber: '+8801625642420',
@@ -44,11 +41,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const freePrice = body.freePrice !== undefined ? Number(body.freePrice) : 0;
-    const starterPrice = body.starterPrice !== undefined ? Number(body.starterPrice) : 599;
-    const proPrice = body.proPrice !== undefined ? Number(body.proPrice) : 1099;
-    const growthPrice = body.growthPrice !== undefined ? Number(body.growthPrice) : 2499;
-    const businessPrice = body.businessPrice !== undefined ? Number(body.businessPrice) : growthPrice;
+    const fullPackagePrice = body.fullPackagePrice !== undefined ? Number(body.fullPackagePrice) : 500;
 
     const settings = await db.platformSettings.upsert({
       where: { id: 'default' },
@@ -57,12 +50,9 @@ export async function POST(req: Request) {
         siteTagline: body.siteTagline,
         logoUrl: body.logoUrl,
         bannerText: body.bannerText,
-        trialDays: Number(body.trialDays) || 3,
-        freePrice,
-        starterPrice,
-        proPrice,
-        growthPrice,
-        businessPrice,
+        fullPackagePrice,
+        bkashNumber: body.bkashNumber || '01625642420',
+        bkashType: body.bkashType || 'Personal',
         contactEmail: body.contactEmail,
         contactPhone: body.contactPhone,
         whatsappNumber: body.whatsappNumber,
@@ -73,45 +63,37 @@ export async function POST(req: Request) {
         siteTagline: body.siteTagline || 'Create your professional online store in minutes',
         logoUrl: body.logoUrl,
         bannerText: body.bannerText,
-        trialDays: Number(body.trialDays) || 3,
-        freePrice,
-        starterPrice,
-        proPrice,
-        growthPrice,
-        businessPrice,
+        fullPackagePrice,
+        bkashNumber: body.bkashNumber || '01625642420',
+        bkashType: body.bkashType || 'Personal',
         contactEmail: body.contactEmail,
         contactPhone: body.contactPhone,
         whatsappNumber: body.whatsappNumber,
       },
     });
 
+    // Sync Plan record
     try {
       await db.plan.upsert({
-        where: { slug: 'free' },
-        update: { price: freePrice },
-        create: { name: 'Free Plan', slug: 'free', price: freePrice, description: '20 Products, 5% physical COD fee, 10% digital order fee' },
-      });
-      await db.plan.upsert({
-        where: { slug: 'starter' },
-        update: { price: starterPrice },
-        create: { name: 'Starter Plan', slug: 'starter', price: starterPrice, description: 'Up to 500 products, report exports, 0% fee' },
-      });
-      await db.plan.upsert({
-        where: { slug: 'pro' },
-        update: { price: proPrice },
-        create: { name: 'Pro Plan', slug: 'pro', price: proPrice, isPopular: true, description: 'Up to 2,000 products, custom domain, theme builder' },
-      });
-      await db.plan.upsert({
-        where: { slug: 'growth' },
-        update: { price: growthPrice },
-        create: { name: 'Growth Plan', slug: 'growth', price: growthPrice, description: 'Unlimited products, unlimited couriers & stores' },
+        where: { slug: 'full-package' },
+        update: { price: fullPackagePrice },
+        create: {
+          name: 'Full Package',
+          slug: 'full-package',
+          price: fullPackagePrice,
+          description: 'Full store access, unlimited products, courier APIs, custom domain',
+          storeLimit: 1,
+          productLimit: 10000,
+          staffLimit: 10,
+          customDomainAllowed: true,
+        },
       });
     } catch (e) {
-      console.warn('Plan sync ignored:', e);
+      // ignore
     }
 
     return NextResponse.json({ success: true, settings });
   } catch (error: any) {
-    return NextResponse.json({ success: false, message: error.message || 'Failed to update settings' }, { status: 400 });
+    return NextResponse.json({ success: false, message: error.message || 'Failed to update settings' }, { status: 500 });
   }
 }

@@ -2,8 +2,7 @@ import { db } from '@/lib/db/prisma';
 import { verifySuperAdmin } from '@/lib/auth/rbac';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, DollarSign } from 'lucide-react';
-import Link from 'next/link';
+import BkashApprovalsClient from './BkashApprovalsClient';
 
 export default async function AdminSubscriptionsPage() {
   await verifySuperAdmin();
@@ -15,7 +14,15 @@ export default async function AdminSubscriptionsPage() {
     orderBy: { price: 'asc' },
   });
 
-  const subscriptions = await db.subscription.findMany({
+  const submissions = await db.manualPaymentSubmission.findMany({
+    include: {
+      store: { select: { name: true, slug: true, status: true } },
+      user: { select: { name: true, email: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const activeSubscriptions = await db.subscription.findMany({
     include: {
       user: { select: { name: true, email: true } },
       plan: true,
@@ -27,17 +34,22 @@ export default async function AdminSubscriptionsPage() {
   return (
     <div className="container mx-auto p-6 md:p-12 space-y-8 font-sans">
       <div className="border-b border-slate-800 pb-6">
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">Subscription Plans & Billing Oversight</h1>
-        <p className="text-sm text-slate-400 mt-1">Configure platform subscription tiers, plan limits, and ZiniPay payments.</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white">Store Activations & Billing Oversight</h1>
+        <p className="text-sm text-slate-400 mt-1">
+          Verify merchant bKash ৳500 payment submissions to activate stores and make them LIVE.
+        </p>
       </div>
 
-      {/* Subscription Plans */}
+      {/* Manual bKash Store Activations */}
+      <BkashApprovalsClient initialSubmissions={submissions} />
+
+      {/* Subscription Plans Summary */}
       <div className="grid md:grid-cols-3 gap-6">
         {plans.map((p) => (
           <Card key={p.id} className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
             <CardHeader>
               <CardTitle className="text-xl">{p.name}</CardTitle>
-              <div className="text-2xl font-bold text-white mt-1">৳{p.price} / month</div>
+              <div className="text-2xl font-bold text-emerald-400 mt-1">৳{p.price} / month</div>
             </CardHeader>
             <CardContent className="space-y-2 text-xs text-slate-400">
               <p>Store Limit: <strong className="text-white">{p.storeLimit} store</strong></p>
@@ -51,10 +63,10 @@ export default async function AdminSubscriptionsPage() {
         ))}
       </div>
 
-      {/* Active Merchant Subscriptions Table */}
-      <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+      {/* Active Subscriptions Table */}
+      <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl overflow-hidden">
         <CardHeader>
-          <CardTitle className="text-lg">Merchant Subscriptions & ZiniPay Logs</CardTitle>
+          <CardTitle className="text-lg font-bold text-white">Active Store Subscriptions</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -69,11 +81,11 @@ export default async function AdminSubscriptionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
-                {subscriptions.map((sub) => (
+                {activeSubscriptions.map((sub) => (
                   <tr key={sub.id} className="hover:bg-slate-800/40">
                     <td className="p-4 font-semibold text-white">{sub.user.name} ({sub.user.email})</td>
                     <td className="p-4 text-slate-300">{sub.store?.name || 'N/A'}</td>
-                    <td className="p-4 font-bold text-blue-400">{sub.plan?.name}</td>
+                    <td className="p-4 font-bold text-emerald-400">{sub.plan?.name}</td>
                     <td className="p-4">
                       <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
                         {sub.status}
@@ -90,3 +102,4 @@ export default async function AdminSubscriptionsPage() {
     </div>
   );
 }
+

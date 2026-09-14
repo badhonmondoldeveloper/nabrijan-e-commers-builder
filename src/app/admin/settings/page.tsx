@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Save, Sparkles, CheckCircle2, Globe, Shield, MessageCircle, Phone, Mail, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Settings, Save, Sparkles, CheckCircle2, Globe, Shield, MessageCircle, Phone, Mail, Upload, Loader2, Image as ImageIcon, CreditCard } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -19,13 +19,10 @@ export default function AdminSettingsPage() {
     siteName: 'Nabrijan E-Commerce',
     siteTagline: 'Create your professional online store in minutes',
     logoUrl: '',
-    bannerText: '🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!',
-    trialDays: 3,
-    freePrice: 0,
-    starterPrice: 599,
-    proPrice: 1099,
-    growthPrice: 2499,
-    businessPrice: 2499,
+    bannerText: '🔥 ৳৫০০ টাকায় ফুল স্টোর প্যাকেজ সাবস্ক্রিপশন চালু করুন!',
+    fullPackagePrice: 500,
+    bkashNumber: '01625642420',
+    bkashType: 'Personal',
     contactEmail: 'badhonmondoldeveloper@gmail.com',
     contactPhone: '+8801625642420',
     whatsappNumber: '+8801625642420',
@@ -45,13 +42,10 @@ export default function AdminSettingsPage() {
           siteName: data.settings.siteName || 'Nabrijan E-Commerce',
           siteTagline: data.settings.siteTagline || '',
           logoUrl: data.settings.logoUrl || '',
-          bannerText: data.settings.bannerText || '',
-          trialDays: data.settings.trialDays || 3,
-          freePrice: data.settings.freePrice !== undefined ? Number(data.settings.freePrice) : 0,
-          starterPrice: data.settings.starterPrice !== undefined ? Number(data.settings.starterPrice) : 599,
-          proPrice: data.settings.proPrice !== undefined ? Number(data.settings.proPrice) : 1099,
-          growthPrice: data.settings.growthPrice !== undefined ? Number(data.settings.growthPrice) : 2499,
-          businessPrice: data.settings.businessPrice !== undefined ? Number(data.settings.businessPrice) : 2499,
+          bannerText: data.settings.bannerText || '🔥 ৳৫০০ টাকায় ফুল স্টোর প্যাকেজ সাবস্ক্রিপশন চালু করুন!',
+          fullPackagePrice: data.settings.fullPackagePrice !== undefined ? Number(data.settings.fullPackagePrice) : 500,
+          bkashNumber: data.settings.bkashNumber || '01625642420',
+          bkashType: data.settings.bkashType || 'Personal',
           contactEmail: data.settings.contactEmail || 'badhonmondoldeveloper@gmail.com',
           contactPhone: data.settings.contactPhone || '+8801625642420',
           whatsappNumber: data.settings.whatsappNumber || '+8801625642420',
@@ -102,7 +96,7 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Platform settings and branding logo saved successfully!' });
+        setMessage({ type: 'success', text: 'Platform settings and bKash payment receiver numbers saved successfully!' });
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to save settings' });
       }
@@ -130,9 +124,9 @@ export default function AdminSettingsPage() {
           <Badge className="bg-rose-500/20 text-rose-400 border-rose-500/30 mb-2">
             <Settings className="w-3 h-3 mr-1" /> Super Admin Global Settings
           </Badge>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Site Branding & Customization</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">Site Branding & bKash Payment Settings</h1>
           <p className="text-sm text-slate-400">
-            Dynamically upload site logo from device, customize hero tagline, announcement bar, trial policy, and support numbers.
+            Manage your bKash payment receiver number, single ৳500 plan pricing, site logo, and contact info.
           </p>
         </div>
       </div>
@@ -149,6 +143,71 @@ export default function AdminSettingsPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* bKash Payment Receiving Numbers Management Card */}
+        <Card className="bg-slate-900 border-2 border-pink-500/40 text-slate-100 shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-pink-950/40 to-slate-900 border-b border-slate-800">
+            <CardTitle className="text-lg flex items-center gap-2 text-pink-400">
+              <CreditCard className="w-5 h-5 text-pink-400" /> bKash Merchant Payment Receiver Settings (বিকাশ নম্বর ম্যানেজমেন্ট)
+            </CardTitle>
+            <CardDescription className="text-slate-300">
+              মার্চেন্টরা আপনার স্টোর লাইভ করার জন্য এই বিকাশ নম্বরে ৫০০ টাকা পাঠাবে। আপনি নিচে বিকাশ নম্বর পরিবর্তন করতে পারবেন।
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-xs font-bold text-pink-300 block">
+                  bKash Payment Receiver Phone Number (বিকাশ নম্বর)
+                </label>
+                <Input
+                  type="text"
+                  value={form.bkashNumber}
+                  onChange={(e) => setForm({ ...form, bkashNumber: e.target.value })}
+                  placeholder="01625642420"
+                  className="bg-slate-950 border-pink-500/30 text-white font-mono text-base font-extrabold tracking-wider"
+                  required
+                />
+                <p className="text-[11px] text-slate-400">এই নম্বরে মার্চেন্টরা ৫০০ টাকা পেমেন্ট পাঠাবে।</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-300 block">
+                  bKash Account Type (বিকাশ টাইপ)
+                </label>
+                <select
+                  value={form.bkashType}
+                  onChange={(e) => setForm({ ...form, bkashType: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white text-xs font-bold"
+                >
+                  <option value="Personal">Personal (Send Money)</option>
+                  <option value="Agent">Agent (Cash In)</option>
+                  <option value="Merchant">Merchant (Payment)</option>
+                </select>
+                <p className="text-[11px] text-slate-400">Personal / Agent / Merchant</p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <span className="text-xs font-bold text-slate-300 block">Full Store Package Subscription Fee</span>
+                <span className="text-xs text-slate-400">Merchant Store Activation Fee per Month</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-black text-emerald-400">৳</span>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.fullPackagePrice}
+                  onChange={(e) => setForm({ ...form, fullPackagePrice: Number(e.target.value) })}
+                  className="bg-slate-900 border-emerald-500/40 text-emerald-400 font-black text-lg w-32 text-center"
+                  required
+                />
+                <span className="text-xs text-slate-400 font-bold">/ Month</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Branding Card */}
         <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
           <CardHeader>
@@ -199,238 +258,89 @@ export default function AdminSettingsPage() {
                       )}
                       📷 Device থেকে লোগো পিকচার সিলেক্ট করুন
                     </Button>
-                    {form.logoUrl && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setForm((p) => ({ ...p, logoUrl: '' }))}
-                        className="border-slate-800 text-slate-400 hover:text-white text-xs"
-                      >
-                        Reset Default
-                      </Button>
-                    )}
                   </div>
-                  <p className="text-[11px] text-slate-400">
-                    Supports PNG, JPG, WEBP, SVG images up to 10MB.
-                  </p>
+
+                  <Input
+                    type="url"
+                    value={form.logoUrl}
+                    onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
+                    placeholder="https://your-domain.com/logo.png"
+                    className="bg-slate-900 border-slate-800 text-white text-xs"
+                  />
                 </div>
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 block">Site Platform Name</label>
+                <label className="text-xs font-semibold text-slate-300">Website Name</label>
                 <Input
+                  type="text"
                   value={form.siteName}
                   onChange={(e) => setForm({ ...form, siteName: e.target.value })}
-                  placeholder="e.g. Nabrijan E-Commerce"
                   className="bg-slate-950 border-slate-800 text-white"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 block">Logo URL Path</label>
+                <label className="text-xs font-semibold text-slate-300">Hero Tagline</label>
                 <Input
-                  value={form.logoUrl}
-                  onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
-                  placeholder="/uploads/site-logo.png"
-                  className="bg-slate-950 border-slate-800 text-white font-mono text-xs"
+                  type="text"
+                  value={form.siteTagline}
+                  onChange={(e) => setForm({ ...form, siteTagline: e.target.value })}
+                  className="bg-slate-950 border-slate-800 text-white"
                 />
               </div>
             </div>
+          </CardContent>
+        </Card>
 
+        {/* Support & Contact Channels */}
+        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Phone className="w-5 h-5 text-emerald-400" /> Platform Contact & Support Channels
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300 block">Hero Subtitle / Tagline</label>
+              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-blue-400" /> Official Email Address
+              </label>
               <Input
-                value={form.siteTagline}
-                onChange={(e) => setForm({ ...form, siteTagline: e.target.value })}
-                placeholder="e.g. Create your professional online store in minutes"
-                className="bg-slate-950 border-slate-800 text-white"
+                type="email"
+                value={form.contactEmail}
+                onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
+                className="bg-slate-950 border-slate-800 text-white text-xs"
+                required
               />
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Announcement & Trial Policy Card */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" /> Top Announcement & Free Trial Policy
-            </CardTitle>
-            <CardDescription className="text-slate-400">
-              Set default free trial duration (3 days) and global homepage promo text.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Global Announcement Banner Text</label>
-              <textarea
-                rows={2}
-                value={form.bannerText}
-                onChange={(e) => setForm({ ...form, bannerText: e.target.value })}
-                placeholder="🔥 ৩ দিনের ফ্রি ট্রায়াল সুবিধা পেতে আজই রেজিস্ট্রেশন করুন!"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white text-xs"
+              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-emerald-400" /> Support Helpline Phone
+              </label>
+              <Input
+                type="text"
+                value={form.contactPhone}
+                onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
+                className="bg-slate-950 border-slate-800 text-white text-xs"
+                required
               />
             </div>
 
-            <div className="space-y-2 max-w-xs">
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Default Free Trial Days</label>
-              <div className="flex items-center gap-3">
-                <Input
-                  type="number"
-                  min={1}
-                  max={30}
-                  value={form.trialDays}
-                  onChange={(e) => setForm({ ...form, trialDays: Number(e.target.value) })}
-                  className="bg-slate-950 border-slate-800 text-white w-28 font-bold text-center"
-                  required
-                />
-                <span className="text-xs text-slate-400 font-semibold">Days (Recommended: 3)</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Subscription Pricing Management Card */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Shield className="w-5 h-5 text-emerald-400" /> ZatiqEasy Subscription Plan Prices (সাবস্ক্রিপশন প্রাইসিং পরিবর্তন)
-            </CardTitle>
-            <CardDescription className="text-slate-400">
-              Super Admin can change monthly pricing for Free, Starter, Pro, and Growth plans dynamically across the entire website.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <label className="text-xs font-bold text-slate-200 block">
-                  Free Plan Price (ফ্রি ট্রায়াল)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs text-slate-400 font-bold">৳</span>
-                  <Input
-                    type="number"
-                    min={0}
-                    value={form.freePrice}
-                    onChange={(e) => setForm({ ...form, freePrice: Number(e.target.value) })}
-                    placeholder="0"
-                    className="bg-slate-900 border-slate-700 text-white pl-7 font-extrabold text-sm"
-                    required
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400">Default: ৳0 / month</p>
-              </div>
-
-              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <label className="text-xs font-bold text-slate-200 block">
-                  Starter Plan Price (স্টার্টার প্ল্যান)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs text-slate-400 font-bold">৳</span>
-                  <Input
-                    type="number"
-                    min={0}
-                    value={form.starterPrice}
-                    onChange={(e) => setForm({ ...form, starterPrice: Number(e.target.value) })}
-                    placeholder="599"
-                    className="bg-slate-900 border-slate-700 text-white pl-7 font-extrabold text-sm"
-                    required
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400">Default: ৳599 / month</p>
-              </div>
-
-              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-indigo-500/40">
-                <label className="text-xs font-bold text-indigo-300 block">
-                  Pro Plan Price (প্রো প্ল্যান - Popular)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs text-indigo-400 font-bold">৳</span>
-                  <Input
-                    type="number"
-                    min={0}
-                    value={form.proPrice}
-                    onChange={(e) => setForm({ ...form, proPrice: Number(e.target.value) })}
-                    placeholder="1099"
-                    className="bg-slate-900 border-indigo-500/40 text-white pl-7 font-extrabold text-sm"
-                    required
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400">Default: ৳1,099 / month</p>
-              </div>
-
-              <div className="space-y-2 p-4 rounded-xl bg-slate-950 border border-purple-500/40">
-                <label className="text-xs font-bold text-purple-300 block">
-                  Growth Plan Price (গ্রোথ প্ল্যান)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs text-purple-400 font-bold">৳</span>
-                  <Input
-                    type="number"
-                    min={0}
-                    value={form.growthPrice}
-                    onChange={(e) => setForm({ ...form, growthPrice: Number(e.target.value) })}
-                    placeholder="2499"
-                    className="bg-slate-900 border-purple-500/40 text-white pl-7 font-extrabold text-sm"
-                    required
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400">Default: ৳2,499 / month</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Support & Contact Card */}
-        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Phone className="w-5 h-5 text-emerald-400" /> Platform Contact & Support Info
-            </CardTitle>
-            <CardDescription className="text-slate-400">
-              Provide contact details for merchant inquiries and customer support.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 mb-1">
-                  <Phone className="w-3.5 h-3.5 text-blue-400" /> Contact Phone
-                </label>
-                <Input
-                  value={form.contactPhone}
-                  onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
-                  placeholder="+8801625642420"
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 mb-1">
-                  <MessageCircle className="w-3.5 h-3.5 text-emerald-400" /> WhatsApp Number
-                </label>
-                <Input
-                  value={form.whatsappNumber}
-                  onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
-                  placeholder="+8801625642420"
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 mb-1">
-                  <Mail className="w-3.5 h-3.5 text-sky-400" /> Support Email
-                </label>
-                <Input
-                  type="email"
-                  value={form.contactEmail}
-                  onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
-                  placeholder="badhonmondoldeveloper@gmail.com"
-                  className="bg-slate-950 border-slate-800 text-white"
-                />
-              </div>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <MessageCircle className="w-3.5 h-3.5 text-green-500" /> WhatsApp Support Number
+              </label>
+              <Input
+                type="text"
+                value={form.whatsappNumber}
+                onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
+                className="bg-slate-950 border-slate-800 text-white text-xs"
+                required
+              />
             </div>
           </CardContent>
         </Card>
@@ -439,9 +349,10 @@ export default function AdminSettingsPage() {
           <Button
             type="submit"
             disabled={saving}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 h-12 shadow-lg shadow-blue-500/20"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-8 py-3 rounded-xl text-sm shadow-xl"
           >
-            {saving ? 'Saving Settings...' : 'Save Site Settings'} <Save className="w-4 h-4 ml-2" />
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+            Save All Admin Settings
           </Button>
         </div>
       </form>

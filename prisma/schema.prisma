@@ -38,6 +38,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   affiliateProfile    AffiliateProfile?
   referredMapping     ReferralMapping?     @relation("ReferredUser")
+  manualPayments      ManualPaymentSubmission[]
 
   @@index([email])
 }
@@ -131,6 +132,7 @@ model Store {
   workflows    AutomationWorkflow[]
   tickets      SupportTicket[]
   wallet       SellerWallet?
+  manualPayments ManualPaymentSubmission[]
 
   @@index([ownerId])
   @@index([slug])
@@ -1301,7 +1303,33 @@ model PlatformSettings {
   contactEmail          String?  @default("badhonmondoldeveloper@gmail.com")
   contactPhone          String?  @default("+8801625642420")
   whatsappNumber        String?  @default("+8801625642420")
+  bkashNumber           String?  @default("01625642420")
+  bkashType             String?  @default("Personal")
+  fullPackagePrice      Decimal  @default(500.00) @db.Decimal(12, 2)
   updatedAt             DateTime @updatedAt
+}
+
+model ManualPaymentSubmission {
+  id           String   @id @default(cuid())
+  storeId      String
+  userId       String
+  planId       String?
+  amount       Decimal  @default(500.00) @db.Decimal(12, 2)
+  method       String   @default("BKASH")
+  senderNumber String
+  trxId        String   @unique
+  status       String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  adminNotes   String?
+  approvedAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([userId])
+  @@index([status])
 }
 
 // --------------------------------------------------------

@@ -127,11 +127,11 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
                       <td className="p-4">
                         <div className="font-bold text-white flex items-center gap-1.5">
                           <Building2 className="w-3.5 h-3.5 text-blue-400" />
-                          {sub.store?.name}
+                          {sub.store?.name || 'N/A Store'}
                         </div>
                         <div className="text-slate-400 flex items-center gap-1 text-[11px] mt-0.5">
                           <User className="w-3 h-3 text-slate-500" />
-                          {sub.user?.name} ({sub.user?.email})
+                          {sub.user?.name || 'User'} ({sub.user?.email || 'N/A Email'})
                         </div>
                       </td>
                       <td className="p-4">
@@ -208,8 +208,8 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
                 <tbody className="divide-y divide-slate-800/60">
                   {pastSubmissions.map((sub) => (
                     <tr key={sub.id} className="hover:bg-slate-800/40">
-                      <td className="p-4 font-bold text-white">{sub.store?.name}</td>
-                      <td className="p-4 text-slate-300">{sub.user?.email}</td>
+                      <td className="p-4 font-bold text-white">{sub.store?.name || 'N/A Store'}</td>
+                      <td className="p-4 text-slate-300">{sub.user?.email || 'N/A Email'}</td>
                       <td className="p-4 font-mono text-slate-300">{sub.senderNumber}</td>
                       <td className="p-4 font-mono text-slate-300">{sub.trxId}</td>
                       <td className="p-4 font-bold text-white">৳{Number(sub.amount)}</td>

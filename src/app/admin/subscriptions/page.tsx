@@ -114,15 +114,19 @@ export default async function AdminSubscriptionsPage() {
               <tbody className="divide-y divide-slate-800/60">
                 {activeSubscriptions.map((sub) => (
                   <tr key={sub.id} className="hover:bg-slate-800/40">
-                    <td className="p-4 font-semibold text-white">{sub.user.name} ({sub.user.email})</td>
+                    <td className="p-4 font-semibold text-white">
+                      {sub.user?.name || 'N/A'} ({sub.user?.email || 'N/A'})
+                    </td>
                     <td className="p-4 text-slate-300">{sub.store?.name || 'N/A'}</td>
-                    <td className="p-4 font-bold text-emerald-400">{sub.plan?.name}</td>
+                    <td className="p-4 font-bold text-emerald-400">{sub.plan?.name || 'Full Package'}</td>
                     <td className="p-4">
                       <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
                         {sub.status}
                       </Badge>
                     </td>
-                    <td className="p-4 text-slate-400">{new Date(sub.currentPeriodEnd).toLocaleDateString()}</td>
+                    <td className="p-4 text-slate-400">
+                      {sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : 'N/A'}
+                    </td>
                   </tr>
                 ))}
               </tbody>

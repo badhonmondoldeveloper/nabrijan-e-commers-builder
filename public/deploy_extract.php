@@ -6,7 +6,7 @@ echo "=== FINDING ALL PACKAGE.JSON FILES IN /home/nabrijan ===\n";
 echo shell_exec("find /home/nabrijan -name package.json -not -path '*/node_modules/*' 2>/dev/null");
 echo "\n";
 
-$githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz';
+$githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz?v=' . time();
 $appDirs = ['/home/nabrijan/app', '/home/nabrijan/repositories/nabrijan'];
 
 foreach ($appDirs as $appDir) {

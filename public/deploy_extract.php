@@ -53,6 +53,18 @@ $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . esca
 $touchRes = shell_exec($touchCmd);
 echo ($touchRes ? $touchRes : "Successfully killed node and touched tmp/restart.txt.") . "\n\n";
 
-echo "=== 5. LITESPEED CACHE PURGED ===\n";
+echo "=== 5. LITESPEED CACHE PURGED & HTACCESS OVERRIDE ===\n";
+header("X-LiteSpeed-Purge: *");
+
+$htaccessPath = '/home/nabrijan/public_html/.htaccess';
+$htaccessRule = "\n<IfModule LiteSpeed>\n    CacheLookup off\n    CacheDisable public /\n</IfModule>\n";
+
+if (file_exists($htaccessPath)) {
+    $currentHt = file_get_contents($htaccessPath);
+    if (strpos($currentHt, 'CacheLookup off') === false) {
+        file_put_contents($htaccessPath, $currentHt . $htaccessRule);
+        echo "Added LiteSpeed cache bypass to .htaccess\n";
+    }
+}
 echo "Sent X-LiteSpeed-Purge: * header.\n";
 ?>

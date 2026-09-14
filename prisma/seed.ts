@@ -47,17 +47,11 @@ async function main() {
     },
   });
 
-  // 4. Create Multi-tier Subscription Plans (Basic, Starter, Pro, Growth)
-  const basicPlan = await prisma.plan.upsert({
-    where: { slug: 'basic' },
-    update: { name: 'Basic', price: 500, storeLimit: 1, productLimit: 50, staffLimit: 2, customDomainAllowed: false },
-    create: { name: 'Basic', slug: 'basic', price: 500, storeLimit: 1, productLimit: 50, staffLimit: 2, customDomainAllowed: false },
-  });
-
+  // 4. Create Multi-tier Subscription Plans (Starter, Pro, Growth)
   const starterPlan = await prisma.plan.upsert({
     where: { slug: 'starter' },
-    update: { name: 'Starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: true },
-    create: { name: 'Starter', slug: 'starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: true },
+    update: { name: 'Starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: false },
+    create: { name: 'Starter', slug: 'starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: false },
   });
 
   const proPlan = await prisma.plan.upsert({

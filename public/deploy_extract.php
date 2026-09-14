@@ -40,14 +40,14 @@ foreach ($staleDirs as $sd) {
 echo "\n";
 
 echo "=== 4. DIAGNOSTICS & RESTARTING PASSENGER NODE.JS APP ===\n";
-$findRes = shell_exec("find /home/nabrijan/ -name 'page.html' -o -name 'index.html' 2>&1");
-echo "Found HTML files on server:\n" . $findRes . "\n";
-if (file_exists('/home/nabrijan/app/.next/server/app/index.html')) {
-    $idxContent = file_get_contents('/home/nabrijan/app/.next/server/app/index.html');
-    echo "index.html size: " . strlen($idxContent) . " bytes\n";
-    echo "Contains Panjabi: " . (strpos($idxContent, 'Panjabi') !== false ? 'YES' : 'NO') . "\n";
-    echo "Contains SaaS: " . (strpos($idxContent, 'SaaS') !== false ? 'YES' : 'NO') . "\n";
-}
+$nodePs = shell_exec("ps aux | grep node 2>&1");
+echo "Running Node processes:\n" . $nodePs . "\n";
+
+$cwds = shell_exec("ls -l /proc/[0-9]*/cwd 2>&1 | grep nabrijan");
+echo "Node process working directories:\n" . $cwds . "\n";
+
+$findRes = shell_exec("find /home/nabrijan/ -maxdepth 3 -type d 2>&1");
+echo "Home directories:\n" . $findRes . "\n";
 shell_exec("pkill -9 -f node 2>&1");
 $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";
 $touchRes = shell_exec($touchCmd);

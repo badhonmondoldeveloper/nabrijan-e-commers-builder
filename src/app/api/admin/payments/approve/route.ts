@@ -38,16 +38,23 @@ export async function POST(req: Request) {
         data: { status: 'ACTIVE' },
       });
 
-      // 3. Find or Create Plan (Full Package)
-      let plan = await db.plan.findUnique({ where: { slug: 'full-package' } });
+      // 3. Find or Create Plan (Pro / Starter / Growth)
+      let plan = null;
+      if (submission.planId) {
+        plan = await db.plan.findUnique({ where: { id: submission.planId } });
+      }
+      if (!plan) {
+        plan = await db.plan.findFirst({ where: { slug: { in: ['pro', 'starter', 'growth', 'full-package'] } } });
+      }
       if (!plan) {
         plan = await db.plan.create({
           data: {
-            name: 'Full Package',
-            slug: 'full-package',
-            price: 500,
-            storeLimit: 1,
-            productLimit: 10000,
+            name: 'Pro',
+            slug: 'pro',
+            price: 1099,
+            isPopular: true,
+            storeLimit: 3,
+            productLimit: 2000,
             staffLimit: 10,
             customDomainAllowed: true,
           },

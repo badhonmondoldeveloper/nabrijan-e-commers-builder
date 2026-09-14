@@ -47,29 +47,29 @@ async function main() {
     },
   });
 
-  // 4. Create Single Subscription Plan (৳500 Full Package)
-  const fullPackagePlan = await prisma.plan.upsert({
-    where: { slug: 'full-package' },
-    update: {
-      name: 'Full Package',
-      price: 500,
-      storeLimit: 1,
-      productLimit: 10000,
-      staffLimit: 10,
-      customDomainAllowed: true,
-      features: JSON.stringify(['Unlimited Products', 'Custom Domain', 'Theme Customizer', 'Courier Integration', 'bKash/Nagad/COD']),
-    },
-    create: {
-      name: 'Full Package',
-      slug: 'full-package',
-      price: 500,
-      isPopular: true,
-      storeLimit: 1,
-      productLimit: 10000,
-      staffLimit: 10,
-      customDomainAllowed: true,
-      features: JSON.stringify(['Unlimited Products', 'Custom Domain', 'Theme Customizer', 'Courier Integration', 'bKash/Nagad/COD']),
-    },
+  // 4. Create Multi-tier Subscription Plans (Free, Starter, Pro, Growth)
+  const freePlan = await prisma.plan.upsert({
+    where: { slug: 'free' },
+    update: { name: 'Free', price: 0, storeLimit: 1, productLimit: 20, staffLimit: 2, customDomainAllowed: false },
+    create: { name: 'Free', slug: 'free', price: 0, storeLimit: 1, productLimit: 20, staffLimit: 2, customDomainAllowed: false },
+  });
+
+  const starterPlan = await prisma.plan.upsert({
+    where: { slug: 'starter' },
+    update: { name: 'Starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: true },
+    create: { name: 'Starter', slug: 'starter', price: 599, storeLimit: 1, productLimit: 500, staffLimit: 5, customDomainAllowed: true },
+  });
+
+  const proPlan = await prisma.plan.upsert({
+    where: { slug: 'pro' },
+    update: { name: 'Pro', price: 1099, isPopular: true, storeLimit: 3, productLimit: 2000, staffLimit: 10, customDomainAllowed: true },
+    create: { name: 'Pro', slug: 'pro', price: 1099, isPopular: true, storeLimit: 3, productLimit: 2000, staffLimit: 10, customDomainAllowed: true },
+  });
+
+  const growthPlan = await prisma.plan.upsert({
+    where: { slug: 'growth' },
+    update: { name: 'Growth', price: 2499, storeLimit: 10, productLimit: 100000, staffLimit: 50, customDomainAllowed: true },
+    create: { name: 'Growth', slug: 'growth', price: 2499, storeLimit: 10, productLimit: 100000, staffLimit: 50, customDomainAllowed: true },
   });
 
   // 5. Create Default Theme

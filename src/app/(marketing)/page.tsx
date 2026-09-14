@@ -363,88 +363,135 @@ export default async function SaaSMarketingPage() {
         </div>
       </section>
 
-      {/* Subscription Pricing Grid - Single ৳500 Package */}
+      {/* Subscription Pricing Grid */}
       <section id="pricing" className="py-16 sm:py-24 bg-[#F6FAF4] border-t border-[#DCE7DF] relative">
-        <div className="container mx-auto px-4 max-w-4xl relative z-10">
+        <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <Badge className="bg-[#EAF7DF] text-[#063B2A] border border-[#55B510]/30 mb-3 px-4 py-1.5 rounded-full font-bold">
-              💎 Transparent Pricing
+              💎 Flexible Subscription Plans
             </Badge>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#063B2A] mb-3 sm:mb-4">
-              একমাত্র ফুল প্যাকেজ সাবস্ক্রিপশন
+              আপনার ব্যবসার জন্য বেছে নিন সেরা প্ল্যান
             </h2>
             <p className="text-[#66736C] text-xs sm:text-base">
-              কোনো জটিল হিডেন চার্জ নেই! মাত্র ৳{fullPackagePrice} টাকায় পান আপনার ই-কমার্স দোকানের আনলিমিটেড অল-ইন-ওয়ান সুবিধা।
+              কোনো লুকানো চার্জ নেই। সাশ্রয়ী সাবস্ক্রিপশনে আপনার ই-কমার্স ব্যবসা বড় করুন।
             </p>
           </div>
 
-          <div className="max-w-xl mx-auto">
-            <div className="bg-white rounded-3xl border-2 border-[#55B510] text-[#17221D] shadow-2xl relative bg-gradient-to-b from-white via-white to-[#EAF7DF]/40 overflow-hidden">
-              <div className="absolute top-0 right-0 bg-[#55B510] text-white text-[11px] font-black px-4 py-1.5 rounded-bl-xl uppercase tracking-wider shadow-md">
-                Full Package Access
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Starter Plan */}
+            <div className="bg-white rounded-3xl p-7 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+              <div>
+                <h3 className="text-xl font-bold text-[#063B2A]">Starter</h3>
+                <p className="text-xs text-[#66736C] mt-1">ছোট ও নতুন মার্চেন্টদের জন্য।</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-[#063B2A]">৳৫৯৯</span>
+                  <span className="text-xs text-[#66736C] font-semibold">/ প্রতি মাস</span>
+                </div>
+                <ul className="mt-6 space-y-3 text-xs text-[#17221D]">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>৫০০টি প্রোডাক্ট আপলোড</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>আনলিমিটেড ফ্রি থিম</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>কাস্টম ডোমেইন ম্যাপিং</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>১টি ফ্রি কুরিয়ার API</span>
+                  </li>
+                </ul>
               </div>
-
-              <div className="p-8 sm:p-10 text-center border-b border-[#DCE7DF]">
-                <div className="w-16 h-16 bg-[#EAF7DF] rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#55B510] border border-[#55B510]/30 shadow-inner">
-                  <Crown className="w-8 h-8 text-[#55B510]" />
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#063B2A]">Full Store Package</h3>
-                <p className="text-[#66736C] text-xs sm:text-sm mt-1">সম্পূর্ণ অনলাইন দোকান বিল্ডার ও লাইভ অ্যাক্টিভেশন</p>
-
-                <div className="mt-6 flex items-baseline justify-center gap-1.5">
-                  <span className="text-5xl sm:text-6xl font-black text-[#55B510]">৳{fullPackagePrice}</span>
-                  <span className="text-sm text-[#66736C] font-extrabold">/ প্রতি মাস</span>
-                </div>
-              </div>
-
-              <div className="p-8 sm:p-10 space-y-6">
-                <div className="p-4 bg-[#EAF7DF]/60 border border-[#55B510]/30 rounded-2xl text-xs text-[#063B2A] space-y-1">
-                  <p className="font-bold">✨ ১০০% ফ্রী স্টোর ক্রিয়েশন ও ট্রায়াল!</p>
-                  <p className="text-[#66736C]">
-                    আপনি ফ্রিতে স্টোর সাজাতে ও আনলিমিটেড প্রোডাক্ট আপলোড করতে পারবেন। দোকান লাইভ করতে মাত্র ৳{fullPackagePrice} বিকাশ সেন্ড মানি করুন।
-                  </p>
-                </div>
-
-                <div className="space-y-3.5 text-xs sm:text-sm text-[#17221D]">
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">আনলিমিটেড প্রোডাক্ট ও ক্যাটাগরি আপলোড</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">ভিজ্যুয়াল কাস্টম থিম বিল্ডার ও লেআউট</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">কাস্টম ডোমেইন ম্যাপিং (`.com`, `.com.bd`)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">পাঠাও ও স্টিডফাস্ট কুরিয়ার অটো API পার্সেল বুকিং</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">bKash, Nagad ও ক্যাশ অন ডেলিভারি (COD) চেকআউট</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">১-ক্লিক হোয়াটসঅ্যাপ অর্ডার ও সেলস রিপোর্ট</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#55B510] mr-3 shrink-0" />
-                    <span className="font-bold">ডেডিকেটেড মার্চেন্ট ড্যাশবোর্ড ও স্টাফ অ্যাকাউন্ট</span>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Link href="/register">
-                    <Button className="w-full h-13 bg-[#55B510] hover:bg-[#489d0d] text-white font-black text-sm sm:text-base rounded-2xl shadow-xl shadow-[#55B510]/30 transition transform hover:scale-[1.01]">
-                      এখনই ফ্রী দোকান তৈরি করুন <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+              <Link href="/register?plan=starter" className="mt-8 block">
+                <Button className="w-full bg-[#063B2A] hover:bg-[#04281c] text-white font-bold text-xs rounded-xl py-3">
+                  শুরু করুন →
+                </Button>
+              </Link>
             </div>
+
+            {/* Pro Plan (Most Popular) */}
+            <div className="bg-[#063B2A] text-white rounded-3xl p-7 border-2 border-[#55B510] shadow-2xl flex flex-col justify-between relative md:-translate-y-3">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#55B510] text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow">
+                Most Popular
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Pro</h3>
+                <p className="text-xs text-emerald-200 mt-1">ক্রমবর্ধমান ই-কমার্স ব্যবসার জন্য।</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-[#55B510]">৳১,০৯৯</span>
+                  <span className="text-xs text-emerald-200 font-semibold">/ প্রতি মাস</span>
+                </div>
+                <ul className="mt-6 space-y-3 text-xs text-emerald-100">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>২,০০০টি প্রোডাক্ট আপলোড</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>ভিজ্যুয়াল థিম বিল্ডার</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>কাস্টম ডোমেইন ম্যাপিং</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>আনলিমিটেড কুরিয়ার API</span>
+                  </li>
+                </ul>
+              </div>
+              <Link href="/register?plan=pro" className="mt-8 block">
+                <Button className="w-full bg-[#55B510] hover:bg-[#489d0d] text-white font-black text-xs rounded-xl py-3 shadow-lg">
+                  শুরু করুন →
+                </Button>
+              </Link>
+            </div>
+
+            {/* Growth Plan */}
+            <div className="bg-white rounded-3xl p-7 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+              <div>
+                <h3 className="text-xl font-bold text-[#063B2A]">Growth</h3>
+                <p className="text-xs text-[#66736C] mt-1">বড় ও স্কেলিং ব্র্যান্ডের জন্য।</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-[#063B2A]">৳২,৪৯৯</span>
+                  <span className="text-xs text-[#66736C] font-semibold">/ প্রতি মাস</span>
+                </div>
+                <ul className="mt-6 space-y-3 text-xs text-[#17221D]">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>আনলিমিটেড প্রোডাক্ট আপলোড</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>সব প্রিমিয়াম অল-ইন-ওয়ান ফিচার</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>কাস্টম ডোমেইন ম্যাপিং</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>প্রাইওরিটি কাস্টমার সাপোর্ট</span>
+                  </li>
+                </ul>
+              </div>
+              <Link href="/register?plan=growth" className="mt-8 block">
+                <Button className="w-full bg-[#063B2A] hover:bg-[#04281c] text-white font-bold text-xs rounded-xl py-3">
+                  শুরু করুন →
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/pricing" className="inline-flex items-center text-xs sm:text-sm font-bold text-[#55B510] hover:underline">
+              সকল ফিচারের বিস্তারিত তুলনা দেখুন <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
           </div>
         </div>
       </section>

@@ -11,7 +11,7 @@ echo ($downloadRes ? $downloadRes : "Download command executed.") . " File size:
 
 if (file_exists($targetTar) && filesize($targetTar) > 1000) {
     echo "=== 2. WIPING OLD .NEXT AND EXTRACTING ===\n";
-    $cmd = "rm -rf " . escapeshellarg($appDir . '/.next') . " && cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($targetTar) . " 2>&1";
+    $cmd = "rm -rf " . escapeshellarg($appDir . '/.next') . " && cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($targetTar) . " && rm -f " . escapeshellarg($targetTar) . " 2>&1";
     $res = shell_exec($cmd);
     echo ($res ? $res : "Successfully extracted new .next directory.") . "\n\n";
 } else {
@@ -23,7 +23,8 @@ $gitPull = shell_exec("cd " . escapeshellarg($appDir) . " && git pull origin mai
 echo ($gitPull ? $gitPull : "Git pull executed.") . "\n\n";
 
 echo "=== 4. RESTARTING PASSENGER NODE.JS APP ===\n";
+shell_exec("pkill -9 -f node 2>&1");
 $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";
 $touchRes = shell_exec($touchCmd);
-echo ($touchRes ? $touchRes : "Successfully touched tmp/restart.txt.") . "\n";
+echo ($touchRes ? $touchRes : "Successfully killed node and touched tmp/restart.txt.") . "\n";
 ?>

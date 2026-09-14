@@ -2,6 +2,10 @@
 header('Content-Type: text/plain');
 header('X-LiteSpeed-Purge: *');
 
+echo "=== ALL DIRECTORIES IN /home/nabrijan ===\n";
+echo shell_exec("ls -la /home/nabrijan");
+echo "\n";
+
 $githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz';
 $appDirs = ['/home/nabrijan/app', '/home/nabrijan/repositories/nabrijan'];
 

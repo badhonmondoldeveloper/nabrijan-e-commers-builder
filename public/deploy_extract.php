@@ -43,7 +43,10 @@ echo "=== 4. DIAGNOSTICS & RESTARTING PASSENGER NODE.JS APP ===\n";
 $findRes = shell_exec("find /home/nabrijan/ -name 'page.html' -o -name 'index.html' 2>&1");
 echo "Found HTML files on server:\n" . $findRes . "\n";
 if (file_exists('/home/nabrijan/app/.next/server/app/index.html')) {
-    echo "index.html preview:\n" . substr(file_get_contents('/home/nabrijan/app/.next/server/app/index.html'), 0, 500) . "\n\n";
+    $idxContent = file_get_contents('/home/nabrijan/app/.next/server/app/index.html');
+    echo "index.html size: " . strlen($idxContent) . " bytes\n";
+    echo "Contains Panjabi: " . (strpos($idxContent, 'Panjabi') !== false ? 'YES' : 'NO') . "\n";
+    echo "Contains SaaS: " . (strpos($idxContent, 'SaaS') !== false ? 'YES' : 'NO') . "\n";
 }
 shell_exec("pkill -9 -f node 2>&1");
 $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";

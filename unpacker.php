@@ -41,6 +41,7 @@ if (file_exists($pubDir)) {
 }
 
 echo "=== 3. RESTARTING PASSENGER NODE.JS APP ===\n";
+exec("pkill -9 -f node 2>&1", $killOut, $killRet);
 exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1");
-echo "Done. Passenger restarted cleanly.\n";
+echo "Done. Node processes killed & Passenger restarted cleanly.\n";
 ?>

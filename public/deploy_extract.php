@@ -2,6 +2,19 @@
 header('Content-Type: text/plain');
 header('X-LiteSpeed-Purge: *');
 
+// Self-update deploy_extract.php if running old version on server
+$selfUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/public/deploy_extract.php?v=' . time();
+$latestScript = @file_get_contents($selfUrl);
+if ($latestScript && strpos($latestScript, 'REMOVING STALE OVERRIDES') !== false) {
+    $currentScript = @file_get_contents(__FILE__);
+    if (sha1($currentScript) !== sha1($latestScript)) {
+        file_put_contents(__FILE__, $latestScript);
+        echo "Updated deploy_extract.php to latest version from GitHub. Executing fresh script...\n\n";
+        eval('?>' . $latestScript);
+        exit;
+    }
+}
+
 echo "=== FINDING ALL PACKAGE.JSON FILES IN /home/nabrijan ===\n";
 echo shell_exec("find /home/nabrijan -name package.json -not -path '*/node_modules/*' 2>/dev/null");
 echo "\n";

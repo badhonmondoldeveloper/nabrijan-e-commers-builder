@@ -24,15 +24,13 @@ foreach ($appDirs as $appDir) {
     $gitRes = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
     echo "Git pull:\n" . $gitRes . "\n";
 
-    // 4. Check .env
+    // 4. Ensure .env is synced
+    if (!file_exists($appDir . '/.env') && file_exists('/home/nabrijan/repositories/nabrijan/.env')) {
+        copy('/home/nabrijan/repositories/nabrijan/.env', $appDir . '/.env');
+        echo "Copied .env from repositories to $appDir\n";
+    }
     if (file_exists($appDir . '/.env')) {
-        echo ".env EXISTS in $appDir:\n";
-        $envLines = file($appDir . '/.env');
-        foreach ($envLines as $line) {
-            if (strpos($line, 'DATABASE_URL') !== false) {
-                echo "DATABASE_URL: " . substr($line, 0, 40) . "... [len: " . strlen($line) . "]\n";
-            }
-        }
+        echo ".env EXISTS in $appDir\n";
     } else {
         echo "NO .env file in $appDir!\n";
     }

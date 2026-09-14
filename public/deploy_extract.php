@@ -58,7 +58,16 @@ foreach ($appDirs as $appDir) {
 
 echo "=== REMOVING STALE OVERRIDES IN PUBLIC_HTML ===\n";
 $pubDir = '/home/nabrijan/public_html';
-$staleDirs = [$pubDir . '/index.html', $pubDir . '/index', $pubDir . '/pricing.html', $pubDir . '/pricing'];
+echo "Files in $pubDir:\n" . shell_exec("ls -la " . escapeshellarg($pubDir)) . "\n";
+
+$filesInPub = glob($pubDir . '/*.html');
+foreach ($filesInPub as $f) {
+    if (basename($f) !== 'deploy_extract.php') {
+        unlink($f);
+        echo "Deleted static HTML override: $f\n";
+    }
+}
+$staleDirs = [$pubDir . '/index', $pubDir . '/pricing'];
 foreach ($staleDirs as $sd) {
     if (file_exists($sd)) {
         shell_exec("rm -rf " . escapeshellarg($sd));

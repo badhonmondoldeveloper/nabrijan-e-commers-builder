@@ -23,6 +23,22 @@ echo "=== 3. GIT PULL SOURCE FILES ===\n";
 $gitPull = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
 echo ($gitPull ? $gitPull : "Git pull executed.") . "\n\n";
 
+echo "=== 3.5 REMOVING STALE STATIC OVERRIDES IN PUBLIC_HTML ===\n";
+$pubDir = '/home/nabrijan/public_html';
+$staleFiles = glob($pubDir . '/*.html') ?: [];
+foreach ($staleFiles as $sf) {
+    @unlink($sf);
+    echo "Removed static file: " . basename($sf) . "\n";
+}
+$staleDirs = [$pubDir . '/index.html', $pubDir . '/index', $pubDir . '/pricing.html', $pubDir . '/pricing'];
+foreach ($staleDirs as $sd) {
+    if (file_exists($sd)) {
+        shell_exec("rm -rf " . escapeshellarg($sd));
+        echo "Removed override: " . $sd . "\n";
+    }
+}
+echo "\n";
+
 echo "=== 4. DIAGNOSTICS & RESTARTING PASSENGER NODE.JS APP ===\n";
 $diag = shell_exec("cd " . escapeshellarg($appDir) . " && pwd && ls -la .next/server/app/pricing 2>&1");
 echo "Pricing build dir: " . $diag . "\n";

@@ -64,20 +64,20 @@ echo "=== REMOVING STALE OVERRIDES IN PUBLIC_HTML ===\n";
 $pubDir = '/home/nabrijan/public_html';
 echo "Files in $pubDir:\n" . shell_exec("ls -la " . escapeshellarg($pubDir)) . "\n";
 
-$filesInPub = glob($pubDir . '/*.html');
-foreach ($filesInPub as $f) {
-    if (basename($f) !== 'deploy_extract.php') {
-        unlink($f);
-        echo "Deleted static HTML override: $f\n";
+echo "=== REMOVING STALE STATIC OVERRIDES IN PUBLIC_HTML ===\n";
+$pubDir = '/home/nabrijan/public_html';
+echo "Files in $pubDir:\n" . shell_exec("ls -la " . escapeshellarg($pubDir)) . "\n";
+
+$items = glob($pubDir . '/*');
+$allowedFiles = ['deploy_extract.php', 'cgi-bin', '.htaccess', 'images'];
+foreach ($items as $item) {
+    $base = basename($item);
+    if (!in_array($base, $allowedFiles)) {
+        shell_exec("rm -rf " . escapeshellarg($item));
+        echo "Cleaned static override: $base\n";
     }
 }
-$staleDirs = [$pubDir . '/index', $pubDir . '/pricing'];
-foreach ($staleDirs as $sd) {
-    if (file_exists($sd)) {
-        shell_exec("rm -rf " . escapeshellarg($sd));
-        echo "Removed override: " . $sd . "\n";
-    }
-}
+echo "Cleaned public_html directory successfully.\n";
 
 echo "\n=== RESTARTING NODE PROCESSES & PURGING LITESPEED CACHE ===\n";
 shell_exec("pkill -9 -f node 2>&1");

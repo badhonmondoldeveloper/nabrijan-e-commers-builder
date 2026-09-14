@@ -1,0 +1,9 @@
+node_modules
+.next
+*.tar.gz
+*.tar
+chunk_*
+app_deploy/
+hosting-live/
+docs/
+*.log

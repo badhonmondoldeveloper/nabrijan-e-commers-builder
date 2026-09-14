@@ -8,4 +8,8 @@ node_modules/
 dist/
 build/
 .vercel
-next_build.tar.gz
+*.tar.gz
+*.tar
+*.zip
+cpanel_*.txt
+

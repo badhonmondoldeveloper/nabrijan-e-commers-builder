@@ -34,12 +34,22 @@ foreach ($appDirs as $appDir) {
     echo "Updated .env in $appDir\n";
 
     // 5. Run Prisma DB Push & Seed
-    $nodePath = shell_exec("which node 2>&1") ? "npx" : "/home/nabrijan/nodevenv/repositories/nabrijan/18/bin/npx";
-    $prismaPush = shell_exec("cd " . escapeshellarg($appDir) . " && $nodePath prisma db push --accept-data-loss 2>&1");
-    echo "Prisma DB Push:\n" . $prismaPush . "\n";
+    $npxBin = '/home/nabrijan/nodevenv/repositories/nabrijan/18/bin/npx';
+    if (!file_exists($npxBin)) {
+        $npxBin = '/home/nabrijan/nodevenv/app/18/bin/npx';
+    }
+    if (!file_exists($npxBin)) {
+        $npxBin = trim(shell_exec('find /home/nabrijan/nodevenv -name npx 2>/dev/null | head -n 1'));
+    }
+    if ($npxBin) {
+        $prismaPush = shell_exec("cd " . escapeshellarg($appDir) . " && $npxBin prisma db push --accept-data-loss 2>&1");
+        echo "Prisma DB Push ($npxBin):\n" . $prismaPush . "\n";
 
-    $prismaSeed = shell_exec("cd " . escapeshellarg($appDir) . " && $nodePath prisma db seed 2>&1");
-    echo "Prisma DB Seed:\n" . $prismaSeed . "\n";
+        $prismaSeed = shell_exec("cd " . escapeshellarg($appDir) . " && $npxBin prisma db seed 2>&1");
+        echo "Prisma DB Seed ($npxBin):\n" . $prismaSeed . "\n";
+    } else {
+        echo "npx binary not found in nodevenv\n";
+    }
 
     // 6. Touch restart.txt
     shell_exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt"));

@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: text/plain');
+header('X-LiteSpeed-Purge: *');
 $appDir = '/home/nabrijan/app';
 $githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz';
 $targetTar = $appDir . '/next_build.tar.gz';
@@ -28,5 +29,8 @@ echo "Pricing build dir: " . $diag . "\n";
 shell_exec("pkill -9 -f node 2>&1");
 $touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";
 $touchRes = shell_exec($touchCmd);
-echo ($touchRes ? $touchRes : "Successfully killed node and touched tmp/restart.txt.") . "\n";
+echo ($touchRes ? $touchRes : "Successfully killed node and touched tmp/restart.txt.") . "\n\n";
+
+echo "=== 5. LITESPEED CACHE PURGED ===\n";
+echo "Sent X-LiteSpeed-Purge: * header.\n";
 ?>

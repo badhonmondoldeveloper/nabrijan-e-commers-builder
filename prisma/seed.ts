@@ -47,11 +47,11 @@ async function main() {
     },
   });
 
-  // 4. Create Multi-tier Subscription Plans (Free, Starter, Pro, Growth)
-  const freePlan = await prisma.plan.upsert({
-    where: { slug: 'free' },
-    update: { name: 'Free', price: 0, storeLimit: 1, productLimit: 20, staffLimit: 2, customDomainAllowed: false },
-    create: { name: 'Free', slug: 'free', price: 0, storeLimit: 1, productLimit: 20, staffLimit: 2, customDomainAllowed: false },
+  // 4. Create Multi-tier Subscription Plans (Basic, Starter, Pro, Growth)
+  const basicPlan = await prisma.plan.upsert({
+    where: { slug: 'basic' },
+    update: { name: 'Basic', price: 500, storeLimit: 1, productLimit: 50, staffLimit: 2, customDomainAllowed: false },
+    create: { name: 'Basic', slug: 'basic', price: 500, storeLimit: 1, productLimit: 50, staffLimit: 2, customDomainAllowed: false },
   });
 
   const starterPlan = await prisma.plan.upsert({
@@ -165,7 +165,7 @@ async function main() {
     data: {
       userId: merchantUser.id,
       storeId: demoStore.id,
-      planId: businessPlan.id,
+      planId: proPlan.id,
       status: 'ACTIVE',
       currentPeriodStart: new Date(),
       currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),

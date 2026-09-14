@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         plan = await db.plan.findUnique({ where: { id: submission.planId } });
       }
       if (!plan) {
-        plan = await db.plan.findFirst({ where: { slug: { in: ['pro', 'starter', 'growth', 'full-package'] } } });
+        plan = await db.plan.findFirst({ where: { slug: { in: ['basic', 'pro', 'starter', 'growth', 'full-package'] } } });
       }
       if (!plan) {
         plan = await db.plan.create({

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, CheckCircle2, Loader2, PhoneCall, ShieldCheck, Crown, Check } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Loader2, PhoneCall, ShieldCheck, Crown, Check, Copy, CheckCircle } from 'lucide-react';
 
 interface Store {
   id: string;
@@ -29,11 +29,18 @@ interface Submission {
 
 const PLANS = [
   {
+    slug: 'basic',
+    name: 'Basic',
+    monthlyPrice: 500,
+    productLimit: '50 products',
+    features: ['50 products limit', 'Free Nabrijan subdomain', 'Pathao & Steadfast courier', 'Manual bKash/Nagad payment', '0% physical order fee'],
+  },
+  {
     slug: 'starter',
     name: 'Starter',
     monthlyPrice: 599,
     productLimit: '500 products',
-    features: ['500 products', 'Unlimited preset themes', 'Custom domain mapping', '1 free third-party courier', 'Report exports'],
+    features: ['500 products limit', 'Unlimited preset themes', 'Custom domain mapping', '1 free third-party courier', 'Report exports'],
   },
   {
     slug: 'pro',
@@ -41,21 +48,21 @@ const PLANS = [
     monthlyPrice: 1099,
     popular: true,
     productLimit: '2,000 products',
-    features: ['2,000 products', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', 'Unlimited free couriers'],
+    features: ['2,000 products limit', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', '10 Staff Accounts'],
   },
   {
     slug: 'growth',
     name: 'Growth',
     monthlyPrice: 2499,
     productLimit: 'Unlimited products',
-    features: ['Unlimited products', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', 'Priority support'],
+    features: ['Unlimited products', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', '50 Staff Accounts'],
   },
 ];
 
 function BkashBillingContent() {
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStoreId, setSelectedStoreId] = useState<string>('');
-  const [selectedPlanSlug, setSelectedPlanSlug] = useState<string>('pro');
+  const [selectedPlanSlug, setSelectedPlanSlug] = useState<string>('basic');
   const [billingCycle, setBillingCycle] = useState<'monthly' | '6months' | 'yearly'>('monthly');
 
   const [bkashNumber, setBkashNumber] = useState<string>('01625642420');
@@ -63,6 +70,7 @@ function BkashBillingContent() {
 
   const [senderNumber, setSenderNumber] = useState('');
   const [trxId, setTrxId] = useState('');
+  const [copiedNumber, setCopiedNumber] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -110,7 +118,7 @@ function BkashBillingContent() {
     fetchSubmissions();
   }, [selectedStoreId]);
 
-  const selectedPlan = PLANS.find((p) => p.slug === selectedPlanSlug) || PLANS[2];
+  const selectedPlan = PLANS.find((p) => p.slug === selectedPlanSlug) || PLANS[0];
 
   const getCalculatedPrice = (basePrice: number) => {
     if (basePrice === 0) return 0;
@@ -121,10 +129,16 @@ function BkashBillingContent() {
 
   const currentPayableAmount = getCalculatedPrice(selectedPlan.monthlyPrice);
 
+  const copyToClipboard = (num: string, label: string) => {
+    navigator.clipboard.writeText(num);
+    setCopiedNumber(label);
+    setTimeout(() => setCopiedNumber(null), 2500);
+  };
+
   const handleSubmitTrx = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStoreId || !senderNumber || !trxId) {
-      setMessage({ type: 'error', text: 'Please select a store, enter your bKash Mobile Number and Transaction ID (TrxID).' });
+      setMessage({ type: 'error', text: 'Please select a store, enter your bKash/Nagad Mobile Number and Transaction ID (TrxID).' });
       return;
     }
 
@@ -158,7 +172,7 @@ function BkashBillingContent() {
         setSubmissions((prev) => [data.submission, ...prev]);
       }
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Error submitting bKash transaction' });
+      setMessage({ type: 'error', text: err.message || 'Error submitting transaction' });
     } finally {
       setLoading(false);
     }
@@ -170,7 +184,7 @@ function BkashBillingContent() {
     <div className="space-y-8 font-sans">
       {/* Plan Selection Cards */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <h2 className="text-xl font-bold text-white">Select Subscription Plan</h2>
           <div className="flex gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
             <button
@@ -183,13 +197,13 @@ function BkashBillingContent() {
               onClick={() => setBillingCycle('6months')}
               className={`px-3 py-1.5 rounded-lg font-bold transition ${billingCycle === '6months' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
             >
-              6 Months (Save 10%)
+              6 Months (-10%)
             </button>
             <button
               onClick={() => setBillingCycle('yearly')}
               className={`px-3 py-1.5 rounded-lg font-bold transition ${billingCycle === 'yearly' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
             >
-              Yearly (Save 25%)
+              Yearly (-25%)
             </button>
           </div>
         </div>
@@ -205,26 +219,26 @@ function BkashBillingContent() {
                 onClick={() => setSelectedPlanSlug(plan.slug)}
                 className={`cursor-pointer transition-all duration-300 relative ${
                   isSelected
-                    ? 'bg-slate-900 border-2 border-blue-500 shadow-xl ring-1 ring-blue-500'
+                    ? 'bg-slate-900 border-2 border-blue-500 shadow-xl ring-2 ring-blue-500/30'
                     : 'bg-slate-900/60 border border-slate-800 hover:border-slate-700'
                 }`}
               >
                 {plan.popular && (
-                  <Badge className="absolute -top-3 right-4 bg-blue-600 text-white text-[10px] font-black uppercase">
+                  <Badge className="absolute -top-3 right-4 bg-blue-600 text-white text-[10px] font-black uppercase shadow">
                     Most Popular
                   </Badge>
                 )}
                 <CardHeader className="p-4 pb-2">
                   <CardTitle className="text-lg font-bold text-white flex items-center justify-between">
                     {plan.name}
-                    {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-400" />}
+                    {isSelected && <CheckCircle2 className="w-5 h-5 text-blue-400" />}
                   </CardTitle>
                   <div className="text-2xl font-black text-white mt-1">
                     ৳{price.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ mo</span>
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 pt-2 space-y-2 text-xs text-slate-300">
-                  {plan.features.slice(0, 4).map((f, i) => (
+                  {plan.features.map((f, i) => (
                     <div key={i} className="flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                       <span>{f}</span>
@@ -237,32 +251,84 @@ function BkashBillingContent() {
         </div>
       </div>
 
-      {/* Manual bKash Payment Submission Form */}
+      {/* Easy 1-Click Payment Guide & Trx Submission Form */}
       <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
             <PhoneCall className="w-5 h-5 text-pink-500" />
-            Manual bKash Payment Submission ({selectedPlan.name} Plan)
+            Easy bKash / Nagad Payment ({selectedPlan.name} Plan - ৳{currentPayableAmount.toLocaleString()})
           </CardTitle>
           <CardDescription className="text-slate-400">
-            Send ৳{currentPayableAmount.toLocaleString()} via bKash Send Money for store activation.
+            Send ৳{currentPayableAmount.toLocaleString()} via bKash or Nagad Send Money for instant store activation.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* bKash Receiver Instructions Box */}
-          <div className="p-5 bg-pink-950/20 border border-pink-500/30 rounded-xl space-y-3">
+          {/* Quick Copy Number Box */}
+          <div className="p-5 bg-pink-950/20 border border-pink-500/30 rounded-2xl space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-pink-400">bKash Receiver Number ({bkashType})</span>
-              <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/40 text-xs">bKash Send Money</Badge>
+              <span className="text-xs font-semibold uppercase tracking-wider text-pink-400">Payment Receiver Numbers ({bkashType})</span>
+              <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/40 text-xs">Send Money</Badge>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-mono font-extrabold text-white tracking-widest bg-slate-950 px-4 py-2 rounded-lg border border-pink-500/30">
-                {bkashNumber}
-              </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* bKash Number Box */}
+              <div className="bg-slate-950 p-3.5 rounded-xl border border-pink-500/30 flex items-center justify-between">
+                <div>
+                  <div className="text-[10px] font-bold text-pink-400 uppercase tracking-wider">bKash (Personal)</div>
+                  <div className="text-xl font-mono font-extrabold text-white mt-0.5">{bkashNumber}</div>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => copyToClipboard(bkashNumber, 'bKash')}
+                  className="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-3 py-1.5 h-auto rounded-lg"
+                >
+                  {copiedNumber === 'bKash' ? (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5 mr-1" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 mr-1" /> Copy Number
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Nagad Number Box */}
+              <div className="bg-slate-950 p-3.5 rounded-xl border border-orange-500/30 flex items-center justify-between">
+                <div>
+                  <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider">Nagad (Personal)</div>
+                  <div className="text-xl font-mono font-extrabold text-white mt-0.5">{bkashNumber}</div>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => copyToClipboard(bkashNumber, 'Nagad')}
+                  className="bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold px-3 py-1.5 h-auto rounded-lg"
+                >
+                  {copiedNumber === 'Nagad' ? (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5 mr-1" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 mr-1" /> Copy Number
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              <strong>Instructions:</strong> Open your bKash App or dial *247# → Select <strong>Send Money</strong> → Enter Receiver Number <strong>{bkashNumber}</strong> → Enter Amount <strong>৳{currentPayableAmount.toLocaleString()}</strong> → Confirm Payment and copy the <strong>Transaction ID (TrxID)</strong>.
-            </p>
+
+            {/* 3 Step Payment Guide */}
+            <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+              <p className="font-bold text-white text-sm">3 Easy Steps to Activate Your Store:</p>
+              <ol className="list-decimal list-inside space-y-1 text-slate-300 font-medium">
+                <li>Copy the number above & open your bKash / Nagad App.</li>
+                <li>Select <strong>Send Money</strong> and send exactly <strong>৳{currentPayableAmount.toLocaleString()}</strong>.</li>
+                <li>Enter your Sender Mobile Number & <strong>TrxID</strong> below, then click Submit.</li>
+              </ol>
+            </div>
           </div>
 
           {message && (
@@ -307,7 +373,7 @@ function BkashBillingContent() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs text-slate-300">Your bKash Mobile Number</Label>
+                <Label className="text-xs text-slate-300">Your bKash / Nagad Mobile Number</Label>
                 <Input
                   type="text"
                   placeholder="017XXXXXXXX"
@@ -319,7 +385,7 @@ function BkashBillingContent() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs text-slate-300">bKash Transaction ID (TrxID)</Label>
+                <Label className="text-xs text-slate-300">Transaction ID (TrxID)</Label>
                 <Input
                   type="text"
                   placeholder="BKASH992810X"
@@ -351,7 +417,7 @@ function BkashBillingContent() {
       {submissions.length > 0 && (
         <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl overflow-hidden">
           <CardHeader className="bg-slate-900/80 border-b border-slate-800">
-            <CardTitle className="text-lg font-bold text-white">Your bKash Activation Submissions</CardTitle>
+            <CardTitle className="text-lg font-bold text-white">Your Activation Submissions</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
@@ -409,9 +475,9 @@ export default function MerchantBillingPage() {
       </Link>
 
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">Store Activation & bKash Billing</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white">Store Activation & Billing</h1>
         <p className="text-sm text-slate-400 mt-1">
-          Select your preferred subscription plan (Free, Starter, Pro, Growth) and submit bKash TrxID for instant store activation.
+          Select your subscription plan (Basic ৳500, Starter ৳599, Pro ৳1,099, Growth ৳2,499) and submit TrxID for instant store activation.
         </p>
       </div>
 

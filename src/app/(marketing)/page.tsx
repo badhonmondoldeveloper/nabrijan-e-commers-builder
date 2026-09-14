@@ -57,7 +57,7 @@ export default async function SaaSMarketingPage() {
   const contactPhone = settings?.contactPhone || '+8801625642420';
   const contactEmail = settings?.contactEmail || 'badhonmondoldeveloper@gmail.com';
 
-  const bannerText = settings?.bannerText || '🔥 ৳৫০০ টাকায় আপনার প্রফেশনাল ই-কমার্স দোকান চালু করুন! ফ্রি সেটআপ ও কাস্টমাইজেশন!';
+  const bannerText = settings?.bannerText || '🔥 মাত্র ৳৫০০ টাকায় আপনার ফুল প্রফেশনাল ই-কমার্স দোকান চালু করুন! ১-ক্লিক বিকাশ পেমেন্ট!';
 
   return (
     <div className="min-h-screen bg-[#F6FAF4] text-[#17221D] flex flex-col font-sans selection:bg-[#55B510] selection:text-white overflow-x-hidden max-w-full">
@@ -84,7 +84,7 @@ export default async function SaaSMarketingPage() {
           <nav className="hidden md:flex items-center space-x-8 text-xs font-extrabold uppercase tracking-wider text-[#66736C]">
             <Link href="#features" className="hover:text-[#55B510] transition duration-200">ফিচারসমূহ</Link>
             <Link href="#demo" className="hover:text-[#55B510] transition duration-200">লাইভ ডেমো</Link>
-            <Link href="#pricing" className="hover:text-[#55B510] transition duration-200">প্যাকেজ মূল্য (৳৫০০)</Link>
+            <Link href="#pricing" className="hover:text-[#55B510] transition duration-200">প্যাকেজসমূহ (৳৫০০ থেকে)</Link>
             <Link href="#faq" className="hover:text-[#55B510] transition duration-200">FAQ</Link>
           </nav>
 
@@ -107,18 +107,18 @@ export default async function SaaSMarketingPage() {
       <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 overflow-hidden border-b border-[#DCE7DF] bg-gradient-to-b from-[#F6FAF4] via-[#EAF7DF]/40 to-[#F6FAF4]">
         <div className="container mx-auto px-4 text-center relative z-10 max-w-5xl">
           <Badge variant="outline" className="mb-4 sm:mb-6 border-[#55B510]/40 text-[#063B2A] bg-[#EAF7DF] px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-black tracking-wider uppercase shadow-sm inline-flex items-center gap-2 max-w-full">
-            <Sparkles className="w-4 h-4 text-[#55B510] shrink-0" /> বাংলাদেশের অল-ইন-ওয়ান ই-কমার্স বিল্ডার প্ল্যাটফর্ম
+            <Sparkles className="w-4 h-4 text-[#55B510] shrink-0" /> বাংলাদেশের সেরা ই-কমার্স বিল্ডার প্ল্যাটফর্ম
           </Badge>
 
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-6 sm:mb-8 leading-[1.15] text-[#063B2A] break-words">
             কোডিং ছাড়াই তৈরি করুন <br className="hidden sm:inline" />
             <span className="text-[#55B510] underline decoration-[#55B510]/30 underline-offset-8">
-              আপনার অনলাইন ই-কমার্স স্টোর
+              আপনার প্রিমিয়াম ই-কমার্স শপ
             </span>
           </h1>
 
           <p className="text-sm sm:text-xl text-[#66736C] mb-8 sm:mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
-            ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার, পণ্য ভ্যারিয়েন্ট, পাঠাও ও স্টিডফাস্ট কুরিয়ার অটো বুকিং, কাস্টম ডোমেইন কানেক্ট এবং ম্যানুয়াল বিকাশ ভেরিফিকেশনে এখনই মাত্র ৳{fullPackagePrice} টাকায় আপনার অনলাইন শপ লাইভ করুন!
+            ১-ক্লিক হোয়াটসঅ্যাপ অর্ডার, পণ্য ভ্যারিয়েন্ট, পাঠাও ও স্টিডফাস্ট কুরিয়ার অটো বুকিং, কাস্টম ডোমেইন কানেক্ট এবং বিকাশ/নগদ পেমেন্ট ভেরিফিকেশনে আজই আপনার ব্যবসা শুরু করুন!
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-12 sm:mb-16 w-full max-w-md sm:max-w-none mx-auto">
@@ -129,7 +129,7 @@ export default async function SaaSMarketingPage() {
             </Link>
             <Link href="#pricing" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full h-12 sm:h-14 px-7 sm:px-9 border-[#063B2A] bg-white text-[#063B2A] hover:bg-[#EAF7DF] font-bold rounded-2xl text-sm sm:text-base transition-all duration-300">
-                <Crown className="w-5 h-5 mr-2 text-[#55B510]" /> প্যাকেজ ডিটেইলস (৳৫০০)
+                <Crown className="w-5 h-5 mr-2 text-[#55B510]" /> প্ল্যানসমূহ দেখুন (৳৫০০ থেকে)
               </Button>
             </Link>
           </div>
@@ -146,7 +146,7 @@ export default async function SaaSMarketingPage() {
             </div>
             <div className="text-center p-3 border-r border-[#DCE7DF]">
               <div className="text-2xl sm:text-4xl font-black text-[#063B2A]">৳৫০০ / মাস</div>
-              <div className="text-[11px] sm:text-xs text-[#66736C] font-bold uppercase tracking-wider mt-1">ফুল প্যাকেজ প্রাইস</div>
+              <div className="text-[11px] sm:text-xs text-[#66736C] font-bold uppercase tracking-wider mt-1">বেসিক শপ প্যাকেজ</div>
             </div>
             <div className="text-center p-3">
               <div className="text-2xl sm:text-4xl font-black text-[#55B510]">৯৯.৯%</div>
@@ -156,26 +156,26 @@ export default async function SaaSMarketingPage() {
         </div>
       </section>
 
-      {/* Single ৳500 Package Spotlight Banner */}
+      {/* Basic Plan Spotlight Banner (৳500) */}
       <section className="py-12 bg-[#063B2A] text-white border-b border-[#0b4d37]">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="bg-[#04281c] rounded-3xl p-6 sm:p-10 border border-[#55B510]/40 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
             <div className="space-y-3 max-w-xl text-center md:text-left">
               <Badge className="bg-[#55B510] text-white px-3.5 py-1 text-xs font-black uppercase tracking-wider">
-                👑 Single Full Store Package
+                👑 Basic Full Store Package
               </Badge>
               <h2 className="text-2xl sm:text-4xl font-black text-white leading-tight">
-                ১টি প্যাকেজে পাবেন আনলিমিটেড অল-ইন-ওয়ান ই-কমার্স সুবিধা!
+                মাত্র ৳৫০০ টাকায় ই-কমার্স স্টোরের সব সুবিধা!
               </h2>
               <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
-                স্টোর তৈরি ও প্রোডাক্ট আপলোড সম্পূর্ণ ফ্রী। স্টোর লাইভ করতে বিকাশ থেকে মাত্র ৳{fullPackagePrice} পেমেন্ট সাবমিট করুন। অ্যাডমিন অনুমোদনের সাথে সাথে আপনার শপ লাইভ হয়ে যাবে।
+                স্টোর রেজিস্ট্রেশন সম্পূর্ণ ফ্রী। দোকান লাইভ করতে বিকাশ/নগদ থেকে মাত্র ৳৫০০ পেমেন্ট করুন। অ্যাডমিন অনুমোদনের সাথে সাথে আপনার শপ লাইভ হয়ে যাবে।
               </p>
             </div>
             <div className="shrink-0 text-center">
-              <div className="text-4xl font-black text-[#55B510] mb-1">৳{fullPackagePrice}</div>
-              <div className="text-xs text-emerald-200/80 mb-4 font-bold">প্রতি মাসে / ফুল প্যাকেজ</div>
+              <div className="text-4xl font-black text-[#55B510] mb-1">৳৫০০</div>
+              <div className="text-xs text-emerald-200/80 mb-4 font-bold">প্রতি মাসে / বেসিক প্যাকেজ</div>
               <Link
-                href="/register"
+                href="/register?plan=basic"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-[#55B510] hover:bg-[#489d0d] text-white font-black text-xs rounded-xl shadow-xl shadow-[#55B510]/30 transition transform hover:scale-105"
               >
                 এখনই ফ্রী স্টোর খুলুন <ArrowRight className="w-4 h-4 ml-1.5" />
@@ -201,7 +201,7 @@ export default async function SaaSMarketingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <MessageCircle className="w-6 h-6" />
               </div>
@@ -211,7 +211,7 @@ export default async function SaaSMarketingPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <Truck className="w-6 h-6" />
               </div>
@@ -221,17 +221,17 @@ export default async function SaaSMarketingPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <CreditCard className="w-6 h-6" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-[#063B2A]">ম্যানুয়াল বিকাশ পেমেন্ট ও COD</h3>
               <p className="text-[#66736C] text-xs leading-relaxed">
-                স্টোর অ্যাক্টিভ করার জন্য সহজ বিকাশ পেমেন্ট (TrxID) সাবমিশন এবং আপনার স্টোর কাস্টমারদের জন্য ক্যাশ অন ডেলিভারি (COD) চেকআউট।
+                স্টোর অ্যাক্টিভ করার জন্য সহজ বিকাশ/নগদ (TrxID) সাবমিশন এবং আপনার স্টোর কাস্টমারদের জন্য ক্যাশ অন ডেলিভারি (COD) চেকআউট।
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <Palette className="w-6 h-6" />
               </div>
@@ -241,7 +241,7 @@ export default async function SaaSMarketingPage() {
               </p>
             </div>
 
-            <div className="bg-[#white] rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <BarChart3 className="w-6 h-6" />
               </div>
@@ -251,7 +251,7 @@ export default async function SaaSMarketingPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl transition">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3.5 border border-[#DCE7DF] shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300">
               <div className="w-12 h-12 rounded-2xl bg-[#EAF7DF] flex items-center justify-center text-[#55B510]">
                 <Globe className="w-6 h-6" />
               </div>
@@ -283,7 +283,7 @@ export default async function SaaSMarketingPage() {
             <div className="grid lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-4 sm:space-y-6">
                 <div className="inline-flex items-center space-x-2 bg-[#EAF7DF] border border-[#55B510]/30 px-3.5 py-1 rounded-full text-xs font-extrabold text-[#063B2A]">
-                  <Sparkles className="w-3.5 h-3.5 text-[#55B510]" /> Single-Vendor Premium Storefront
+                  <Sparkles className="w-3.5 h-3.5 text-[#55B510]" /> Premium Storefront Layout
                 </div>
                 <h3 className="text-2xl sm:text-4xl font-black text-[#063B2A] leading-tight">
                   Nabrijan Official Store
@@ -363,39 +363,73 @@ export default async function SaaSMarketingPage() {
         </div>
       </section>
 
-      {/* Subscription Pricing Grid */}
+      {/* 4 Multi-tier Subscription Pricing Grid */}
       <section id="pricing" className="py-16 sm:py-24 bg-[#F6FAF4] border-t border-[#DCE7DF] relative">
-        <div className="container mx-auto px-4 max-w-6xl relative z-10">
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <Badge className="bg-[#EAF7DF] text-[#063B2A] border border-[#55B510]/30 mb-3 px-4 py-1.5 rounded-full font-bold">
               💎 Flexible Subscription Plans
             </Badge>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#063B2A] mb-3 sm:mb-4">
-              আপনার ব্যবসার জন্য বেছে নিন সেরা প্ল্যান
+              আপনার ব্যবসার জন্য বেছে নিন সঠিক প্ল্যান
             </h2>
             <p className="text-[#66736C] text-xs sm:text-base">
               কোনো লুকানো চার্জ নেই। সাশ্রয়ী সাবস্ক্রিপশনে আপনার ই-কমার্স ব্যবসা বড় করুন।
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Starter Plan */}
-            <div className="bg-white rounded-3xl p-7 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+            {/* 1. Basic Plan (৳500) */}
+            <div className="bg-white rounded-3xl p-6 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1.5 transition duration-300">
               <div>
-                <h3 className="text-xl font-bold text-[#063B2A]">Starter</h3>
-                <p className="text-xs text-[#66736C] mt-1">ছোট ও নতুন মার্চেন্টদের জন্য।</p>
-                <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-[#063B2A]">৳৫৯৯</span>
+                <span className="inline-block rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200 mb-2">
+                  Full Store Package
+                </span>
+                <h3 className="text-xl font-bold text-[#063B2A]">Basic</h3>
+                <p className="text-xs text-[#66736C] mt-1">নতুন অনলাইন শপের জন্য সহজ প্যাকেজ।</p>
+                <div className="mt-5 flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#063B2A]">৳৫০০</span>
                   <span className="text-xs text-[#66736C] font-semibold">/ প্রতি মাস</span>
                 </div>
-                <ul className="mt-6 space-y-3 text-xs text-[#17221D]">
+                <ul className="mt-5 space-y-2.5 text-xs text-[#17221D]">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>৫০০টি প্রোডাক্ট আপলোড</span>
+                    <span>৫০টি প্রোডাক্ট লিমিট</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>আনলিমিটেড ফ্রি থিম</span>
+                    <span>ফ্রি Nabrijan সাবডোমেইন</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>পাঠাও ও স্টিডফাস্ট কুরিয়ার</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>১-ক্লিক বিকাশ/নগদ পেমেন্ট</span>
+                  </li>
+                </ul>
+              </div>
+              <Link href="/register?plan=basic" className="mt-6 block">
+                <Button className="w-full bg-[#063B2A] hover:bg-[#04281c] text-white font-bold text-xs rounded-xl py-3">
+                  শুরু করুন →
+                </Button>
+              </Link>
+            </div>
+
+            {/* 2. Starter Plan (৳599) */}
+            <div className="bg-white rounded-3xl p-6 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1.5 transition duration-300">
+              <div>
+                <h3 className="text-xl font-bold text-[#063B2A]">Starter</h3>
+                <p className="text-xs text-[#66736C] mt-1">ক্রমবর্ধমান ব্যবসায়ী মার্চেন্টদের জন্য।</p>
+                <div className="mt-5 flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#063B2A]">৳৫৯৯</span>
+                  <span className="text-xs text-[#66736C] font-semibold">/ প্রতি মাস</span>
+                </div>
+                <ul className="mt-5 space-y-2.5 text-xs text-[#17221D]">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>৫০০টি প্রোডাক্ট আপলোড</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
@@ -403,30 +437,34 @@ export default async function SaaSMarketingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>১টি ফ্রি কুরিয়ার API</span>
+                    <span>আনলিমিটেড ফ্রি থিম</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
+                    <span>সেলস ও অ্যানালিটিক্স রিপোর্ট</span>
                   </li>
                 </ul>
               </div>
-              <Link href="/register?plan=starter" className="mt-8 block">
+              <Link href="/register?plan=starter" className="mt-6 block">
                 <Button className="w-full bg-[#063B2A] hover:bg-[#04281c] text-white font-bold text-xs rounded-xl py-3">
                   শুরু করুন →
                 </Button>
               </Link>
             </div>
 
-            {/* Pro Plan (Most Popular) */}
-            <div className="bg-[#063B2A] text-white rounded-3xl p-7 border-2 border-[#55B510] shadow-2xl flex flex-col justify-between relative md:-translate-y-3">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#55B510] text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow">
-                Most Popular
+            {/* 3. Pro Plan (৳1,099 - Most Popular) */}
+            <div className="bg-[#063B2A] text-white rounded-3xl p-6 border-2 border-[#55B510] shadow-2xl flex flex-col justify-between relative lg:-translate-y-2">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#55B510] text-white px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow">
+                ⭐ Most Popular
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">Pro</h3>
-                <p className="text-xs text-emerald-200 mt-1">ক্রমবর্ধমান ই-কমার্স ব্যবসার জন্য।</p>
-                <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-[#55B510]">৳১,০৯৯</span>
+                <h3 className="text-xl font-bold text-white mt-1">Pro</h3>
+                <p className="text-xs text-emerald-200 mt-1">পাওয়ার সেলার ই-কমার্স ব্র্যান্ডের জন্য।</p>
+                <div className="mt-5 flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#55B510]">৳১,০৯৯</span>
                   <span className="text-xs text-emerald-200 font-semibold">/ প্রতি মাস</span>
                 </div>
-                <ul className="mt-6 space-y-3 text-xs text-emerald-100">
+                <ul className="mt-5 space-y-2.5 text-xs text-emerald-100">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
                     <span>২,০০০টি প্রোডাক্ট আপলোড</span>
@@ -441,51 +479,52 @@ export default async function SaaSMarketingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>আনলিমিটেড কুরিয়ার API</span>
+                    <span>১০টি স্টাফ একাউন্ট</span>
                   </li>
                 </ul>
               </div>
-              <Link href="/register?plan=pro" className="mt-8 block">
+              <Link href="/register?plan=pro" className="mt-6 block">
                 <Button className="w-full bg-[#55B510] hover:bg-[#489d0d] text-white font-black text-xs rounded-xl py-3 shadow-lg">
                   শুরু করুন →
                 </Button>
               </Link>
             </div>
 
-            {/* Growth Plan */}
-            <div className="bg-white rounded-3xl p-7 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+            {/* 4. Growth Plan (৳2,499) */}
+            <div className="bg-white rounded-3xl p-6 border border-[#DCE7DF] shadow-xl flex flex-col justify-between hover:-translate-y-1.5 transition duration-300">
               <div>
                 <h3 className="text-xl font-bold text-[#063B2A]">Growth</h3>
                 <p className="text-xs text-[#66736C] mt-1">বড় ও স্কেলিং ব্র্যান্ডের জন্য।</p>
-                <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-[#063B2A]">৳২,৪৯৯</span>
+                <div className="mt-5 flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#063B2A]">৳২,৪৯৯</span>
                   <span className="text-xs text-[#66736C] font-semibold">/ প্রতি মাস</span>
                 </div>
-                <ul className="mt-6 space-y-3 text-xs text-[#17221D]">
+                <ul className="mt-5 space-y-2.5 text-xs text-[#17221D]">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
                     <span>আনলিমিটেড প্রোডাক্ট আপলোড</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>সব প্রিমিয়াম অল-ইন-ওয়ান ফিচার</span>
+                    <span>৫০টি স্টাফ একাউন্ট</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>কাস্টম ডোমেইন ম্যাপিং</span>
+                    <span>প্রাইওরিটি ২৪/৭ সাপোর্ট</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#55B510] shrink-0" />
-                    <span>প্রাইওরিটি কাস্টমার সাপোর্ট</span>
+                    <span>১০টি মাল্টি-স্টোর ম্যানেজার</span>
                   </li>
                 </ul>
               </div>
-              <Link href="/register?plan=growth" className="mt-8 block">
+              <Link href="/register?plan=growth" className="mt-6 block">
                 <Button className="w-full bg-[#063B2A] hover:bg-[#04281c] text-white font-bold text-xs rounded-xl py-3">
                   শুরু করুন →
                 </Button>
               </Link>
             </div>
+
           </div>
 
           <div className="text-center mt-12">
@@ -512,14 +551,14 @@ export default async function SaaSMarketingPage() {
             <div className="bg-[#F6FAF4] p-5 sm:p-6 rounded-2xl border border-[#DCE7DF] space-y-2">
               <h3 className="font-bold text-[#063B2A] text-sm sm:text-base">১. আমি কি ফ্রিতে স্টোর তৈরি করতে পারবো?</h3>
               <p className="text-xs text-[#66736C] leading-relaxed">
-                হ্যাঁ! রেজিস্ট্রেশন করে ১০০% বিনামূল্যে আপনার স্টোর সাজাতে, থিম কাস্টমাইজ করতে ও প্রোডাক্ট আপলোড করতে পারবেন। দোকান লাইভ করার সিদ্ধান্ত নিলে মাত্র ৳{fullPackagePrice} পেমেন্ট করবেন।
+                হ্যাঁ! রেজিস্ট্রেশন করে ১০০% বিনামূল্যে আপনার স্টোর সাজাতে, থিম কাস্টমাইজ করতে ও প্রোডাক্ট আপলোড করতে পারবেন। দোকান লাইভ করার সিদ্ধান্ত নিলে পছন্দমত প্ল্যান সিলেক্ট করে বিকাশ/নগদ পেমেন্ট করতে পারবেন।
               </p>
             </div>
 
             <div className="bg-[#F6FAF4] p-5 sm:p-6 rounded-2xl border border-[#DCE7DF] space-y-2">
               <h3 className="font-bold text-[#063B2A] text-sm sm:text-base">২. স্টোর কিভাবে লাইভ (Active) করবো?</h3>
               <p className="text-xs text-[#66736C] leading-relaxed">
-                মার্চেন্ট ড্যাশবোর্ডের Billing পেজে গিয়ে আমাদের নির্ধারিত বিকাশ নম্বরে ৳{fullPackagePrice} সেন্ড মানি করে বিকাশ নম্বর ও TrxID সাবমিট করলেই অ্যাডমিন ভেরিফাই করে স্টোর লাইভ করে দিবে।
+                মার্চেন্ট ড্যাশবোর্ডের Billing পেজে গিয়ে আমাদের নির্ধারিত বিকাশ বা নগদ নম্বরে সেন্ড মানি করে ট্রানজেকশন ID (TrxID) সাবমিট করলেই অ্যাডমিন দ্রুত ভেরিফাই করে স্টোর লাইভ করে দেবে।
               </p>
             </div>
 
@@ -533,7 +572,7 @@ export default async function SaaSMarketingPage() {
             <div className="bg-[#F6FAF4] p-5 sm:p-6 rounded-2xl border border-[#DCE7DF] space-y-2">
               <h3 className="font-bold text-[#063B2A] text-sm sm:text-base">৪. কাস্টম ডোমেইন (`yourbrand.com`) যুক্ত করা যাবে?</h3>
               <p className="text-xs text-[#66736C] leading-relaxed">
-                হ্যাঁ! আমাদের ফুল প্যাকেজে আপনার নিজস্ব ডোমেইন (`.com`, `.com.bd` ইত্যাদি) কানেক্ট করার সম্পূর্ণ সিস্টেম অন্তর্ভুক্ত রয়েছে।
+                হ্যাঁ! Starter, Pro এবং Growth প্ল্যানে আপনার নিজস্ব ডোমেইন (`.com`, `.com.bd` ইত্যাদি) কানেক্ট করার সম্পূর্ণ ব্যবস্থা রয়েছে।
               </p>
             </div>
           </div>
@@ -574,7 +613,7 @@ export default async function SaaSMarketingPage() {
               <div className="font-bold text-white text-sm">গুরুত্বপূর্ণ লিংক</div>
               <p><Link href="/login" className="hover:text-[#55B510] transition">মার্চেন্ট লগইন</Link></p>
               <p><Link href="/register" className="hover:text-[#55B510] transition">ফ্রি একাউন্ট খুলুন</Link></p>
-              <p><Link href="/pricing" className="hover:text-[#55B510] transition">প্যাকেজ ডিটেইলস (৳৫০০)</Link></p>
+              <p><Link href="/pricing" className="hover:text-[#55B510] transition">প্যাকেজ ডিটেইলস (৳৫০০ থেকে)</Link></p>
               <p><Link href="/store/nabrijan-official" target="_blank" className="hover:text-[#55B510] transition">অফিসিয়াল ডেমো শপ</Link></p>
             </div>
           </div>

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, Loader2, PhoneCall, Hash, Building2, User, Clock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { CheckCircle2, XCircle, Loader2, PhoneCall, Hash, Building2, User, Clock, Search, Filter } from 'lucide-react';
 
 interface ManualSubmission {
   id: string;
@@ -25,6 +26,8 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
   const [submissions, setSubmissions] = useState<ManualSubmission[]>(initialSubmissions);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'PENDING' | 'APPROVED' | 'REJECTED' | 'ALL'>('PENDING');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleAction = async (submissionId: string, action: 'APPROVE' | 'REJECT') => {
     setLoadingId(submissionId);
@@ -67,8 +70,22 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
     }
   };
 
-  const pendingSubmissions = submissions.filter((s) => s.status === 'PENDING');
-  const pastSubmissions = submissions.filter((s) => s.status !== 'PENDING');
+  const filteredSubmissions = submissions.filter((s) => {
+    const matchesFilter = activeFilter === 'ALL' || s.status === activeFilter;
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      !q ||
+      s.trxId.toLowerCase().includes(q) ||
+      s.senderNumber.includes(q) ||
+      s.store?.name.toLowerCase().includes(q) ||
+      s.user?.email.toLowerCase().includes(q);
+
+    return matchesFilter && matchesSearch;
+  });
+
+  const pendingCount = submissions.filter((s) => s.status === 'PENDING').length;
+  const approvedCount = submissions.filter((s) => s.status === 'APPROVED').length;
+  const rejectedCount = submissions.filter((s) => s.status === 'REJECTED').length;
 
   return (
     <div className="space-y-8 font-sans">
@@ -84,29 +101,79 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
         </div>
       )}
 
-      {/* Pending bKash Approvals */}
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+        <div className="flex flex-wrap gap-2 text-xs font-bold">
+          <button
+            onClick={() => setActiveFilter('PENDING')}
+            className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 ${
+              activeFilter === 'PENDING' ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-950 text-slate-400 border border-slate-800'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Pending ({pendingCount})
+          </button>
+          <button
+            onClick={() => setActiveFilter('APPROVED')}
+            className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 ${
+              activeFilter === 'APPROVED' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-950 text-slate-400 border border-slate-800'
+            }`}
+          >
+            Approved ({approvedCount})
+          </button>
+          <button
+            onClick={() => setActiveFilter('REJECTED')}
+            className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 ${
+              activeFilter === 'REJECTED' ? 'bg-red-600 text-white shadow-md' : 'bg-slate-950 text-slate-400 border border-slate-800'
+            }`}
+          >
+            Rejected ({rejectedCount})
+          </button>
+          <button
+            onClick={() => setActiveFilter('ALL')}
+            className={`px-3.5 py-2 rounded-xl transition ${
+              activeFilter === 'ALL' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-950 text-slate-400 border border-slate-800'
+            }`}
+          >
+            All Submissions ({submissions.length})
+          </button>
+        </div>
+
+        <div className="relative w-full sm:w-64">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Input
+            type="text"
+            placeholder="Search TrxID, Mobile, Store..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-slate-950 border-slate-800 text-xs text-white placeholder:text-slate-500 h-9 rounded-xl"
+          />
+        </div>
+      </div>
+
+      {/* Submissions Table */}
       <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl overflow-hidden">
         <CardHeader className="bg-slate-900/80 border-b border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
-                Pending bKash Store Activations
+                <Filter className="w-5 h-5 text-blue-400" />
+                {activeFilter} bKash / Nagad Submissions
               </CardTitle>
               <p className="text-xs text-slate-400 mt-1">
-                Verify merchant bKash TrxID and approve to instantly make their store LIVE.
+                Verify TrxID and click Approve to instantly make merchant store LIVE and assign subscription plan.
               </p>
             </div>
-            <Badge className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-sm px-3 py-1">
-              {pendingSubmissions.length} Pending
+            <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs px-3 py-1">
+              Showing {filteredSubmissions.length} Records
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {pendingSubmissions.length === 0 ? (
+          {filteredSubmissions.length === 0 ? (
             <div className="p-8 text-center text-slate-400 text-sm">
               <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2 opacity-60" />
-              No pending bKash activations right now. All stores are verified!
+              No {activeFilter.toLowerCase()} payment submissions found matching your search.
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -114,16 +181,17 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
                 <thead className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-medium uppercase tracking-wider">
                   <tr>
                     <th className="p-4">Merchant & Store</th>
-                    <th className="p-4">bKash Mobile</th>
+                    <th className="p-4">Sender Number</th>
                     <th className="p-4">Transaction ID (TrxID)</th>
                     <th className="p-4">Amount</th>
+                    <th className="p-4">Status</th>
                     <th className="p-4">Date</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
-                  {pendingSubmissions.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-slate-800/40">
+                  {filteredSubmissions.map((sub) => (
+                    <tr key={sub.id} className="hover:bg-slate-800/40 transition">
                       <td className="p-4">
                         <div className="font-bold text-white flex items-center gap-1.5">
                           <Building2 className="w-3.5 h-3.5 text-blue-400" />
@@ -147,34 +215,53 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
                         </span>
                       </td>
                       <td className="p-4 font-bold text-white">৳{Number(sub.amount)}</td>
+                      <td className="p-4">
+                        <Badge
+                          className={
+                            sub.status === 'APPROVED'
+                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                              : sub.status === 'REJECTED'
+                              ? 'bg-red-500/10 text-red-400 border border-red-500/30'
+                              : 'bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse'
+                          }
+                        >
+                          {sub.status}
+                        </Badge>
+                      </td>
                       <td className="p-4 text-slate-400 flex items-center gap-1">
                         <Clock className="w-3 h-3 text-slate-500" />
                         {new Date(sub.createdAt).toLocaleString()}
                       </td>
                       <td className="p-4 text-right space-x-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleAction(sub.id, 'APPROVE')}
-                          disabled={loadingId === sub.id}
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3"
-                        >
-                          {loadingId === sub.id ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <>
-                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Approve & Live
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleAction(sub.id, 'REJECT')}
-                          disabled={loadingId === sub.id}
-                          className="bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold px-3"
-                        >
-                          <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
-                        </Button>
+                        {sub.status === 'PENDING' ? (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => handleAction(sub.id, 'APPROVE')}
+                              disabled={loadingId === sub.id}
+                              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3"
+                            >
+                              {loadingId === sub.id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <>
+                                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Approve & Live
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleAction(sub.id, 'REJECT')}
+                              disabled={loadingId === sub.id}
+                              className="bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold px-3"
+                            >
+                              <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
+                            </Button>
+                          </>
+                        ) : (
+                          <span className="text-slate-500 text-xs font-medium italic">Processed</span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -184,55 +271,6 @@ export default function BkashApprovalsClient({ initialSubmissions }: { initialSu
           )}
         </CardContent>
       </Card>
-
-      {/* History of Past Activations */}
-      {pastSubmissions.length > 0 && (
-        <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl overflow-hidden">
-          <CardHeader className="bg-slate-900/80 border-b border-slate-800">
-            <CardTitle className="text-lg font-bold text-white">Payment Submission History</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-medium uppercase tracking-wider">
-                  <tr>
-                    <th className="p-4">Store</th>
-                    <th className="p-4">Merchant</th>
-                    <th className="p-4">bKash Mobile</th>
-                    <th className="p-4">TrxID</th>
-                    <th className="p-4">Amount</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4">Processed Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {pastSubmissions.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-slate-800/40">
-                      <td className="p-4 font-bold text-white">{sub.store?.name || 'N/A Store'}</td>
-                      <td className="p-4 text-slate-300">{sub.user?.email || 'N/A Email'}</td>
-                      <td className="p-4 font-mono text-slate-300">{sub.senderNumber}</td>
-                      <td className="p-4 font-mono text-slate-300">{sub.trxId}</td>
-                      <td className="p-4 font-bold text-white">৳{Number(sub.amount)}</td>
-                      <td className="p-4">
-                        <Badge
-                          className={
-                            sub.status === 'APPROVED'
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                              : 'bg-red-500/10 text-red-400 border border-red-500/30'
-                          }
-                        >
-                          {sub.status}
-                        </Badge>
-                      </td>
-                      <td className="p-4 text-slate-400">{new Date(sub.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

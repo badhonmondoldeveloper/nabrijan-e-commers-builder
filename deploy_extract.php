@@ -9,9 +9,9 @@ echo ($gitPull ? $gitPull : "Git pull executed.") . "\n\n";
 $nextTar = $appDir . '/next_build.tar.gz';
 if (file_exists($nextTar)) {
     echo "=== 2. EXTRACTING NEXT_BUILD.TAR.GZ ===\n";
-    $cmd = "cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($nextTar) . " 2>&1";
+    $cmd = "rm -rf " . escapeshellarg($appDir . '/.next') . " && cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($nextTar) . " 2>&1";
     $res = shell_exec($cmd);
-    echo ($res ? $res : "Successfully extracted .next directory.") . "\n\n";
+    echo ($res ? $res : "Successfully extracted new .next directory.") . "\n\n";
 } else {
     echo "=== 2. NEXT_BUILD.TAR.GZ NOT FOUND ===\n\n";
 }

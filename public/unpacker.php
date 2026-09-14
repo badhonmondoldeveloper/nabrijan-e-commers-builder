@@ -40,6 +40,12 @@ if (file_exists($pubDir)) {
     @copy($appDir . '/unpacker.php', $pubDir . '/unpacker.php');
 }
 
+// Remove stale static HTML cached pages if any exist
+@unlink($pubDir . '/pricing.html');
+@unlink($pubDir . '/pricing/index.html');
+@unlink($appDir . '/public/pricing.html');
+@unlink($appDir . '/public/pricing/index.html');
+
 echo "=== 3. RESTARTING PASSENGER NODE.JS APP ===\n";
 exec("pkill -9 -f node 2>&1", $killOut, $killRet);
 exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1");

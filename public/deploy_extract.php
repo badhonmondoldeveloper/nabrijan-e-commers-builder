@@ -24,7 +24,20 @@ foreach ($appDirs as $appDir) {
     $gitRes = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
     echo "Git pull:\n" . $gitRes . "\n";
 
-    // 4. Touch restart.txt
+    // 4. Check .env
+    if (file_exists($appDir . '/.env')) {
+        echo ".env EXISTS in $appDir:\n";
+        $envLines = file($appDir . '/.env');
+        foreach ($envLines as $line) {
+            if (strpos($line, 'DATABASE_URL') !== false) {
+                echo "DATABASE_URL: " . substr($line, 0, 40) . "... [len: " . strlen($line) . "]\n";
+            }
+        }
+    } else {
+        echo "NO .env file in $appDir!\n";
+    }
+
+    // 5. Touch restart.txt
     shell_exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt"));
     echo "Touched $appDir/tmp/restart.txt\n\n";
 }

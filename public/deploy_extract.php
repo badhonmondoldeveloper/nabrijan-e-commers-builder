@@ -24,18 +24,24 @@ foreach ($appDirs as $appDir) {
     $gitRes = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
     echo "Git pull:\n" . $gitRes . "\n";
 
-    // 4. Ensure .env is synced
-    if (!file_exists($appDir . '/.env') && file_exists('/home/nabrijan/repositories/nabrijan/.env')) {
-        copy('/home/nabrijan/repositories/nabrijan/.env', $appDir . '/.env');
-        echo "Copied .env from repositories to $appDir\n";
-    }
-    if (file_exists($appDir . '/.env')) {
-        echo ".env EXISTS in $appDir\n";
-    } else {
-        echo "NO .env file in $appDir!\n";
-    }
+    // 4. Write valid .env file
+    $envContent = "DATABASE_URL=\"mysql://nabrijan_dbuser:badhon%232006@localhost:3306/nabrijan_db\"\n"
+                . "JWT_SECRET=\"super-secret-jwt-key-nabrijan-2026\"\n"
+                . "NEXTAUTH_SECRET=\"super-secret-jwt-key-nabrijan-2026\"\n"
+                . "NODE_ENV=\"production\"\n"
+                . "PORT=3000\n";
+    file_put_contents($appDir . '/.env', $envContent);
+    echo "Updated .env in $appDir\n";
 
-    // 5. Touch restart.txt
+    // 5. Run Prisma DB Push & Seed
+    $nodePath = shell_exec("which node 2>&1") ? "npx" : "/home/nabrijan/nodevenv/repositories/nabrijan/18/bin/npx";
+    $prismaPush = shell_exec("cd " . escapeshellarg($appDir) . " && $nodePath prisma db push --accept-data-loss 2>&1");
+    echo "Prisma DB Push:\n" . $prismaPush . "\n";
+
+    $prismaSeed = shell_exec("cd " . escapeshellarg($appDir) . " && $nodePath prisma db seed 2>&1");
+    echo "Prisma DB Seed:\n" . $prismaSeed . "\n";
+
+    // 6. Touch restart.txt
     shell_exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt"));
     echo "Touched $appDir/tmp/restart.txt\n\n";
 }

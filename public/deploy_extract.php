@@ -1,35 +1,36 @@
 <?php
 header('Content-Type: text/plain');
 header('X-LiteSpeed-Purge: *');
-$appDir = '/home/nabrijan/app';
+
 $githubUrl = 'https://raw.githubusercontent.com/badhonmondoldeveloper/nabrijan-e-commers-builder/main/next_build.tar.gz';
-$targetTar = $appDir . '/next_build.tar.gz';
+$appDirs = ['/home/nabrijan/app', '/home/nabrijan/repositories/nabrijan'];
 
-echo "=== 1. DOWNLOADING LATEST NEXT_BUILD.TAR.GZ FROM GITHUB ===\n";
-$downloadCmd = "curl -s -L -o " . escapeshellarg($targetTar) . " " . escapeshellarg($githubUrl) . " 2>&1";
-$downloadRes = shell_exec($downloadCmd);
-echo ($downloadRes ? $downloadRes : "Download command executed.") . " File size: " . (file_exists($targetTar) ? filesize($targetTar) : 0) . " bytes\n\n";
+foreach ($appDirs as $appDir) {
+    if (!file_exists($appDir)) continue;
+    echo "=== UPDATING APP IN: $appDir ===\n";
+    $targetTar = $appDir . '/next_build.tar.gz';
+    
+    // 1. Download build tarball
+    shell_exec("curl -s -L -o " . escapeshellarg($targetTar) . " " . escapeshellarg($githubUrl));
+    echo "Downloaded tarball to $targetTar (" . (file_exists($targetTar) ? filesize($targetTar) : 0) . " bytes)\n";
+    
+    // 2. Extract build
+    if (file_exists($targetTar) && filesize($targetTar) > 1000) {
+        shell_exec("rm -rf " . escapeshellarg($appDir . '/.next') . " && cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($targetTar) . " && rm -f " . escapeshellarg($targetTar));
+        echo "Extracted .next build into $appDir\n";
+    }
 
-if (file_exists($targetTar) && filesize($targetTar) > 1000) {
-    echo "=== 2. WIPING OLD .NEXT AND EXTRACTING ===\n";
-    $cmd = "rm -rf " . escapeshellarg($appDir . '/.next') . " && cd " . escapeshellarg($appDir) . " && tar -xzf " . escapeshellarg($targetTar) . " && rm -f " . escapeshellarg($targetTar) . " 2>&1";
-    $res = shell_exec($cmd);
-    echo ($res ? $res : "Successfully extracted new .next directory.") . "\n\n";
-} else {
-    echo "=== 2. ERROR: DOWNLOADED ARCHIVE INVALID OR EMPTY ===\n\n";
+    // 3. Git pull source code
+    $gitRes = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
+    echo "Git pull:\n" . $gitRes . "\n";
+
+    // 4. Touch restart.txt
+    shell_exec("mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt"));
+    echo "Touched $appDir/tmp/restart.txt\n\n";
 }
 
-echo "=== 3. GIT PULL SOURCE FILES ===\n";
-$gitPull = shell_exec("cd " . escapeshellarg($appDir) . " && git status 2>&1 && git pull origin main 2>&1");
-echo ($gitPull ? $gitPull : "Git pull executed.") . "\n\n";
-
-echo "=== 3.5 REMOVING STALE STATIC OVERRIDES IN PUBLIC_HTML ===\n";
+echo "=== REMOVING STALE OVERRIDES IN PUBLIC_HTML ===\n";
 $pubDir = '/home/nabrijan/public_html';
-$staleFiles = glob($pubDir . '/*.html') ?: [];
-foreach ($staleFiles as $sf) {
-    @unlink($sf);
-    echo "Removed static file: " . basename($sf) . "\n";
-}
 $staleDirs = [$pubDir . '/index.html', $pubDir . '/index', $pubDir . '/pricing.html', $pubDir . '/pricing'];
 foreach ($staleDirs as $sd) {
     if (file_exists($sd)) {
@@ -37,28 +38,12 @@ foreach ($staleDirs as $sd) {
         echo "Removed override: " . $sd . "\n";
     }
 }
-echo "\n";
 
-echo "=== 4. DIAGNOSTICS & RESTARTING PASSENGER NODE.JS APP ===\n";
-$nodePs = shell_exec("ps aux | grep node 2>&1");
-echo "Running Node processes:\n" . $nodePs . "\n";
-
-$cwds = shell_exec("ls -l /proc/[0-9]*/cwd 2>&1 | grep nabrijan");
-echo "Node process working directories:\n" . $cwds . "\n";
-
-$findRes = shell_exec("find /home/nabrijan/ -maxdepth 3 -type d 2>&1");
-echo "Home directories:\n" . $findRes . "\n";
+echo "\n=== RESTARTING NODE PROCESSES & PURGING LITESPEED CACHE ===\n";
 shell_exec("pkill -9 -f node 2>&1");
-$touchCmd = "mkdir -p " . escapeshellarg($appDir . "/tmp") . " && touch " . escapeshellarg($appDir . "/tmp/restart.txt") . " 2>&1";
-$touchRes = shell_exec($touchCmd);
-echo ($touchRes ? $touchRes : "Successfully killed node and touched tmp/restart.txt.") . "\n\n";
-
-echo "=== 5. LITESPEED CACHE PURGED & HTACCESS OVERRIDE ===\n";
-header("X-LiteSpeed-Purge: *");
 
 $htaccessPath = '/home/nabrijan/public_html/.htaccess';
 $htaccessRule = "\n<IfModule LiteSpeed>\n    CacheLookup off\n    CacheDisable public /\n</IfModule>\n";
-
 if (file_exists($htaccessPath)) {
     $currentHt = file_get_contents($htaccessPath);
     if (strpos($currentHt, 'CacheLookup off') === false) {
@@ -66,5 +51,5 @@ if (file_exists($htaccessPath)) {
         echo "Added LiteSpeed cache bypass to .htaccess\n";
     }
 }
-echo "Sent X-LiteSpeed-Purge: * header.\n";
+echo "Sent X-LiteSpeed-Purge: * header. Deployment complete!\n";
 ?>

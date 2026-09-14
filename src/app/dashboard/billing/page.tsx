@@ -29,18 +29,11 @@ interface Submission {
 
 const PLANS = [
   {
-    slug: 'basic',
-    name: 'Basic',
-    monthlyPrice: 500,
-    productLimit: '50 products',
-    features: ['50 products limit', 'Free Nabrijan subdomain', 'Pathao & Steadfast courier', 'Manual bKash/Nagad payment', '0% physical order fee'],
-  },
-  {
     slug: 'starter',
     name: 'Starter',
     monthlyPrice: 599,
     productLimit: '500 products',
-    features: ['500 products limit', 'Unlimited preset themes', 'Custom domain mapping', '1 free third-party courier', 'Report exports'],
+    features: ['500 products limit', 'Free Nabrijan subdomain', 'Unlimited preset themes', 'Pathao & Steadfast courier', 'Report exports'],
   },
   {
     slug: 'pro',
@@ -48,21 +41,21 @@ const PLANS = [
     monthlyPrice: 1099,
     popular: true,
     productLimit: '2,000 products',
-    features: ['2,000 products limit', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', '10 Staff Accounts'],
+    features: ['2,000 products limit', 'Custom Domain (.com/.bd)', 'Visual Theme builder', '10 Staff Accounts', 'All Courier Integrations'],
   },
   {
     slug: 'growth',
     name: 'Growth',
     monthlyPrice: 2499,
     productLimit: 'Unlimited products',
-    features: ['Unlimited products', 'Unlimited preset themes', 'Custom domain mapping', 'Visual Theme builder', '50 Staff Accounts'],
+    features: ['Unlimited products', 'Custom Domain (.com/.bd)', 'Visual Theme builder', '50 Staff Accounts', 'VIP Priority Support'],
   },
 ];
 
 function BkashBillingContent() {
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStoreId, setSelectedStoreId] = useState<string>('');
-  const [selectedPlanSlug, setSelectedPlanSlug] = useState<string>('basic');
+  const [selectedPlanSlug, setSelectedPlanSlug] = useState<string>('starter');
   const [billingCycle, setBillingCycle] = useState<'monthly' | '6months' | 'yearly'>('monthly');
 
   const [bkashNumber, setBkashNumber] = useState<string>('01625642420');
@@ -208,7 +201,7 @@ function BkashBillingContent() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan) => {
             const price = plan.monthlyPrice === 0 ? 0 : billingCycle === '6months' ? Math.round(plan.monthlyPrice * 0.9) : billingCycle === 'yearly' ? Math.round(plan.monthlyPrice * 0.75) : plan.monthlyPrice;
             const isSelected = selectedPlanSlug === plan.slug;
@@ -477,7 +470,7 @@ export default function MerchantBillingPage() {
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white">Store Activation & Billing</h1>
         <p className="text-sm text-slate-400 mt-1">
-          Select your subscription plan (Basic ৳500, Starter ৳599, Pro ৳1,099, Growth ৳2,499) and submit TrxID for instant store activation.
+          Select your subscription plan (Starter ৳599, Pro ৳1,099, Growth ৳2,499) and submit TrxID for instant store activation.
         </p>
       </div>
 

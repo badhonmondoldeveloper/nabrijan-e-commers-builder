@@ -102,68 +102,16 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* 4 Pricing Cards Grid */}
-        <div className="container mx-auto px-4 pt-12 max-w-7xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-stretch gap-6">
+        {/* 3 Pricing Cards Grid */}
+        <div className="container mx-auto px-4 pt-12 max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-stretch gap-8">
             
-            {/* 1. Basic Plan Card (৳500) */}
+            {/* 1. Starter Card (৳599) */}
             <div className="flex flex-col rounded-3xl p-6 bg-white text-gray-900 border border-gray-200 shadow-xl hover:-translate-y-1.5 transition-all duration-300 justify-between">
               <div>
-                <span className="inline-block rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200 mb-2">
-                  Full Store Package
+                <span className="inline-block rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-700 border border-blue-200 mb-2">
+                  Standard Store Package
                 </span>
-                <h3 className="text-xl font-bold text-gray-900">Basic</h3>
-                <p className="text-xs text-gray-500 mt-1">Essential tools to launch your store.</p>
-
-                <div className="mt-5">
-                  <div className="flex items-end gap-1">
-                    <span className="text-xl font-semibold text-gray-400">৳</span>
-                    <span className="text-3xl font-black text-gray-900 leading-none">{getPrice(500)}</span>
-                    <span className="mb-1 text-xs text-gray-500 font-semibold">/ month</span>
-                  </div>
-                </div>
-
-                <Link href="/register?plan=basic" className="mt-5 block">
-                  <button className="w-full rounded-full py-2.5 text-xs font-bold transition-all duration-300 bg-gray-900 text-white hover:bg-gray-800 shadow-md">
-                    Get Started →
-                  </button>
-                </Link>
-
-                <div className="my-5 h-px w-full bg-gray-100" />
-
-                <ul className="space-y-2.5 text-xs text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>50 Products limit</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Free Nabrijan Subdomain</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Order & Stock Management</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Pathao & Steadfast courier</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>bKash / Nagad Manual Payment</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-5 rounded-2xl px-3.5 py-2.5 bg-gray-50 border border-gray-100">
-                <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">Order Fees</p>
-                <p className="text-xs font-bold text-emerald-600 mt-0.5">0% physical product fee</p>
-              </div>
-            </div>
-
-            {/* 2. Starter Card (৳599) */}
-            <div className="flex flex-col rounded-3xl p-6 bg-white text-gray-900 border border-gray-200 shadow-xl hover:-translate-y-1.5 transition-all duration-300 justify-between">
-              <div>
                 <h3 className="text-xl font-bold text-gray-900">Starter</h3>
                 <p className="text-xs text-gray-500 mt-1">For growing online businesses.</p>
 
@@ -190,7 +138,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                    <span>Custom Domain (.com/.bd)</span>
+                    <span>Free Subdomain (yourname.nabrijan.site)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
@@ -213,8 +161,8 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* 3. Pro Card (৳1,099 - Most Popular) */}
-            <div className="flex flex-col rounded-3xl p-6 bg-blue-600 text-white shadow-2xl relative lg:-translate-y-2 ring-4 ring-blue-500/30 justify-between">
+            {/* 2. Pro Card (৳1,099 - Most Popular) */}
+            <div className="flex flex-col rounded-3xl p-6 bg-blue-600 text-white shadow-2xl relative md:-translate-y-2 ring-4 ring-blue-500/30 justify-between">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3.5 py-1 text-[10px] font-black uppercase tracking-wider text-gray-900 shadow-md">
                 ⭐ Most Popular
               </div>
@@ -269,7 +217,7 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* 4. Growth Card (৳2,499) */}
+            {/* 3. Growth Card (৳2,499) */}
             <div className="flex flex-col rounded-3xl p-6 bg-white text-gray-900 border border-gray-200 shadow-xl hover:-translate-y-1.5 transition-all duration-300 justify-between">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Growth</h3>
@@ -298,6 +246,10 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                    <span>Custom Domain (.com/.bd)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                     <span>50 Staff Accounts</span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -307,10 +259,6 @@ export default function PricingPage() {
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                     <span>VIP Priority 24/7 Support</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                    <span>10 Multi-store Manager</span>
                   </li>
                 </ul>
               </div>
@@ -325,7 +273,7 @@ export default function PricingPage() {
         </div>
 
         {/* Feature Comparison Table */}
-        <div className="container mx-auto px-4 pt-20 max-w-6xl">
+        <div className="container mx-auto px-4 pt-20 max-w-5xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 mb-2">Compare Plans</p>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900">Compare All Features</h2>
@@ -333,11 +281,10 @@ export default function PricingPage() {
           </div>
 
           <div className="rounded-3xl border border-gray-200 bg-white shadow-xl overflow-x-auto">
-            <table className="w-full text-left text-xs min-w-[700px]">
+            <table className="w-full text-left text-xs min-w-[640px]">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="p-4 font-bold text-gray-900 w-1/3 text-sm">Features</th>
-                  <th className="p-4 font-bold text-center text-gray-900">Basic (৳500)</th>
                   <th className="p-4 font-bold text-center text-gray-900">Starter (৳599)</th>
                   <th className="p-4 font-bold text-center text-blue-600 bg-blue-50">Pro (৳1,099)</th>
                   <th className="p-4 font-bold text-center text-gray-900">Growth (৳2,499)</th>
@@ -345,11 +292,10 @@ export default function PricingPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr className="bg-blue-50/30 font-bold text-blue-700">
-                  <td colSpan={5} className="p-3 text-[11px] uppercase tracking-wider">Fees per order</td>
+                  <td colSpan={4} className="p-3 text-[11px] uppercase tracking-wider">Fees per order</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Physical products fee</td>
-                  <td className="p-4 text-center font-bold text-emerald-600">0%</td>
                   <td className="p-4 text-center font-bold text-gray-900">0%</td>
                   <td className="p-4 text-center font-bold text-blue-600 bg-blue-50/50">0%</td>
                   <td className="p-4 text-center font-bold text-gray-900">0%</td>
@@ -357,45 +303,45 @@ export default function PricingPage() {
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Digital products fee</td>
                   <td className="p-4 text-center font-bold text-gray-900">6%</td>
-                  <td className="p-4 text-center font-bold text-gray-900">6%</td>
                   <td className="p-4 text-center font-bold text-blue-600 bg-blue-50/50">4%</td>
                   <td className="p-4 text-center font-bold text-gray-900">3%</td>
                 </tr>
 
                 <tr className="bg-blue-50/30 font-bold text-blue-700">
-                  <td colSpan={5} className="p-3 text-[11px] uppercase tracking-wider">Store & Limits</td>
+                  <td colSpan={4} className="p-3 text-[11px] uppercase tracking-wider">Store & Limits</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Product limit</td>
-                  <td className="p-4 text-center font-bold text-gray-900">50</td>
                   <td className="p-4 text-center font-bold text-gray-900">500</td>
                   <td className="p-4 text-center font-bold text-blue-600 bg-blue-50/50">2,000</td>
                   <td className="p-4 text-center font-bold text-gray-900">Unlimited</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Staff Accounts</td>
-                  <td className="p-4 text-center text-gray-900">2</td>
                   <td className="p-4 text-center text-gray-900">5</td>
                   <td className="p-4 text-center bg-blue-50/50 font-bold text-blue-600">10</td>
                   <td className="p-4 text-center text-gray-900">50</td>
                 </tr>
                 <tr>
+                  <td className="p-4 font-semibold text-gray-700">Free Nabrijan Subdomain</td>
+                  <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
+                  <td className="p-4 text-center bg-blue-50/50"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
+                  <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
+                </tr>
+                <tr>
                   <td className="p-4 font-semibold text-gray-700">Custom Domain (.com, .bd)</td>
                   <td className="p-4 text-center text-gray-400"><Minus className="w-4 h-4 mx-auto opacity-40" /></td>
-                  <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center bg-blue-50/50"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Drag & Drop Theme Builder</td>
                   <td className="p-4 text-center text-gray-400"><Minus className="w-4 h-4 mx-auto opacity-40" /></td>
-                  <td className="p-4 text-center text-gray-400"><Minus className="w-4 h-4 mx-auto opacity-40" /></td>
                   <td className="p-4 text-center bg-blue-50/50"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold text-gray-700">Pathao & Steadfast Courier API</td>
-                  <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center bg-blue-50/50"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
                   <td className="p-4 text-center"><Check className="w-4 h-4 text-blue-600 mx-auto" /></td>
